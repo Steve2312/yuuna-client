@@ -219,7 +219,7 @@ html, body, #root {
 /* Banner */
 
 .banner {
-  height: 250px;
+  height: 25vw;
   background-position: top;
   background-repeat: no-repeat;
   background-size: cover;
