@@ -1,0 +1,11 @@
+{
+    "title": "Yuuna",
+    "main": {
+      "sourceDirectory": "src/main",
+      "webpackConfig": "webpack.config.js"
+    },
+    "renderer": {
+      "sourceDirectory": "src/renderer",
+      "template": "src/renderer/index.html"
+    }
+  }
