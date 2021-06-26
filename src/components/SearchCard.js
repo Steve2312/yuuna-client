@@ -1,10 +1,11 @@
-import React, {createRef} from 'react';
+import React, {useContext} from 'react';
 import {shell} from 'electron';
 import {formatSeconds} from '../utils/utils';
+import PreviewContext from '../context/PreviewContext';
 
 function SearchCard(props) {
-    const searchCard = createRef();
-    const playButton = createRef();
+    const [preview, setPreview] = useContext(PreviewContext);
+
     const {artist, average_length, title, id, source} = props.beatmap;
 
     const cover = {
@@ -16,28 +17,18 @@ function SearchCard(props) {
     }
 
     function previewAudio() {
-        var classListPlayButton = playButton.current.classList;
-        var classListsearchCard = searchCard.current.classList;
-
-        if (classListPlayButton.contains("fa-pause")) {
-            classListPlayButton.add("fa-play");
-            classListPlayButton.remove("fa-pause");
-
-            classListsearchCard.remove("searchCardPlaying");
-        } else {
-            classListPlayButton.add("fa-pause");
-            classListPlayButton.remove("fa-play");
-
-            classListsearchCard.add("searchCardPlaying");
-        }
+        preview.playPreview(id, preview);
     }
 
+    const playButtonClass = preview.id === id && preview.playing ? "fas fa-pause" : "fas fa-play";
+    const searchCardClass = preview.id === id ? "searchCard searchCardPlaying" : "searchCard";
+
     return (
-        <div className="searchCard" ref={searchCard}>
+        <div className={searchCardClass}>
             <div className="cover" style={cover}>
                 <p className="playButton">
                     <span onClick={previewAudio}>
-                        <i ref={playButton} className="fas fa-play"></i>
+                        <i className={playButtonClass}></i>
                     </span>
                 </p>
             </div>
