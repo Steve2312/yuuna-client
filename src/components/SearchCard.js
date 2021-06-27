@@ -5,9 +5,7 @@ import PreviewContext from '../context/PreviewContext';
 
 function SearchCard(props) {
     const [preview, setPreview] = useContext(PreviewContext);
-
     const {artist, average_length, title, id, source} = props.beatmap;
-
     const cover = {
         backgroundImage: `url("https://b.ppy.sh/thumb/${id}l.jpg"), url("https://steamuserimages-a.akamaihd.net/ugc/848216173214789511/C2CB4C35AE9386EB78FF5F34FFEBB69DD587E7F0/`
     }
@@ -17,8 +15,10 @@ function SearchCard(props) {
     }
 
     function previewAudio() {
-        preview.playPreview(id, preview);
+        props.previewAudio(id);
     }
+
+    console.log("oof")
 
     const playButtonClass = preview.id === id && preview.playing ? "fas fa-pause" : "fas fa-play";
     const searchCardClass = preview.id === id ? "searchCard searchCardPlaying" : "searchCard";
