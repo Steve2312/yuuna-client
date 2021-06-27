@@ -17,7 +17,8 @@ const createWindow = () => {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            enableRemoteModule: true
+            enableRemoteModule: true,
+            webSecurity: false
         },
     } );
 
@@ -44,7 +45,7 @@ app.on('window-all-closed', () => {
     }
 });
 
-app.on( 'activate', () => {
+app.on('activate', () => {
     if( BrowserWindow.getAllWindows().length === 0 ) {
         createWindow();
     }
