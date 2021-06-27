@@ -13,15 +13,15 @@ function Player() {
     /**
      * Test variables
      */
-    const id = 1183585;
-    const beatmapset = 559646;
+    const id = 1711472;
+    const beatmapset = 753086;
     const playlist = "library";
-    const title = "Grand Chariot";
-    const artist = "xi";
-    const song = "C:/Users/stefl/AppData/Roaming/YuunaBeta/songs/559646/1183585/audio.mp3";
+    const title = "GALAXY HidE and SeeK";
+    const artist = "AZALEA";
+    const song = "C:/Users/stefl/AppData/Roaming/YuunaBeta/songs/753086/1711472/galaxy.mp3";
 
     const cover = {
-        backgroundImage: `url("C:/Users/stefl/AppData/Roaming/YuunaBeta/songs/559646/1183585/cover.jpg")`
+        backgroundImage: `url("C:/Users/stefl/AppData/Roaming/YuunaBeta/songs/753086/1711472/cover.jpg")`
     }
 
     /**
@@ -108,7 +108,6 @@ function Player() {
     function pausePreviewAudio() {
         if (!preview.audio.paused) {
             preview.audio.pause();
-            setPreview(data => ({...data, playing: false}))
         }
     }
 
