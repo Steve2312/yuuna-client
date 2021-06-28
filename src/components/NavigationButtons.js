@@ -4,23 +4,30 @@ import NavigationButton from "./NavigationButton";
 
 function NavigationButtons(props) {
     function viewHome() {
-        props.switchView(0);
+        switchView(0);
     }
 
     function viewSearch() {
-        props.switchView(1);
+        switchView(1);
     }
 
     function viewImport() {
-        props.switchView(2);
+        switchView(2);
     }
 
     function viewLibrary() {
-        props.switchView(3);
+        switchView(3);
     }
 
     function viewNewPlaylist() {
-        props.switchView(4);
+        switchView(4);
+    }
+
+    function switchView(index) {
+        const [view, setView] = props.viewState;
+        if (index !== view) {
+            setView(index);
+          }
     }
 
     return (
