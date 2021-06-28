@@ -5,14 +5,13 @@ import request from 'request';
 import PreviewContext from '../context/PreviewContext';
 import PlayerContext from '../context/PlayerContext';
 
-
 function Search() {
     const [results, setResults] = useState();
     const [preview, setPreview] = useContext(PreviewContext);
     const [player, setPlayer] = useContext(PlayerContext);
 
     var fetchTimeout;
-    var cards;
+    var fetchRequest;
 
     // Audio Player settings
     preview.audio.volume = player.volume;
@@ -60,7 +59,7 @@ function Search() {
         clearTimeout(fetchTimeout);
         fetchTimeout = setTimeout(() => {
             console.log("Timeout ended: " + input + " / " + category);
-            request(getLink(input, category), (error, response, body) => {
+            fetchRequest = request(getLink(input, category), (error, response, body) => {
                 setResults(JSON.parse(body));
             })
         }, 1000);
@@ -70,18 +69,24 @@ function Search() {
         if (!results) {
             getResults("", "ranked");
         }
-        console.log(results);
-    });
+        console.log(results)
+        return (() => {
+            clearTimeout(fetchTimeout);
+            if (fetchRequest) fetchRequest.abort();
+        })
+    }, [results]);
 
-    if (results) {
-        cards = results.beatmaps.map((beatmap) =>
-            <SearchCard key={beatmap.id} beatmap={beatmap} previewAudio={previewAudio}/>
-        );
+    function getCards() {
+        if (results) {
+            return results.beatmaps.map((beatmap) =>
+                <SearchCard key={beatmap.id} beatmap={beatmap} previewAudio={previewAudio}/>
+            );
+        }
     }
 
     return <>
         <SearchMenu getResults={getResults} />
-        {cards}
+        {getCards()}
     </>;
 }
 

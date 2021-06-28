@@ -1,13 +1,19 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {shell} from 'electron';
 import {formatSeconds} from '../utils/utils';
 import PreviewContext from '../context/PreviewContext';
+import {addToDownloadQueue, isQueued} from '../utils/downloadBeatmap';
+import thumbnail from '../assets/images/no_thumbnail.jpg'
 
 function SearchCard(props) {
     const [preview, setPreview] = useContext(PreviewContext);
-    const {artist, average_length, title, id, source} = props.beatmap;
+    const {artist, average_length, title, id, source, unique_id} = props.beatmap;
     const cover = {
-        backgroundImage: `url("https://b.ppy.sh/thumb/${id}l.jpg"), url("https://steamuserimages-a.akamaihd.net/ugc/848216173214789511/C2CB4C35AE9386EB78FF5F34FFEBB69DD587E7F0/`
+        backgroundImage: `url("https://b.ppy.sh/thumb/${id}l.jpg"), url("${thumbnail}")`
+    }
+    
+    function install() {
+        addToDownloadQueue(id, unique_id, title, artist);
     }
 
     function openURL() {
@@ -18,13 +24,12 @@ function SearchCard(props) {
         props.previewAudio(id);
     }
 
-    console.log("oof")
-
     const playButtonClass = preview.id === id && preview.playing ? "fas fa-pause" : "fas fa-play";
     const searchCardClass = preview.id === id ? "searchCard searchCardPlaying" : "searchCard";
+    const downloadButtonClass = isQueued(id) ? "fas fa-times" : "fas fa-download";
 
     return (
-        <div className={searchCardClass}>
+        <div className={searchCardClass} onDoubleClick={previewAudio}>
             <div className="cover" style={cover}>
                 <p className="playButton">
                     <span onClick={previewAudio}>
@@ -72,7 +77,7 @@ function SearchCard(props) {
             </div>
 
             <div className="options">
-                <span><i className="fas fa-download"></i></span>
+                <span onClick={install}><i className={downloadButtonClass}></i></span>
                 <span><i className="fas fa-ellipsis-h"></i></span>
             </div>
         </div>

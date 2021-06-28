@@ -1,17 +1,23 @@
-import React, { useEffect, createRef } from 'react';
+import React, { useEffect, createRef, useContext } from 'react';
 
 import homeBanner from '../assets/banners/home.png';
 import searchBanner from '../assets/banners/search.png';
 import importBanner from '../assets/banners/import.png';
 import libraryBanner from '../assets/banners/library.png';
 
+import DownloadQueueContext from '../context/DownloadQueueContext';
+import ShowQueueContext from '../context/ShowQueueContext';
+
 function Banner(props) {
     const bannerRef = createRef();
     const miniBannerRef = createRef();
 
+    const [downloadQueue] = useContext(DownloadQueueContext);
+    const [showQueue] = useContext(ShowQueueContext);
+    const miniBannerClass = showQueue ? 'miniBanner miniBannerShrink' : 'miniBanner';
     
     const backgroundImage = {
-        backgroundImage: `linear-gradient(var(--banner-overlay), var(--banner-overlay)), url(${getBanner()})`
+        backgroundImage: `linear-gradient(var(--banner-overlay), var(--banner-overlay)), url(${getBanner()})`,
     }
 
     function getBanner() {
@@ -31,12 +37,16 @@ function Banner(props) {
 
     function bannerHandler(event) {
         if (bannerRef.current !== null) {
-            var offsetBottom = bannerRef.current.offsetTop + bannerRef.current.offsetHeight;
-            if (event.target.scrollTop > offsetBottom) {
-                miniBannerRef.current.classList.add("showMiniBanner");
-            } else {
-                miniBannerRef.current.classList.remove("showMiniBanner");
-            }
+            showMiniBanner(event.target);
+        }
+    }
+
+    function showMiniBanner(target) {
+        var offsetBottom = bannerRef.current.offsetTop + bannerRef.current.offsetHeight;
+        if (target.scrollTop > offsetBottom) {
+            miniBannerRef.current.classList.add("showMiniBanner");
+        } else {
+            miniBannerRef.current.classList.remove("showMiniBanner");
         }
     }
 
@@ -50,13 +60,14 @@ function Banner(props) {
     useEffect(() => {
         const viewWrapper = document.getElementsByClassName("viewWrapper")[0];
         viewWrapper.addEventListener("scroll", bannerHandler);
+        showMiniBanner(viewWrapper)
         return() => {
             viewWrapper.removeEventListener("scroll", bannerHandler);
         }
     });
     
     return <>
-        <div className="miniBanner" style={backgroundImage} ref={miniBannerRef}>
+        <div className={miniBannerClass} style={backgroundImage} ref={miniBannerRef}>
             <p>{props.title}</p>
             <span onClick={backToTop}>Back to top</span>
         </div>
