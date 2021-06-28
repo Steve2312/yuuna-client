@@ -139,7 +139,7 @@ function Player() {
             if(!drag) {
                 setCurrentTime(player.audio.currentTime);
             }
-        }, 1000);
+        }, 500);
         return () => clearInterval(interval);
       }, [drag]);
 
