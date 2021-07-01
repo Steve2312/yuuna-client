@@ -31,7 +31,7 @@ function App() {
   // Preview Audio From Search System
   const [player, setPlayer] = useState({
     audio: new Audio(),
-    volume: 0.1,
+    volume: 0.25,
     playing: false,
 
     playlist: null,

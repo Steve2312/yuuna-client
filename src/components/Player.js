@@ -166,7 +166,7 @@ function Player() {
                 </span>
             </div>
             <div className="playerVolume">
-                <input type="range" min="0" step="0.01" max="0.21" defaultValue={player.volume} onChange={(event) => setVolume(event.target.value)} />
+                <input type="range" min="0" step="0.01" max="0.52" defaultValue={player.volume} onChange={(event) => setVolume(event.target.value)} />
             </div>
         </div>
         <div className="playerDataWrapper">
