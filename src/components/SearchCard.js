@@ -1,8 +1,8 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {shell} from 'electron';
-import {formatSeconds} from '../utils/utils';
+import {formatSeconds} from '../helpers/utils';
 import PreviewContext from '../context/PreviewContext';
-import {addToDownloadQueue, isQueued} from '../utils/downloadBeatmap';
+import {addToDownloadQueue, isQueued} from '../helpers/downloadBeatmap';
 import thumbnail from '../assets/images/no_thumbnail.jpg'
 
 function SearchCard(props) {

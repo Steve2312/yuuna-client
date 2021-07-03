@@ -12,7 +12,7 @@ import PlayerContext from '../context/PlayerContext';
 import DownloadQueueContext from '../context/DownloadQueueContext';
 import DownloadProgressContext from '../context/DownloadProgressContext';
 import Player from './Player';
-import {setQueueState, setProgressState} from '../utils/downloadBeatmap';
+import {setQueueState, setProgressState} from '../helpers/downloadBeatmap';
 import ShowQueueContext from '../context/ShowQueueContext';
 
 function App() {

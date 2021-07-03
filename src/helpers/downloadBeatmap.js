@@ -4,6 +4,7 @@ import progress from 'request-progress';
 import path from 'path';
 import Electron from "electron";
 import fs from 'fs';
+import {importBeatmap} from '../helpers/importBeatmap';
 
 const appData = Electron.remote.app.getAppPath();
 const tempPath = path.join(appData, "temp");
@@ -14,7 +15,8 @@ var downloadRequest;
 var queueState;
 var progressState;
 
-export const addToDownloadQueue = (id, unique_id, title, artist) => {
+export const addToDownloadQueue = (id, unique_id, title, artist, user_id) => {
+    // importBeatmap(path.join(tempPath, '1450030.zip'));
     const setDownloadQueue = queueState[1];
     
     if (isQueued(id)) {
@@ -22,7 +24,7 @@ export const addToDownloadQueue = (id, unique_id, title, artist) => {
         return;
     }
 
-    downloadQueue.push({id, unique_id, title, artist})
+    downloadQueue.push({id, unique_id, title, artist, user_id})
     setDownloadQueue([...downloadQueue]);
 
     download();
@@ -33,7 +35,7 @@ function download() {
     checkTemp();
 
     if (!downloadRequest) {
-        const {id, unique_id} = downloadQueue[0];
+        const {id, unique_id, user_id} = downloadQueue[0];
         const pipePath = path.join(tempPath, id + '.zip');
 
         console.log("Downloading: " + id);
@@ -46,7 +48,7 @@ function download() {
         }).on("end", () => {
             console.log("Finished downloading: " + id);
             checkDownload();
-            // Import beatmap into library
+            importBeatmap(pipePath, user_id);
         }).on("error", (err) => {
             console.error(err);
             checkDownload();

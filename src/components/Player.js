@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PlayerContext from '../context/PlayerContext';
 import PreviewContext from '../context/PreviewContext';
-import {formatSeconds} from '../utils/utils'
+import {formatSeconds} from '../helpers/utils'
 
 function Player() {
     const [player, setPlayer] = useContext(PlayerContext);

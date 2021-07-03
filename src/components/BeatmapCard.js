@@ -1,8 +1,8 @@
 import React, {useContext} from 'react';
 import {shell} from 'electron';
 import PreviewContext from '../context/PreviewContext';
-import {formatSeconds} from '../utils/utils';
-import {addToDownloadQueue, isQueued} from '../utils/downloadBeatmap';
+import {formatSeconds} from '../helpers/utils';
+import {addToDownloadQueue, isQueued} from '../helpers/downloadBeatmap';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
 
 function BeatmapCard(props) {
@@ -18,7 +18,7 @@ function BeatmapCard(props) {
     }
 
     function install() {
-        addToDownloadQueue(id, unique_id, title, artist);
+        addToDownloadQueue(id, unique_id, title, artist, user_id);
     }
 
     function openBeatmapPage() {
@@ -58,7 +58,7 @@ function BeatmapCard(props) {
                     <div className="metadata">
                         <span className="box">DURATION: <span className="value">{formatSeconds(average_length)}</span></span>
                         <span className="box">BPM: <span className="value">{bpm}</span></span>
-                        <span className="box">BEATMAP ID: <span className="value link" onClick={openBeatmapPage}>{id}</span></span>
+                        <span className="box">BEATMAP SET ID: <span className="value link" onClick={openBeatmapPage}>{id}</span></span>
                     </div>
                 </div>
                 <div className="options">
