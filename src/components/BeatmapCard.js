@@ -18,7 +18,7 @@ function BeatmapCard(props) {
     }
 
     function install() {
-        addToDownloadQueue(id, unique_id, title, artist, user_id);
+        addToDownloadQueue(props.beatmap);
     }
 
     function openBeatmapPage() {

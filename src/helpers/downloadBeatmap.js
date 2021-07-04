@@ -5,6 +5,7 @@ import path from 'path';
 import Electron from "electron";
 import fs from 'fs';
 import {importBeatmap} from '../helpers/importBeatmap';
+import { pathExists } from './filesystem';
 
 const appData = Electron.remote.app.getAppPath();
 const tempPath = path.join(appData, "temp");
@@ -15,16 +16,15 @@ var downloadRequest;
 var queueState;
 var progressState;
 
-export const addToDownloadQueue = (id, unique_id, title, artist, user_id) => {
-    // importBeatmap(path.join(tempPath, '1450030.zip'));
+export const addToDownloadQueue = (beatmap) => {
     const setDownloadQueue = queueState[1];
     
-    if (isQueued(id)) {
+    if (isQueued(beatmap.id)) {
         console.log("Beatmap already in download queue");
         return;
     }
 
-    downloadQueue.push({id, unique_id, title, artist, user_id})
+    downloadQueue.push(beatmap)
     setDownloadQueue([...downloadQueue]);
 
     download();
@@ -35,7 +35,7 @@ function download() {
     checkTemp();
 
     if (!downloadRequest) {
-        const {id, unique_id, user_id} = downloadQueue[0];
+        const {id, unique_id} = downloadQueue[0];
         const pipePath = path.join(tempPath, id + '.zip');
 
         console.log("Downloading: " + id);
@@ -48,7 +48,7 @@ function download() {
         }).on("end", () => {
             console.log("Finished downloading: " + id);
             checkDownload();
-            importBeatmap(pipePath, user_id);
+            importBeatmap(pipePath);
         }).on("error", (err) => {
             console.error(err);
             checkDownload();
@@ -66,7 +66,7 @@ function setProgress(id, speed, percent) {
  * If not, create the folder.
  */
 function checkTemp() {
-    if (!fs.existsSync(tempPath)){
+    if (!pathExists(tempPath)){
         fs.mkdirSync(tempPath);
     }
 }
