@@ -93,6 +93,8 @@ export const moveFile = (oldPath, newPath) => {
     });
 }
 
-export const directoryExists = (target) => {
+export const pathExists = (target) => {
     return fs.existsSync(target);
 }
+
+export default {copy, getFilesInDirectory, readFile, deleteDirectory, deleteFile, unzip, createDirectory, createFile, moveFile, pathExists}
