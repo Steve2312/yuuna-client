@@ -2,9 +2,11 @@ import Electron from "electron";
 import path from 'path';
 import request from "request";
 import fs from 'fs';
-import { unzip, getFilesInDirectory, readFile, directoryExists, createDirectory, moveFile, createFile, deleteDirectory } from "./filesystem";
+import { unzip, getFilesInDirectory, readFile, pathExists, createDirectory, moveFile, createFile, deleteDirectory } from "./filesystem";
+import { updateLibrary } from "./LibraryHandler";
+import { v4 as uuidv4 } from 'uuid';
 
-export const importBeatmap = async (pipePath, user_id) => {
+export const importBeatmap = async (pipePath) => {
     const appData = Electron.remote.app.getAppPath();
     const songsPath = path.join(appData, "songs");
 
@@ -22,7 +24,6 @@ export const importBeatmap = async (pipePath, user_id) => {
         const osuFile = osuFiles[x];
         const osuFilePath = path.join(extractPath, osuFile);
         const beatmapData = parseMapToObject(await readFile(osuFilePath));
-
         const audioFilename = beatmapData.general.AudioFilename;
 
         if (!audioFiles.includes(audioFilename)) {
@@ -31,13 +32,12 @@ export const importBeatmap = async (pipePath, user_id) => {
                 audio: audioFilename,
                 artist: beatmapData.metadata.Artist,
                 title: beatmapData.metadata.Title,
-                source: beatmapData.metadata.source ? beatmapData.metadata.source : null,
+                source: beatmapData.metadata.Source ? beatmapData.metadata.Source : null,
                 duration: await getDuration(path.join(extractPath, audioFilename)),
-                user_id: user_id,
                 creator: beatmapData.metadata.Creator,
                 bpm: calculateBPM(beatmapData.timingpoints),
-                beatmapset_id: beatmapData.metadata.BeatmapSetID,
-                id: beatmapData.metadata.BeatmapID,
+                beatmapset_id: beatmapData.metadata.BeatmapSetID ? beatmapData.metadata.BeatmapSetID : null,
+                id: uuidv4(),
                 date_added: Date.now()
             });
         }
@@ -46,18 +46,12 @@ export const importBeatmap = async (pipePath, user_id) => {
     console.log(audioFiles);
     console.log(mapsToImport);
 
-    if (!directoryExists(songsPath)) {
+    if (!pathExists(songsPath)) {
         createDirectory(songsPath);
     }
 
-    mapsToImport.forEach(async (map) => {
-        console.log(map)
-        const beatmapsetPath = path.join(songsPath, map.beatmapset_id);
-        if (!directoryExists(beatmapsetPath)) {
-            await createDirectory(beatmapsetPath);
-        }
-
-        const beatmapPath = await createDirectory(path.join(beatmapsetPath, map.id));
+    await Promise.all(mapsToImport.map(async (map) => {
+        const beatmapPath = await createDirectory(path.join(songsPath, map.id));
         const oldAudioPath = path.join(extractPath, map.audio);
         const newAudioPath = path.join(beatmapPath, map.audio);
         await moveFile(oldAudioPath, newAudioPath);
@@ -72,7 +66,9 @@ export const importBeatmap = async (pipePath, user_id) => {
         request(`https://assets.ppy.sh/beatmaps/${map.beatmapset_id}/covers/card@2x.jpg`).pipe(fs.createWriteStream(headerPath));
 
         deleteDirectory(extractPath);
-    });
+    }));
+
+    updateLibrary();
 }
 
 function parseMapToObject(file) {
