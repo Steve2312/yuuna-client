@@ -43,7 +43,6 @@ export const importBeatmap = async (pipePath) => {
         }
     }
     
-    console.log(audioFiles);
     console.log(mapsToImport);
 
     if (!pathExists(songsPath)) {
@@ -129,7 +128,6 @@ function calculateBPM(timingpoints) {
     for (let x = 0; x < timingpoints.length; x++) {
         const timingpoint = timingpoints[x];
         const beatTime = parseFloat(timingpoint.split(",")[1]);
-        console.log()
         if (beatTime > 0) {
             const bpm = Math.round(60000 / beatTime * 100) / 100;
             calculations.push(bpm);
@@ -139,7 +137,6 @@ function calculateBPM(timingpoints) {
 }
 
 function getDuration(audioFilePath) {
-    console.log(audioFilePath);
     return new Promise(resolve => {
         const audio = document.createElement('audio');
         audio.src = audioFilePath;

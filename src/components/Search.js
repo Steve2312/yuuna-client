@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
 import SearchMenu from "./SearchMenu";
-import SearchCard from './SearchCard';
 import request from 'request';
 import PreviewContext from '../context/PreviewContext';
 import PlayerContext from '../context/PlayerContext';
@@ -8,6 +7,7 @@ import BeatmapCard from './BeatmapCard';
 
 function Search() {
     const [results, setResults] = useState();
+
     const [preview, setPreview] = useContext(PreviewContext);
     const [player, setPlayer] = useContext(PlayerContext);
 

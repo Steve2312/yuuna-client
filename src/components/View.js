@@ -33,66 +33,6 @@ function View(props) {
         return <>
             <Banner key={LIBRARY} title="Library" banner="library"></Banner>
             <LibraryMenu />
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            <p>Here come the songs</p>
-            
         </>
     }
 

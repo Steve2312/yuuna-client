@@ -4,15 +4,12 @@ import homeBanner from '../assets/banners/home.png';
 import searchBanner from '../assets/banners/search.png';
 import importBanner from '../assets/banners/import.png';
 import libraryBanner from '../assets/banners/library.png';
-
-import DownloadQueueContext from '../context/DownloadQueueContext';
 import ShowQueueContext from '../context/ShowQueueContext';
 
 function Banner(props) {
     const bannerRef = createRef();
     const miniBannerRef = createRef();
 
-    const [downloadQueue] = useContext(DownloadQueueContext);
     const [showQueue] = useContext(ShowQueueContext);
     const miniBannerClass = showQueue ? 'miniBanner miniBannerShrink' : 'miniBanner';
     
