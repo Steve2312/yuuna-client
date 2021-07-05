@@ -357,149 +357,6 @@ html, body, #root {
   cursor: pointer;
 }
 
-/* searchCard */
-
-.searchCard {
-  display: flex;
-  justify-content: flex-start;
-  width: auto;
-  height: 60px;
-  max-height: 60px;
-  background-color: var(--bg_1_color);
-  border-radius: 5px;
-  margin: 20px;
-  overflow: hidden;
-}
-
-.searchCard > .cover {
-  border-radius: 5px;
-  width: 60px;
-  height: 60px;
-  min-width: 60px;
-  display: flex;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0);
-  transition: all linear 0.2s;
-}
-
-.searchCard > .cover > .playButton {
-  transition: all linear 0.2s;
-  font-size: 20px;
-  margin: auto;
-  opacity: 0;
-}
-
-.searchCard:hover .playButton{
-  transition: all linear 0.2s;
-  opacity: 1;
-  cursor: pointer;
-}
-
-.playButton:hover {
-  color: var(--accent_color);
-  transition: all linear 0.2s;
-  opacity: 1;
-  cursor: pointer;
-}
-
-.searchCard:hover .cover{
-  box-shadow:inset 0 0 0 2000px rgba(0, 0, 0, 0.6);
-  transition: all linear 0.2s;
-}
-
-.searchCard > .metadataWrapper{
-  overflow: hidden;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.searchCard > .metadataWrapper > .metadata {
-  overflow: hidden; 
-  display: flex;
-  align-items: center;
-  height: 100%;
-  white-space: nowrap;
-  width: 20%;
-  min-width: 150px;
-}
-
-.searchCard > .metadataWrapper > .metadata > div {
-  width: 100%;
-}
-
-.searchCard > .metadataWrapper > .metadata > div > * {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.searchCard .title{
-  font-family: NotoBold;
-  margin: 0px 10px;
-  font-size: 10px;
-  color: var(--subject_color)
-}
-
-.searchCard .value{
-  margin: 0px 10px;
-  font-size: 12px;
-}
-
-.searchCard > .options > span{
-  font-size: 20px;
-  text-align: center;
-  min-width: 60px;
-  max-width: 60px;
-}
-
-.searchCard > .options > span:hover {
-  color: var(--accent_color);
-  transition: color linear 0.2s;
-  opacity: 1;
-  cursor: pointer;
-}
-
-.searchCard > .options {
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-
-/* When searchcard is playing */
-.searchCardPlaying > .cover > .playButton{
-  opacity: 1;
-}
-
-.searchCardPlaying > .cover{
-  box-shadow:inset 0 0 0 2000px rgba(0, 0, 0, 0.6);
-}
-
-.searchCardPlaying{
-  transition: box-shadow linear 0.2s;
-  /* box-shadow: 0px 0px 0px 1px var(--accent_color); */
-  /* box-shadow: 0px 0px 24px -11px var(--accent_color); */
-  box-shadow: 0px 13px 24px -17px var(--accent_color);
-}
-
-.searchCard .percentage {
-  margin: 0 !important;
-  width: 60px;
-  max-width: 60px;
-  min-width: 60px;
-  text-align: center;
-  font-size: 14px !important;
-}
-
-.beatmapValue:hover {
-  color: var(--accent_color);
-  transition: all linear 0.2s;
-  cursor: pointer;
-}
-
 /* Player */
 
 .playerWrapper {
@@ -1019,6 +876,21 @@ html, body, #root {
   box-shadow: 0px 10px 8px -6px #f28482ad !important;
 }
 
+.loading {
+  animation: loading;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 
 

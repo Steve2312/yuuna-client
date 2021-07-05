@@ -1,4 +1,3 @@
-import {useContext} from 'react';
 import request from "request";
 import progress from 'request-progress';
 import path from 'path';
@@ -10,21 +9,20 @@ import { pathExists } from './filesystem';
 const appData = Electron.remote.app.getAppPath();
 const tempPath = path.join(appData, "temp");
 
-var downloadQueue = [];
+const downloadQueue = [];
 var downloadRequest;
 
-var queueState;
-var progressState;
+var setDownloadQueue = null;
+var setDownloadProgress = null;
 
 export const addToDownloadQueue = (beatmap) => {
-    const setDownloadQueue = queueState[1];
-    
-    if (isQueued(beatmap.id)) {
+    if (inQueue(beatmap.id)) {
         console.log("Beatmap already in download queue");
+        // Remove beatmap
         return;
     }
 
-    downloadQueue.push(beatmap)
+    downloadQueue.push(beatmap);
     setDownloadQueue([...downloadQueue]);
 
     download();
@@ -37,18 +35,15 @@ function download() {
     if (!downloadRequest) {
         const {id, unique_id} = downloadQueue[0];
         const pipePath = path.join(tempPath, id + '.zip');
-
-        console.log("Downloading: " + id);
-
+        
         downloadRequest = request('https://beatconnect.io/b/'+ id +'/' + unique_id + '/');
 
         progress(downloadRequest).on("progress", (state) => {
-            console.log(state.percent * 100 + "%");
-            setProgress(id, state.speed, state.percent);
-        }).on("end", () => {
-            console.log("Finished downloading: " + id);
+            updateProgress(id, state.speed, state.percent, false);
+        }).on("end", async () => {
+            updateProgress(id, 0, 0, true);
+            await importBeatmap(pipePath);
             checkDownload();
-            importBeatmap(pipePath);
         }).on("error", (err) => {
             console.error(err);
             checkDownload();
@@ -56,9 +51,8 @@ function download() {
     }
 }
 
-function setProgress(id, speed, percent) {
-    const setProgress = progressState[1];
-    setProgress({id, speed, percent});
+function updateProgress(id, speed, percent, importing) {
+    setDownloadProgress({id, speed, percent, importing});
 }
 
 /**
@@ -76,7 +70,6 @@ function checkTemp() {
  * Then Download first one in queue.
  */
 function checkDownload() {
-    const setDownloadQueue = queueState[1];
     downloadQueue.shift();
     setDownloadQueue([...downloadQueue]);
 
@@ -91,23 +84,19 @@ function checkDownload() {
  * @param {*} id Beatmap ID
  * @returns Boolean
  */
-export const isQueued = (id) => {
-    const [downloadQueue, setDownloadQueue] = queueState;
-    var isQueued = false;
-    downloadQueue.forEach(beatmap => {
+export const inQueue = (id) => {
+    for (let x = 0; x < downloadQueue.length; x++) {
+        const beatmap = downloadQueue[x];
         if (beatmap.id === id) {
-            return isQueued = true;
+            return true;
         }
-    });
-    return isQueued;
+    }
+    return false;
 }
 
-export const setQueueState = (state) => {
-    queueState = state;
+export const setSetters = (queue, progress) => {
+    setDownloadQueue = queue;
+    setDownloadProgress = progress;
 }
 
-export const setProgressState = (state) => {
-    progressState = state;
-}
-
-export default {download, setQueueState, setProgressState};
+export default {addToDownloadQueue, inQueue, setSetters};

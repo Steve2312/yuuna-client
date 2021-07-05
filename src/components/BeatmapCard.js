@@ -2,11 +2,16 @@ import React, {useContext} from 'react';
 import {shell} from 'electron';
 import PreviewContext from '../context/PreviewContext';
 import {formatSeconds} from '../helpers/utils';
-import {addToDownloadQueue, isQueued} from '../helpers/downloadBeatmap';
+import {addToDownloadQueue, inQueue} from '../helpers/downloadBeatmap';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
+import LibraryContext from '../context/LibraryContext';
+import DownloadProgressContext from '../context/DownloadProgressContext';
 
 function BeatmapCard(props) {
     const [preview, setPreview] = useContext(PreviewContext);
+    const [library, setLibrary] = useContext(LibraryContext);
+    const [downloadProgress, setDownloadProgress] = useContext(DownloadProgressContext);
+
     const {artist, average_length, title, id, source, unique_id, creator, bpm, user_id} = props.beatmap;
 
     const cover = {
@@ -25,6 +30,16 @@ function BeatmapCard(props) {
         shell.openExternal(`https://osu.ppy.sh/beatmapsets/${id}`);
     }
 
+    function inLibrary() {
+        for (let x = 0; x < library.length; x++) {
+            const song = library[x];
+            if (song.beatmapset_id === id.toString()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function openCreatorPage() {
         shell.openExternal(`https://osu.ppy.sh/users/${user_id}`);
     }
@@ -35,7 +50,21 @@ function BeatmapCard(props) {
 
     const playButtonClass = preview.id === id && preview.playing ? "fas fa-pause" : "fas fa-play";
     const cardClass = preview.id === id ? "card beatmapCardPlaying" : "card";
-    const downloadButtonClass = isQueued(id) ? "fas fa-times" : "fas fa-download";
+
+    function downloadButton () {
+        if (inLibrary()) {
+            return null;
+        }
+
+        if (downloadProgress && downloadProgress.id == id && downloadProgress.importing) {
+            return <span><i className="fas fa-spinner loading"></i></span>;
+        }
+
+        const downloadButtonClass = inQueue(id) ? "fas fa-times" : "fas fa-download";
+        if (!inLibrary()) {
+            return <span onClick={install}><i className={downloadButtonClass}></i></span>;
+        }
+    }
 
     return (
         <div className="beatmapCard" onDoubleClick={previewAudio}>
@@ -62,7 +91,7 @@ function BeatmapCard(props) {
                     </div>
                 </div>
                 <div className="options">
-                    <span onClick={install}><i className={downloadButtonClass}></i></span>
+                    {downloadButton()}
                     <span><i className="fas fa-ellipsis-h"></i></span>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
 import DownloadProgressContext from '../context/DownloadProgressContext';
 
@@ -9,9 +9,11 @@ function DownloadQueueCard(props) {
         backgroundImage: `url("https://b.ppy.sh/thumb/${id}l.jpg"), url("${thumbnail}")`
     }
 
-
     function getDownloadInfo() {
         if (downloadProgress && downloadProgress.id === id) {
+            if (downloadProgress.importing) {
+                return "Importing...";
+            }
             var speed = (downloadProgress.speed / 1000000).toFixed(2);
             var percent = (downloadProgress.percent * 100).toFixed(2);
             return percent + '% - ' + speed + ' MB/s';
