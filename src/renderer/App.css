@@ -989,11 +989,11 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .beatmapCard > .card > .options > span {
-  padding: 5px;
+  padding: 6.5px;
   cursor: pointer;
 }
 
