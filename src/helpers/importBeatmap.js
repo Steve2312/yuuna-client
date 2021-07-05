@@ -115,9 +115,9 @@ function parseLineOfMap(line) {
     for (let x = 0; x < seperators.length; x++) {
         const seperator = seperators[x];
         const pair = line.split(seperator);
-        if (pair.length == 2) {
+        if (pair.length > 1) {
             var object = {};
-            object[pair[0]] = pair[1];
+            object[pair.shift()] = pair.join(seperator);
             return object;
         }
     }
