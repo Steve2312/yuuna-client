@@ -120,15 +120,12 @@ function parseMapToObject(file) {
 
 
 function parseLineOfMap(line) {
-    const seperators = [" : ", ": ", ":"];
-    for (let x = 0; x < seperators.length; x++) {
-        const seperator = seperators[x];
-        const pair = line.split(seperator);
-        if (pair.length > 1) {
-            var object = {};
-            object[pair.shift()] = pair.join(seperator);
-            return object;
-        }
+    const seperator = ":";
+    const pair = line.split(seperator);
+    if (pair.length > 1) {
+        var object = {};
+        object[pair.shift().trim()] = pair.join(seperator).trim();
+        return object;
     }
     return line;
 }
