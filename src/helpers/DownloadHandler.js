@@ -9,21 +9,29 @@ import { pathExists } from './filesystem';
 const appData = Electron.remote.app.getAppPath();
 const tempPath = path.join(appData, "temp");
 
-const downloadQueue = [];
+const observers = [];
+
+const downloadData = {
+    queue: [],
+    progress: {
+        speed: null,
+        id: null,
+        percent: null,
+        importing: false,
+    }
+};
+
 var downloadRequest;
 
-var setDownloadQueue = null;
-var setDownloadProgress = null;
 
 export const addToDownloadQueue = (beatmap) => {
     if (inQueue(beatmap.id)) {
         console.log("Beatmap already in download queue");
-        // Remove beatmap
         return;
     }
 
-    downloadQueue.push(beatmap);
-    setDownloadQueue([...downloadQueue]);
+    downloadData.queue.push(beatmap);
+    notifyObservers();
 
     download();
 };
@@ -33,7 +41,7 @@ function download() {
     checkTemp();
 
     if (!downloadRequest) {
-        const {id, unique_id} = downloadQueue[0];
+        const {id, unique_id} = downloadData.queue[0];
         const pipePath = path.join(tempPath, id + '.zip');
         
         downloadRequest = request('https://beatconnect.io/b/'+ id +'/' + unique_id + '/');
@@ -52,33 +60,26 @@ function download() {
 }
 
 function updateProgress(id, speed, percent, importing) {
-    setDownloadProgress({id, speed, percent, importing});
+    downloadData.progress.id = id;
+    downloadData.progress.speed = speed;
+    downloadData.progress.percent = percent;
+    downloadData.progress.importing = importing;
+    notifyObservers();
 }
 
-/**
- * Check if temp directory exists
- * If not, create the folder.
- */
 function checkTemp() {
     if (!pathExists(tempPath)){
         fs.mkdirSync(tempPath);
     }
 }
 
-/**
- * Checks if queue is not empty
- * Then Download first one in queue.
- */
 function checkDownload() {
-    downloadQueue.shift();
-    setDownloadQueue([...downloadQueue]);
-
+    downloadData.queue.shift();
     downloadRequest = null;
-    if (!downloadQueue.length == 0) {
+    if (!downloadData.queue.length == 0) {
         download();
     }
 }
-
 
 /**
  * Checks if the beatmap is in the download queue.
@@ -86,8 +87,8 @@ function checkDownload() {
  * @returns Boolean
  */
 export const inQueue = (id) => {
-    for (let x = 0; x < downloadQueue.length; x++) {
-        const beatmap = downloadQueue[x];
+    for (let x = 0; x < downloadData.queue.length; x++) {
+        const beatmap = downloadData.queue[x];
         if (beatmap.id === id) {
             return true;
         }
@@ -95,9 +96,26 @@ export const inQueue = (id) => {
     return false;
 }
 
-export const setSetters = (queue, progress) => {
-    setDownloadQueue = queue;
-    setDownloadProgress = progress;
+const addObserver = (observer) => {
+    observers.push(observer);
 }
 
-export default {addToDownloadQueue, inQueue, setSetters};
+const removeObserver = (observer) => {
+    const index = observers.indexOf(observer);
+    if (index > -1) {
+        observers.splice(index, 1);
+    }
+}
+
+const notifyObservers = () => {
+    for (let x = 0; x < observers.length; x++) {
+        const update = observers[x];
+        update({...downloadData});
+    }
+}
+
+const getDownloadData = () => {
+    return downloadData;
+}
+
+export default {addToDownloadQueue, inQueue, addObserver, removeObserver, notifyObservers, getDownloadData};

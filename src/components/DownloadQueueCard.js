@@ -1,26 +1,33 @@
-import React, { useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
-import DownloadProgressContext from '../context/DownloadProgressContext';
+import DownloadHandler from '../helpers/DownloadHandler';
 
 function DownloadQueueCard(props) {
     const {id, title, artist} = props.beatmap;
-    const [downloadProgress, setDownloadProgress] = useContext(DownloadProgressContext);
+    const [downloadData, setDownloadData] = useState(DownloadHandler.getDownloadData());
+
     const cover = {
         backgroundImage: `url("https://b.ppy.sh/thumb/${id}l.jpg"), url("${thumbnail}")`
     }
 
     function getDownloadInfo() {
-        if (downloadProgress && downloadProgress.id === id) {
-            if (downloadProgress.importing) {
+        if (downloadData.progress.id === id) {
+            if (downloadData.progress.importing) {
                 return "Importing...";
             }
-            var speed = (downloadProgress.speed / 1000000).toFixed(2);
-            var percent = (downloadProgress.percent * 100).toFixed(2);
+            var speed = (downloadData.progress.speed / 1000000).toFixed(2);
+            var percent = (downloadData.progress.percent * 100).toFixed(2);
             return percent + '% - ' + speed + ' MB/s';
         }
 
         return "In queue";
     }
+
+    useEffect(() => {
+        DownloadHandler.addObserver(setDownloadData);
+        return () => DownloadHandler.removeObserver(setDownloadData);
+    }, []);
+
     return (
         <div className="downloadQueueCard">
             <div className="cover" style={cover}>

@@ -4,14 +4,14 @@ import {formatSeconds} from '../helpers/utils';
 import {addToDownloadQueue, inQueue} from '../helpers/DownloadHandler';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
 import LibraryContext from '../context/LibraryContext';
-import DownloadProgressContext from '../context/DownloadProgressContext';
+import DownloadHandler from '../helpers/DownloadHandler';
 import PreviewHandler from '../helpers/PreviewHandler';
 
 function BeatmapCard(props) {
     const [preview, setPreview] = useState(PreviewHandler.getPreview());
 
     const [library, setLibrary] = useContext(LibraryContext);
-    const [downloadProgress, setDownloadProgress] = useContext(DownloadProgressContext);
+    const [downloadData, setDownloadData] = useState(DownloadHandler.getDownloadData());
 
     const {artist, average_length, title, id, source, creator, bpm, user_id} = props.beatmap;
 
@@ -47,7 +47,11 @@ function BeatmapCard(props) {
 
     useEffect(() => {
         PreviewHandler.addObserver(setPreview);
-        return () => PreviewHandler.removeObserver(setPreview);
+        DownloadHandler.addObserver(setDownloadData);
+        return () => {
+            PreviewHandler.removeObserver(setPreview);
+            DownloadHandler.removeObserver(setDownloadData);
+        }
     }, []);
 
     const playButtonClass = preview.id === id && preview.playing ? "fas fa-pause" : "fas fa-play";
@@ -58,7 +62,7 @@ function BeatmapCard(props) {
             return null;
         }
 
-        if (downloadProgress && downloadProgress.id == id && downloadProgress.importing) {
+        if (downloadData.progress.id == id && downloadData.progress.importing) {
             return <span><i className="fas fa-spinner loading"></i></span>;
         }
 
