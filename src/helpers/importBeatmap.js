@@ -56,7 +56,7 @@ export const importBeatmap = async (pipePath) => {
 
         const oldAudioPath = path.join(extractPath, map.audio);
         const newAudioPath = path.join(beatmapPath, map.audio);
-        await copy(oldAudioPath, newAudioPath);
+        await moveFile(oldAudioPath, newAudioPath);
 
         const metadataPath = path.join(beatmapPath, "metadata.json");
         await createFile(JSON.stringify(map), metadataPath);
