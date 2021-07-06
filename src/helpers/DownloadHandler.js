@@ -3,7 +3,7 @@ import progress from 'request-progress';
 import path from 'path';
 import Electron from "electron";
 import fs from 'fs';
-import {importBeatmap} from '../helpers/importBeatmap';
+import {importBeatmap} from './importBeatmap';
 import { pathExists } from './filesystem';
 
 const appData = Electron.remote.app.getAppPath();
@@ -78,6 +78,7 @@ function checkDownload() {
         download();
     }
 }
+
 
 /**
  * Checks if the beatmap is in the download queue.

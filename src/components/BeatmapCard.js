@@ -1,7 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {shell} from 'electron';
 import {formatSeconds} from '../helpers/utils';
-import {addToDownloadQueue, inQueue} from '../helpers/downloadBeatmap';
+import {addToDownloadQueue, inQueue} from '../helpers/DownloadHandler';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
 import LibraryContext from '../context/LibraryContext';
 import DownloadProgressContext from '../context/DownloadProgressContext';
