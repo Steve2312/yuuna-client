@@ -9,6 +9,7 @@ const preview = {
 }
 
 preview.audio.autoplay = true;
+preview.audio.volume = 0.24;
 
 const playPreview = (id) => {
     if (PlayerHandler.getPlayer().playing) {
@@ -22,6 +23,14 @@ const playPreview = (id) => {
     preview.audio.src = `https://b.ppy.sh/preview/${id}.mp3`;
     preview.id = id;
     notifyObservers();
+}
+
+const volume = (volume) => {
+    if (volume) {
+        preview.audio.volume = volume;
+    }
+
+    return preview.audio.volume;
 }
 
 const getPreview = () => {
@@ -68,4 +77,4 @@ const notifyObservers = () => {
     }
 }
 
-export default {playPreview, getPreview, pause, addObserver, removeObserver}
+export default {playPreview, getPreview, pause, volume, addObserver, removeObserver}

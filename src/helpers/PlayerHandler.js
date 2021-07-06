@@ -91,7 +91,7 @@ const seek = (time) => {
 const volume = (volume) => {
     if (volume) {
         player.audio.volume = volume;
-        notifyObservers();
+        PreviewHandler.volume(volume);
     }
 
     return player.audio.volume;
