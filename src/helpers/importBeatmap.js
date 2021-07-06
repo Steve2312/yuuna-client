@@ -49,8 +49,11 @@ export const importBeatmap = async (pipePath) => {
         createDirectory(songsPath);
     }
 
-    await Promise.all(mapsToImport.map(async (map) => {
+    for (let x = 0; x < mapsToImport.length; x++) {
+        const map = mapsToImport[x];
+
         const beatmapPath = await createDirectory(path.join(songsPath, map.id));
+
         const oldAudioPath = path.join(extractPath, map.audio);
         const newAudioPath = path.join(beatmapPath, map.audio);
         await copy(oldAudioPath, newAudioPath);
@@ -65,30 +68,34 @@ export const importBeatmap = async (pipePath) => {
 
         await download(coverURL, coverPath);
         await download(headerURL, headerPath);
+    }
 
-        deleteDirectory(extractPath);
-    }));
+    deleteDirectory(extractPath);
 
     updateLibrary();
 }
 
 function parseMapToObject(file) {
     const lines = file.split("\r\n");
-
     const data = {};
-
     var header;
-    lines.forEach(line => {
+
+    for (let x = 0; x < lines.length; x++) {
+        const line = lines[x];
         if (line) {
             if (line.startsWith("[") && line.endsWith("]")) {
                 header = line.substr(1, line.length - 2).toLowerCase();
                 data[header] = {};
-                return;
+                continue;
+            }
+
+            if (header == "hitobjects") {
+                continue;
             }
 
             if (!header) {
                 data["file_format"] = line;
-                return;
+                continue;
             }
 
             const value = parseLineOfMap(line);
@@ -106,7 +113,8 @@ function parseMapToObject(file) {
                 }
             }
         }
-    });
+    }
+
     return data;
 }
 
