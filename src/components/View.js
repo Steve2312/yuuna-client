@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Banner from "./Banner";
-import LibraryMenu from "./LibraryMenu";
 import Search from "./Search";
+import Library from './Library';
 
 function View(props) {
     const HOME = 0;
@@ -32,7 +32,7 @@ function View(props) {
     if (props.index === LIBRARY) {
         return <>
             <Banner key={LIBRARY} title="Library" banner="library"></Banner>
-            <LibraryMenu />
+            <Library />
         </>
     }
 

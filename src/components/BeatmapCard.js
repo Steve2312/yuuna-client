@@ -1,18 +1,19 @@
-import React, {useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {shell} from 'electron';
-import PreviewContext from '../context/PreviewContext';
 import {formatSeconds} from '../helpers/utils';
 import {addToDownloadQueue, inQueue} from '../helpers/downloadBeatmap';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
 import LibraryContext from '../context/LibraryContext';
 import DownloadProgressContext from '../context/DownloadProgressContext';
+import PreviewHandler from '../helpers/PreviewHandler';
 
 function BeatmapCard(props) {
-    const [preview, setPreview] = useContext(PreviewContext);
+    const [preview, setPreview] = useState(PreviewHandler.getPreview());
+
     const [library, setLibrary] = useContext(LibraryContext);
     const [downloadProgress, setDownloadProgress] = useContext(DownloadProgressContext);
 
-    const {artist, average_length, title, id, source, unique_id, creator, bpm, user_id} = props.beatmap;
+    const {artist, average_length, title, id, source, creator, bpm, user_id} = props.beatmap;
 
     const cover = {
         backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/list@2x.jpg"), url("${thumbnail}")`
@@ -44,9 +45,10 @@ function BeatmapCard(props) {
         shell.openExternal(`https://osu.ppy.sh/users/${user_id}`);
     }
 
-    function previewAudio() {
-        props.previewAudio(id);
-    }
+    useEffect(() => {
+        PreviewHandler.addObserver(setPreview);
+        return () => PreviewHandler.removeObserver(setPreview);
+    }, []);
 
     const playButtonClass = preview.id === id && preview.playing ? "fas fa-pause" : "fas fa-play";
     const cardClass = preview.id === id ? "card beatmapCardPlaying" : "card";
@@ -67,13 +69,13 @@ function BeatmapCard(props) {
     }
 
     return (
-        <div className="beatmapCard" onDoubleClick={previewAudio}>
+        <div className="beatmapCard" onDoubleClick={() => PreviewHandler.playPreview(id)}>
             <span className="index">
                 {props.index + 1}
             </span>
             <div className={cardClass}>
                 <div className="cover" style={cover}>
-                <span onClick={previewAudio}><i className={playButtonClass}></i></span>
+                <span onClick={() => PreviewHandler.playPreview(id)}><i className={playButtonClass}></i></span>
                 </div>
                 <div className="metadataWrapper">
                     <div className="header" style={header}/>
