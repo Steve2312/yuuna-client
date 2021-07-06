@@ -7,6 +7,7 @@ var setLibrary = null;
 
 export const updateLibrary = async () => {
     const library = await getLibrary();
+    console.log(library);
     setLibrary(library);
 }
 
@@ -29,7 +30,9 @@ export const getLibrary = async () => {
         }
     }
     console.timeEnd('Time to load library');
-    return library;
+    return library.sort((a, b) => {
+        return b.date_added - a.date_added;
+    });
 }
 
 export const setLibrarySetter = async (library) => {
