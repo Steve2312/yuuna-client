@@ -7,7 +7,7 @@ function DownloadQueueCard(props) {
     const [downloadData, setDownloadData] = useState(DownloadHandler.getDownloadData());
 
     const cover = {
-        backgroundImage: `url("https://b.ppy.sh/thumb/${id}l.jpg"), url("${thumbnail}")`
+        backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/list@2x.jpg"), url("${thumbnail}")`
     }
 
     function getDownloadInfo() {
