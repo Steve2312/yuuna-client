@@ -2,7 +2,7 @@ import Electron from "electron";
 import path from 'path';
 import request from "request";
 import fs from 'fs';
-import { unzip, getFilesInDirectory, readFile, pathExists, createDirectory, moveFile, createFile, deleteDirectory } from "./filesystem";
+import { unzip, getFilesInDirectory, readFile, pathExists, createDirectory, moveFile, createFile, deleteDirectory, copy, deleteFile } from "./filesystem";
 import { updateLibrary } from "./LibraryHandler";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -53,16 +53,18 @@ export const importBeatmap = async (pipePath) => {
         const beatmapPath = await createDirectory(path.join(songsPath, map.id));
         const oldAudioPath = path.join(extractPath, map.audio);
         const newAudioPath = path.join(beatmapPath, map.audio);
-        await moveFile(oldAudioPath, newAudioPath);
+        await copy(oldAudioPath, newAudioPath);
 
         const metadataPath = path.join(beatmapPath, "metadata.json");
         await createFile(JSON.stringify(map), metadataPath);
 
+        const coverURL = `https://assets.ppy.sh/beatmaps/${map.beatmapset_id}/covers/list@2x.jpg`;
+        const headerURL = `https://assets.ppy.sh/beatmaps/${map.beatmapset_id}/covers/card@2x.jpg`;
         const coverPath = path.join(beatmapPath, "cover.jpg");
-        request(`https://assets.ppy.sh/beatmaps/${map.beatmapset_id}/covers/list@2x.jpg`).pipe(fs.createWriteStream(coverPath));
-
         const headerPath = path.join(beatmapPath, "header.jpg");
-        request(`https://assets.ppy.sh/beatmaps/${map.beatmapset_id}/covers/card@2x.jpg`).pipe(fs.createWriteStream(headerPath));
+
+        await download(coverURL, coverPath);
+        await download(headerURL, headerPath);
 
         deleteDirectory(extractPath);
     }));
@@ -145,5 +147,16 @@ function getDuration(audioFilePath) {
             audio.remove();
             resolve(duration);
         }
+    });
+}
+
+function download(url, pipePath) {
+    return new Promise((resolve, reject) => {
+        request(url, (error, response, body) => {
+            if (response.statusCode == 403) {
+                deleteFile(pipePath);
+            }
+            resolve();
+        }).pipe(fs.createWriteStream(pipePath));
     });
 }
