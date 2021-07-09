@@ -141,8 +141,8 @@ function getIndexOfNextSong() {
 }
 
 function getIndexOfPreviousSong() {
-    const previousIndex = (getCurrentIndex() - 1) % player.playlist.length;
-    return previousIndex >= 0 ? previousIndex : player.playlist.length - 1;
+    const previousIndex = getCurrentIndex() - 1;
+    return previousIndex == -1 ? player.playlist.length + previousIndex : previousIndex;
 }
 
 function getCurrentIndex() {
