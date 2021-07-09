@@ -10,6 +10,7 @@ const observers = [];
 const player = {
     audio: new Audio(),
     playing: false,
+    shuffle: false,
 
     playlist_name: null,
     playlist: null,
@@ -58,6 +59,10 @@ const load = (playlist_name, playlist, index) => {
     player.title = title;
     player.beatmapset = beatmapset_id;
     player.id = id;
+
+    if (player.shuffle) {
+        shuffle();
+    }
 
     play();
 
@@ -154,4 +159,28 @@ function getCurrentIndex() {
     }
 }
 
-export default {load, play, pause, forward, reverse, togglePlayPause, seek, volume, addObserver, removeObserver, getPlayer}
+const toggleShuffle = () => {
+    player.shuffle ? unshuffle() : shuffle();
+    notifyObservers();
+}
+
+function shuffle() {
+    const currentIndex = getCurrentIndex();
+    const shuffled_playlist = player.playlist.filter((song) => song.index != currentIndex).sort(() => Math.random() - 0.5);
+    const currentPlaying = player.playlist[currentIndex];
+    shuffled_playlist.unshift(currentPlaying);
+    player.playlist = shuffled_playlist;
+    player.shuffle = true;
+    console.log(player.playlist);
+}
+
+function unshuffle() {
+    player.playlist = player.playlist.sort((a, b) => {
+        return a.index - b.index;
+    });
+    player.shuffle = false;
+
+    console.log(player.playlist);
+}
+
+export default {load, play, pause, forward, reverse, toggleShuffle, togglePlayPause, seek, volume, addObserver, removeObserver, getPlayer}

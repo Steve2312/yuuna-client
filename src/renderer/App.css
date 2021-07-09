@@ -401,6 +401,10 @@ html, body, #root {
   margin: 5px;
 }
 
+.playerControls > .active {
+  color: var(--accent_color);
+}
+
 .playerControls > span:hover {
   color: var(--accent_color);
 }

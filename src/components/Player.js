@@ -51,11 +51,12 @@ function Player() {
 
     // ClassNames that need to be changed
     const playButtonClass = player.playing ? "fas fa-pause" : "fas fa-play";
+    const shuffleButtonClass = player.shuffle ? "options active" : "options";
 
     return (<>
         <div className="playerControlsWrapper">
             <div className="playerControls">
-                <span className="options">
+                <span className={shuffleButtonClass} onClick={PlayerHandler.toggleShuffle}>
                     <i className="fas fa-random"></i>
                 </span>
                 <span onClick={PlayerHandler.reverse}>

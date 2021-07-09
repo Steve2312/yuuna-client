@@ -30,9 +30,7 @@ export const getLibrary = async () => {
         }
     }
     console.timeEnd('Time to load library');
-    return library.sort((a, b) => {
-        return b.date_added - a.date_added;
-    });
+    return library.sort((a, b) => (b.date_added - a.date_added)).map((song, index) => ({...song, index}));
 }
 
 export const setLibrarySetter = async (library) => {
