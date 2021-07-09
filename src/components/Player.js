@@ -58,13 +58,13 @@ function Player() {
                 <span className="options">
                     <i className="fas fa-random"></i>
                 </span>
-                <span>
+                <span onClick={PlayerHandler.reverse}>
                     <i className="fas fa-step-backward"></i>
                 </span>
                 <span onClick={PlayerHandler.togglePlayPause}>
                     <i className={playButtonClass}></i>
                 </span>
-                <span>
+                <span onClick={PlayerHandler.forward}>
                     <i className="fas fa-step-forward"></i>
                 </span>
                 <span className="options">

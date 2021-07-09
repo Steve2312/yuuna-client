@@ -17,7 +17,7 @@ const player = {
     artist: null,
     title: null,
     beatmapset: null,
-    id: null,
+    id: null
 }
 
 player.audio.volume = 0.24;
@@ -82,7 +82,7 @@ const togglePlayPause = () => {
 }
 
 const seek = (time) => {
-    if (time) {
+    if (time !== undefined) {
         player.audio.currentTime = time;
     }
     return player.audio.currentTime;
@@ -101,6 +101,21 @@ const getPlayer = () => {
     return player;
 }
 
+const forward = function () {
+    var index = getIndexOfNextSong();
+    load(player.playlist_name, player.playlist, index);
+}
+
+const reverse = function () {
+    if (player.audio.currentTime < 0.5) {
+        var index = getIndexOfPreviousSong();
+        load(player.playlist_name, player.playlist, index);
+        return;
+    }
+
+    seek(0);
+}
+
 const updatePlayingState = () => {
     player.playing = !player.audio.paused;
     notifyObservers();
@@ -115,20 +130,28 @@ player.audio.onplay = () => {
 };
 
 player.audio.onended = () => {
-    var index = getIndexOfNextSong(player.id);
-    load(player.playlist_name, player.playlist, getIndexOfNextSong(player.id));
-    if (index == 0) {
+    forward();
+    if(getCurrentIndex() == 0) {
         pause();
     }
 };
 
-function getIndexOfNextSong(id) {
+function getIndexOfNextSong() {
+    return (getCurrentIndex() + 1) % player.playlist.length;
+}
+
+function getIndexOfPreviousSong() {
+    const previousIndex = (getCurrentIndex() - 1) % player.playlist.length;
+    return previousIndex >= 0 ? previousIndex : player.playlist.length - 1;
+}
+
+function getCurrentIndex() {
     for (let x = 0; x < player.playlist.length; x++) {
         const song = player.playlist[x];
-        if(song.id == id) {
-            return (x + 1) % player.playlist.length;
+        if(song.id == player.id) {
+            return x;
         }
     }
 }
 
-export default {load, play, pause, togglePlayPause, seek, volume, addObserver, removeObserver, getPlayer}
+export default {load, play, pause, forward, reverse, togglePlayPause, seek, volume, addObserver, removeObserver, getPlayer}
