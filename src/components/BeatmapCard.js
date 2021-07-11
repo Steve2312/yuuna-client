@@ -73,7 +73,7 @@ function BeatmapCard(props) {
     }
 
     return (
-        <div className="beatmapCard" onDoubleClick={() => PreviewHandler.playPreview(id)}>
+        <div style={props.style} className="beatmapCard" onDoubleClick={() => PreviewHandler.playPreview(id)}>
             <span className="index">
                 {props.index + 1}
             </span>

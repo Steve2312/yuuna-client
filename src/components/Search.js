@@ -1,50 +1,87 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import SearchMenu from "./SearchMenu";
-import request from 'request';
 import BeatmapCard from './BeatmapCard';
+import SearchHandler from '../helpers/SearchHandler';
+import Banner from "./Banner";
 
 function Search() {
-    const [results, setResults] = useState();
+    /**
+     * Only render beatmapCard if visible
+    */
+    const [verticalPosition, setVerticalPosition] = useState(0);
+    const [viewHeight, setViewHeight] = useState(0);
+    const beatmapCardWrapper = useRef();
 
-    var fetchTimeout;
-    var fetchRequest;
-
-    function getLink(input, category) {
-        return encodeURI('https://beatconnect.io/api/search?token='+ process.env.BEATCONNECT_API_KEY + '&s=' + category + '&q=' + input);
-    }
-
-    function getResults(input, category) {
-        clearTimeout(fetchTimeout);
-        fetchTimeout = setTimeout(() => {
-            console.log("Timeout ended: " + input + " / " + category);
-            fetchRequest = request(getLink(input, category), (error, response, body) => {
-                setResults(JSON.parse(body));
-            })
-        }, 1000);
-    }
+    const prerenderCount = 7;
+    const componentHeight = 90;
 
     useEffect(() => {
-        if (!results) {
-            getResults("", "ranked");
-        }
-        console.log(results)
-        return (() => {
-            clearTimeout(fetchTimeout);
-            if (fetchRequest) fetchRequest.abort();
-        })
-    }, [results]);
+        const view = document.getElementsByClassName("viewWrapper")[0];
 
-    function getCards() {
-        if (results) {
-            return results.beatmaps.map((beatmap, index) =>
-                <BeatmapCard key={beatmap.id} beatmap={beatmap} index={index}/>
-            );
+        updateViewHeight();
+        view.addEventListener("scroll", updateVerticalPosition);
+        window.addEventListener("resize", updateViewHeight);
+
+        return() => {
+            view.removeEventListener("scroll", updateVerticalPosition);
+            window.removeEventListener("resize", updateViewHeight);
+        }
+    }, []);
+
+    function updateViewHeight() {
+        const {clientHeight} = document.getElementsByClassName("viewWrapper")[0];
+        setViewHeight(clientHeight);
+    }
+
+    function updateVerticalPosition(event) {
+        if (beatmapCardWrapper.current != null) {
+            const {offsetTop} = beatmapCardWrapper.current;
+            const {scrollTop} = event.target;
+            setVerticalPosition(scrollTop - offsetTop);
         }
     }
 
+
+    /**
+     * Search
+    */
+    const [search, setSearch] = useState(SearchHandler.getResults());
+    useEffect(() => {
+        const view = document.getElementsByClassName("viewWrapper")[0];
+        view.addEventListener("scroll", requestNextPage);
+
+        SearchHandler.addObserver(setSearch);
+        SearchHandler.search();
+
+        return () => {
+            view.removeEventListener("scroll", requestNextPage);
+
+            SearchHandler.removeObserver(setSearch);
+            SearchHandler.clearResults();
+        };
+    }, []);
+
+    function requestNextPage(event) {
+        const {scrollHeight, scrollTop, offsetHeight} = event.target;
+        if (scrollHeight - scrollTop - offsetHeight < 4000) {
+            SearchHandler.search();
+        }
+    }
+
+    const lowestBoundaryPixel = verticalPosition - (prerenderCount * componentHeight);
+    const highestBoundaryPixel = verticalPosition + viewHeight + (prerenderCount * componentHeight);
+    const beatmapCards = search.map((beatmap, index) => {
+        const topPosition = index * componentHeight;
+        if (topPosition >= lowestBoundaryPixel && topPosition <= highestBoundaryPixel) { 
+            return <BeatmapCard style={{top: topPosition}} key={beatmap.id} beatmap={beatmap} index={index}/>
+        }
+    });
+
     return <>
-        <SearchMenu getResults={getResults} />
-        {getCards()}
+        <SearchMenu />
+        <div className="beatmapCardWrapper" ref={beatmapCardWrapper} style={{height: search.length * componentHeight}}>
+            {beatmapCards}
+        </div>
     </>;
 }
 
