@@ -28,7 +28,7 @@ function SongCard(props) {
     }
 
     function playAudio() {
-        PlayerHandler.load("library", props.playlist, props.index);
+        PlayerHandler.loadFromPlaylist("library", props.playlist, props.index);
     }
 
     // Get updates from PlayerHandler by passing setPlayer;

@@ -41,10 +41,10 @@ const notifyObservers = () => {
     }
 }
 
-const load = (playlist_name, playlist, index) => {
-    // If the same song gets loaded toggle play and pause.
+const loadFromPlaylist = (playlist_name, playlist, index) => {
     const {artist, title, beatmapset_id, id, audio} = playlist[index];
 
+    // If the same song gets loaded toggle play and pause.
     if (id === player.id) {
         console.log("same id");
         togglePlayPause();
@@ -67,6 +67,22 @@ const load = (playlist_name, playlist, index) => {
     play();
 
     notifyObservers();
+}
+
+const load = (index) => {
+    const {artist, title, beatmapset_id, id, audio} = player.playlist[index];
+
+    player.audio.src = path.join(songsPath, id, audio);
+
+    player.artist = artist;
+    player.title = title;
+    player.beatmapset = beatmapset_id;
+    player.id = id;
+
+    play();
+
+    notifyObservers();
+
 }
 
 const play = () => {
@@ -108,7 +124,7 @@ const getPlayer = () => {
 
 const forward = function () {
     var index = getIndexOfNextSong();
-    load(player.playlist_name, player.playlist, index);
+    load(index);
 }
 
 const reverse = function () {
@@ -183,4 +199,4 @@ function unshuffle() {
     console.log(player.playlist);
 }
 
-export default {load, play, pause, forward, reverse, toggleShuffle, togglePlayPause, seek, volume, addObserver, removeObserver, getPlayer}
+export default {load, loadFromPlaylist, play, pause, forward, reverse, toggleShuffle, togglePlayPause, seek, volume, addObserver, removeObserver, getPlayer}
