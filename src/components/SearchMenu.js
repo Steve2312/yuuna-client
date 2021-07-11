@@ -1,4 +1,5 @@
 import React, { createRef } from 'react';
+import SearchHandler from '../helpers/SearchHandler';
 
 function SearchMenu(props) {
     const inputRef = createRef();
@@ -7,7 +8,7 @@ function SearchMenu(props) {
     function handleInput() {
         var input = inputRef.current.value;
         var category = categoryRef.current.value;
-        props.getResults(input, category);
+        SearchHandler.search(input, category);
     }
     return (
         <div className="searchMenu">
