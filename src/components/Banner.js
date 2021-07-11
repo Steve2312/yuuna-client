@@ -61,7 +61,7 @@ function Banner(props) {
         return() => {
             viewWrapper.removeEventListener("scroll", bannerHandler);
         }
-    });
+    }, [bannerRef]);
     
     return <>
         <div className={miniBannerClass} style={backgroundImage} ref={miniBannerRef}>
