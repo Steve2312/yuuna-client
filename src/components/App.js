@@ -14,7 +14,7 @@ import { setLibrarySetter, updateLibrary } from '../helpers/LibraryHandler';
 
 function App() {
   // View switcher
-  const [view, setView] = useState(3);
+  const [view, setView] = useState(1);
 
   // Show queue right hand side of the program
   const [showQueue, setShowQueue] = useState(true);
@@ -42,10 +42,10 @@ function App() {
       </div>
       <LibraryContext.Provider value={[library, setLibrary]}>
         <ShowQueueContext.Provider value={[showQueue, setShowQueue]}>
-          <div className={viewWrapperClass}>
+          <div className={viewWrapperClass} key={view}>
             <View index={view}/>
-            <DownloadQueue />
           </div>
+          <DownloadQueue />
         </ShowQueueContext.Provider>
         <div className="playerWrapper">
           <Player />
