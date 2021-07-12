@@ -41,18 +41,15 @@ const notifyObservers = () => {
     }
 }
 
-const loadFromPlaylist = (playlist_name, playlist, index) => {
+const loadFromPlaylist = async (playlist_name, playlist, index) => {
     const {artist, title, beatmapset_id, id, audio} = playlist[index];
-
     // If the same song gets loaded toggle play and pause.
     if (id === player.id) {
-        console.log("same id");
         togglePlayPause();
         return;
     }
     
-    player.audio.src = path.join(songsPath, id, audio);
-
+    player.audio = await getAudio(path.join(songsPath, id, audio));
     player.playlist_name = playlist_name;
     player.playlist = playlist;
     player.artist = artist;
@@ -65,15 +62,14 @@ const loadFromPlaylist = (playlist_name, playlist, index) => {
     }
 
     play();
-
+    updateMediaSession();
     notifyObservers();
 }
 
-const load = (index) => {
+const load = async (index) => {
     const {artist, title, beatmapset_id, id, audio} = player.playlist[index];
 
-    player.audio.src = path.join(songsPath, id, audio);
-
+    player.audio = await getAudio(path.join(songsPath, id, audio));
     player.artist = artist;
     player.title = title;
     player.beatmapset = beatmapset_id;
@@ -81,15 +77,56 @@ const load = (index) => {
 
     play();
 
+    updateMediaSession();
     notifyObservers();
 
 }
 
-const play = () => {
+function getAudio(src) {
+    const audio = new Audio(src);
+    audio.volume = volume();
+
+    audio.onpause = () => {
+        navigator.mediaSession.playbackState = "paused";
+        updatePlayingState();
+    };
+    
+    audio.onplay = () => {
+        navigator.mediaSession.playbackState = "playing";
+        updatePlayingState();
+    };
+    
+    audio.onended = () => {
+        forward();
+        if(getCurrentIndex() == 0) {
+            pause();
+        }
+    };
+
+    if (!player.audio.paused) {
+        pause();
+    }
+
+    return new Promise((resolve, reject) => {
+        audio.src = src;
+        audio.oncanplay = () => {
+            resolve(audio);
+        }
+        /**
+         * On error keep forwarding till there is a song that it can play
+         */
+        audio.onerror = () => {
+            console.log("Error loading the song");
+            resolve(player.audio);
+        }
+    });
+}
+
+const play = async () => {
     if (PreviewHandler.getPreview().playing) {
         PreviewHandler.pause();
     }
-    player.audio.play();
+    await player.audio.play();
 }
 
 const pause = () => {
@@ -130,7 +167,7 @@ const forward = function () {
 const reverse = function () {
     if (player.audio.currentTime < 0.5) {
         var index = getIndexOfPreviousSong();
-        load(player.playlist_name, player.playlist, index);
+        load(index);
         return;
     }
 
@@ -141,21 +178,6 @@ const updatePlayingState = () => {
     player.playing = !player.audio.paused;
     notifyObservers();
 }
-
-player.audio.onpause = () => {
-    updatePlayingState();
-};
-
-player.audio.onplay = () => {
-    updatePlayingState();
-};
-
-player.audio.onended = () => {
-    forward();
-    if(getCurrentIndex() == 0) {
-        pause();
-    }
-};
 
 function getIndexOfNextSong() {
     return (getCurrentIndex() + 1) % player.playlist.length;
@@ -198,5 +220,26 @@ function unshuffle() {
 
     console.log(player.playlist);
 }
+
+async function updateMediaSession() {
+    const {title, artist, id} = player;
+    const coverPath = path.join(songsPath, id, "cover.jpg");
+    const coverBlob = URL.createObjectURL(await (await fetch(coverPath)).blob());
+    if ("mediaSession" in navigator) {
+        const mediaMetadata = new MediaMetadata({
+            title,
+            artist,
+            artwork: [{src: coverBlob, sizes: '512x512', type: 'image/jpeg'}]
+        });
+
+        navigator.mediaSession.metadata = mediaMetadata;
+    }
+}
+
+navigator.mediaSession.setActionHandler("previoustrack", reverse);
+navigator.mediaSession.setActionHandler("nexttrack", forward);
+navigator.mediaSession.setActionHandler("play", play);
+navigator.mediaSession.setActionHandler("pause", pause);
+
 
 export default {load, loadFromPlaylist, play, pause, forward, reverse, toggleShuffle, togglePlayPause, seek, volume, addObserver, removeObserver, getPlayer}
