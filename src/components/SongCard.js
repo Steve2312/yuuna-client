@@ -41,7 +41,7 @@ function SongCard(props) {
     const cardClass = player.id == id ? "card beatmapCardPlaying" : "card";
 
     return (
-        <div className="beatmapCard" style={props.style} onDoubleClick={playAudio}>
+        <div className="beatmapCard" style={props.style}>
             <span className="index">
                 {props.index + 1}
             </span>
@@ -49,7 +49,7 @@ function SongCard(props) {
                 <div className="cover" style={cover}>
                 <span onClick={playAudio}><i className={playButtonClass}></i></span>
                 </div>
-                <div className="metadataWrapper">
+                <div className="metadataWrapper" onDoubleClick={playAudio}>
                     <div className="header" style={header}/>
                     <div className="metadata">
                         <span className="title">{title}</span>
