@@ -66,19 +66,26 @@ const loadFromPlaylist = async (playlist_name, playlist, index) => {
     notifyObservers();
 }
 
+var isLoading = false;
 const load = async (index) => {
-    const {artist, title, beatmapset_id, id, audio} = player.playlist[index];
+    if (!isLoading) {
+        isLoading = true;
+        const {artist, title, beatmapset_id, id, audio} = player.playlist[index];
 
-    player.audio = await getAudio(path.join(songsPath, id, audio));
-    player.artist = artist;
-    player.title = title;
-    player.beatmapset = beatmapset_id;
-    player.id = id;
-
-    play();
-
-    updateMediaSession();
-    notifyObservers();
+        player.audio = await getAudio(path.join(songsPath, id, audio));
+        player.artist = artist;
+        player.title = title;
+        player.beatmapset = beatmapset_id;
+        player.id = id;
+    
+        if (index != 0) {
+            play();
+        }
+    
+        updateMediaSession();
+        notifyObservers();
+        isLoading = false;
+    }
 
 }
 
@@ -98,9 +105,6 @@ function getAudio(src) {
     
     audio.onended = () => {
         forward();
-        if(getCurrentIndex() == 0) {
-            pause();
-        }
     };
 
     if (!player.audio.paused) {
