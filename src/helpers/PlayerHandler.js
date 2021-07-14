@@ -78,10 +78,6 @@ const load = async (index) => {
         player.beatmapset = beatmapset_id;
         player.id = id;
     
-        if (index != 0) {
-            play();
-        }
-    
         updateMediaSession();
         notifyObservers();
         isLoading = false;
@@ -103,17 +99,20 @@ function getAudio(src) {
         updatePlayingState();
     };
     
-    audio.onended = () => {
-        forward();
+    audio.onended = async () => {
+        await forward();
+        if (getCurrentIndex() == 0) {
+            pause();
+        }
     };
-
-    if (!player.audio.paused) {
-        pause();
-    }
 
     return new Promise((resolve, reject) => {
         audio.src = src;
         audio.oncanplay = () => {
+            const oldAudio = player.audio;
+            oldAudio.onpause = null;
+            oldAudio.pause();
+            audio.play();
             resolve(audio);
         }
         /**
@@ -163,9 +162,9 @@ const getPlayer = () => {
     return player;
 }
 
-const forward = function () {
+const forward = async function () {
     var index = getIndexOfNextSong();
-    load(index);
+    await load(index);
 }
 
 const reverse = function () {
