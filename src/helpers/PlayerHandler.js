@@ -108,20 +108,20 @@ function getAudio(src) {
 
     return new Promise((resolve, reject) => {
         audio.src = src;
-        audio.oncanplay = () => {
+        audio.addEventListener("canplay", () => {
             const oldAudio = player.audio;
             oldAudio.onpause = null;
             oldAudio.pause();
             audio.play();
             resolve(audio);
-        }
+        }, {once: true});
         /**
          * On error keep forwarding till there is a song that it can play
          */
-        audio.onerror = () => {
+        audio.addEventListener("error", () => {
             console.log("Error loading the song");
             resolve(player.audio);
-        }
+        }, {once: true});
     });
 }
 
