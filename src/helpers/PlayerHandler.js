@@ -11,6 +11,7 @@ const player = {
     audio: new Audio(),
     playing: false,
     shuffle: false,
+    muted: false,
 
     playlist_name: null,
     playlist: null,
@@ -150,9 +151,19 @@ const seek = (time) => {
 }
 
 const volume = (volume) => {
-    if (volume) {
+    if (volume !== undefined) {
         player.audio.volume = volume;
         PreviewHandler.volume(volume);
+
+        if (player.muted) {
+            player.muted = false;
+        }
+
+        if (volume == 0) {
+            player.muted = true;
+        }
+
+        notifyObservers();
     }
 
     return player.audio.volume;
@@ -239,10 +250,27 @@ async function updateMediaSession() {
     }
 }
 
+var volumeBeforeMute = volume();
+const mute = (mute) => {
+    if (mute) {
+        volumeBeforeMute = volume();
+        volume(0);
+        player.muted = true;
+    } else {
+        volume(volumeBeforeMute);
+        player.muted = false;
+    }
+    notifyObservers();
+}
+
+const toggleMute = () => {
+    mute(!player.muted);
+}
+
 navigator.mediaSession.setActionHandler("previoustrack", reverse);
 navigator.mediaSession.setActionHandler("nexttrack", forward);
 navigator.mediaSession.setActionHandler("play", play);
 navigator.mediaSession.setActionHandler("pause", pause);
 
 
-export default {load, loadFromPlaylist, play, pause, forward, reverse, toggleShuffle, togglePlayPause, seek, volume, addObserver, removeObserver, getPlayer}
+export default {toggleMute, mute, load, loadFromPlaylist, play, pause, forward, reverse, toggleShuffle, togglePlayPause, seek, volume, addObserver, removeObserver, getPlayer}

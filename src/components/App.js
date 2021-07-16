@@ -11,6 +11,7 @@ import Player from './Player';
 import ShowQueueContext from '../context/ShowQueueContext';
 import LibraryContext from '../context/LibraryContext';
 import { setLibrarySetter, updateLibrary } from '../helpers/LibraryHandler';
+import PlayerBar from './PlayerBar';
 
 function App() {
   // View switcher
@@ -48,7 +49,7 @@ function App() {
           <DownloadQueue />
         </ShowQueueContext.Provider>
         <div className="playerWrapper">
-          <Player />
+          <PlayerBar />
         </div>
       </LibraryContext.Provider>
     </div>
