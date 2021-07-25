@@ -1,7 +1,14 @@
+/* Player */
+
 .playerWrapper {
+    grid-area: player;
+    width: 100%;
+    height: 100%;
+    background-color: #292929;
     display: grid;
     grid-template-columns: minmax(275px, 1fr) minmax(200px, 600px) minmax(275px, 1fr);
-}
+    align-items: center;
+  }
 
 .playerWrapper > * {
     width: 100%;

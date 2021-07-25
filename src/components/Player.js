@@ -4,7 +4,7 @@ import Electron, {shell} from 'electron';
 import path from 'path';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
 import PlayerHandler from '../helpers/PlayerHandler';
-import '../styles/PlayerBar.css';
+import '../styles/Player.css';
 
 const appData = Electron.remote.app.getAppPath();
 const songsPath = path.join(appData, "songs");
