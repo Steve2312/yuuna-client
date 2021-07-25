@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import thumbnail from '../assets/images/no_thumbnail.jpg';
-import DownloadHandler from '../helpers/DownloadHandler';
+import thumbnail from '../../assets/images/no_thumbnail.jpg';
+import DownloadHandler from '../../helpers/DownloadHandler';
 
-function DownloadQueueCard(props) {
+function DownloadsCard(props) {
     const {id, title, artist} = props.beatmap;
     const [downloadData, setDownloadData] = useState(DownloadHandler.getDownloadData());
 
@@ -42,4 +42,4 @@ function DownloadQueueCard(props) {
     );
 }
 
-export default DownloadQueueCard;
+export default DownloadsCard;

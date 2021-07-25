@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import '../renderer/App.css';
-import '../assets/fa/css/all.css';
-import Toolbar from './Toolbar';
-import DownloadQueue from './DownloadQueue';
-import Watermark from './Watermark';
-import NavigationButtons from './NavigationButtons';
-import PlaylistButtons from './PlaylistButtons';
-import View from './View';
-import Player from './Player';
+
 import ShowQueueContext from '../context/ShowQueueContext';
 import LibraryContext from '../context/LibraryContext';
 import { setLibrarySetter, updateLibrary } from '../helpers/LibraryHandler';
-import PlayerBar from './PlayerBar';
+
+import Toolbar from './Toolbar';
+import Downloads from './download/Downloads';
+import Watermark from './Watermark';
+import NavigationButtons from './navigation/NavigationButtons';
+import PlaylistButtons from './navigation/PlaylistButtons';
+import View from './View';
+import Player from './Player';
+
+import '../renderer/App.css';
+import '../assets/fa/css/all.css';
 
 function App() {
   // View switcher
@@ -46,10 +48,10 @@ function App() {
           <div className={viewWrapperClass} key={view}>
             <View index={view}/>
           </div>
-          <DownloadQueue />
+          <Downloads />
         </ShowQueueContext.Provider>
         <div className="playerWrapper">
-          <PlayerBar />
+          <Player />
         </div>
       </LibraryContext.Provider>
     </div>

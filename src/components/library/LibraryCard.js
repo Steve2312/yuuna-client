@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import path from 'path';
 import Electron, {shell} from 'electron';
-import {formatSeconds} from '../helpers/utils';
-import thumbnail from '../assets/images/no_thumbnail.jpg';
-import PlayerHandler from '../helpers/PlayerHandler';
+import {formatSeconds} from '../../helpers/utils';
+import thumbnail from '../../assets/images/no_thumbnail.jpg';
+import PlayerHandler from '../../helpers/PlayerHandler';
 
 const appData = Electron.remote.app.getAppPath();
 const songsPath = path.join(appData, "songs");
 
-function SongCard(props) {
+function LibraryCard(props) {
     const [player, setPlayer] = useState(PlayerHandler.getPlayer());
     const {artist, duration, title, id, source, beatmapset_id, creator, bpm} = props.beatmap;
 
@@ -72,4 +72,4 @@ function SongCard(props) {
     );
 }
 
-export default SongCard;
+export default LibraryCard;

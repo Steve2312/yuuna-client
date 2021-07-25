@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import LibraryContext from '../context/LibraryContext';
+import LibraryContext from '../../context/LibraryContext';
 import LibraryMenu from './LibraryMenu'
-import SongCard from './SongCard';
+import LibraryCard from './LibraryCard';
 
 function Library() {
     const [library, setLibrary] = useContext(LibraryContext);
@@ -46,7 +46,7 @@ function Library() {
     const beatmapCards = library.map((beatmap, index) => {
         const topPosition = index * componentHeight;
         if (topPosition >= lowestBoundaryPixel && topPosition <= highestBoundaryPixel) { 
-            return <SongCard style={{top: topPosition}} key={beatmap.id} beatmap={beatmap} index={index} playlist={library}/>
+            return <LibraryCard style={{top: topPosition}} key={beatmap.id} beatmap={beatmap} index={index} playlist={library}/>
         }
     });
 

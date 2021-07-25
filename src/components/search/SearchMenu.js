@@ -1,5 +1,5 @@
 import React, { createRef } from 'react';
-import SearchHandler from '../helpers/SearchHandler';
+import SearchHandler from '../../helpers/SearchHandler';
 
 function SearchMenu(props) {
     const inputRef = createRef();
@@ -8,11 +8,11 @@ function SearchMenu(props) {
     function handleInput() {
         var input = inputRef.current.value;
         var category = categoryRef.current.value;
-        SearchHandler.search(input, category);
+        SearchHandler.find(input, category);
     }
     return (
         <div className="searchMenu">
-                <input ref={inputRef} onChange={handleInput} id="searchInput" type="search" placeholder="Search for name, artist, beatmap creator, ID or Tags" />
+                <input ref={inputRef} onChange={handleInput} id="searchInput" type="search" placeholder="Search for name, artist, creator, ID, etc." />
                 <select ref={categoryRef} onChange={handleInput} id="searchCategory">
                     <option value="ranked">Ranked</option>
                     <option value="all">All</option>

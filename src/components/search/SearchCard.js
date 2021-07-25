@@ -1,11 +1,11 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {shell} from 'electron';
-import {formatSeconds} from '../helpers/utils';
-import {addToDownloadQueue, inQueue} from '../helpers/DownloadHandler';
-import thumbnail from '../assets/images/no_thumbnail.jpg';
-import LibraryContext from '../context/LibraryContext';
-import DownloadHandler from '../helpers/DownloadHandler';
-import PreviewHandler from '../helpers/PreviewHandler';
+import {formatSeconds} from '../../helpers/utils';
+import {addToDownloadQueue, inQueue} from '../../helpers/DownloadHandler';
+import thumbnail from '../../assets/images/no_thumbnail.jpg';
+import LibraryContext from '../../context/LibraryContext';
+import DownloadHandler from '../../helpers/DownloadHandler';
+import PreviewHandler from '../../helpers/PreviewHandler';
 
 function BeatmapCard(props) {
     const [preview, setPreview] = useState(PreviewHandler.getPreview());

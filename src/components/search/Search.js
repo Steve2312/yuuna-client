@@ -1,16 +1,15 @@
 import React, {useState, useEffect, useRef} from 'react';
 import SearchMenu from "./SearchMenu";
-import BeatmapCard from './BeatmapCard';
-import SearchHandler from '../helpers/SearchHandler';
-import Banner from "./Banner";
+import SearchCard from './SearchCard';
+import SearchHandler from '../../helpers/SearchHandler';
 
 function Search() {
     /**
-     * Only render beatmapCard if visible
+     * Only render SearchCard if visible
     */
     const [verticalPosition, setVerticalPosition] = useState(0);
     const [viewHeight, setViewHeight] = useState(0);
-    const beatmapCardWrapper = useRef();
+    const searchCardWrapper = useRef();
 
     const prerenderCount = 7;
     const componentHeight = 90;
@@ -34,8 +33,8 @@ function Search() {
     }
 
     function updateVerticalPosition(event) {
-        if (beatmapCardWrapper.current != null) {
-            const {offsetTop} = beatmapCardWrapper.current;
+        if (searchCardWrapper.current != null) {
+            const {offsetTop} = searchCardWrapper.current;
             const {scrollTop} = event.target;
             setVerticalPosition(scrollTop - offsetTop);
         }
@@ -45,13 +44,12 @@ function Search() {
     /**
      * Search
     */
-    const [search, setSearch] = useState(SearchHandler.getResults());
+    const [search, setSearch] = useState(SearchHandler.getSearch());
     useEffect(() => {
         const view = document.getElementsByClassName("viewWrapper")[0];
         view.addEventListener("scroll", requestNextPage);
-
         SearchHandler.addObserver(setSearch);
-        SearchHandler.search();
+        SearchHandler.find();
 
         return () => {
             view.removeEventListener("scroll", requestNextPage);
@@ -63,25 +61,36 @@ function Search() {
 
     function requestNextPage(event) {
         const {scrollHeight, scrollTop, offsetHeight} = event.target;
-        if (scrollHeight - scrollTop - offsetHeight < 4000) {
-            SearchHandler.search();
+        if (scrollHeight - scrollTop - offsetHeight < 4000 && !search.endOfPage) {
+            SearchHandler.find();
         }
     }
 
     const lowestBoundaryPixel = verticalPosition - (prerenderCount * componentHeight);
     const highestBoundaryPixel = verticalPosition + viewHeight + (prerenderCount * componentHeight);
-    const beatmapCards = search.map((beatmap, index) => {
+    const beatmapCards = search.results.map((beatmap, index) => {
         const topPosition = index * componentHeight;
         if (topPosition >= lowestBoundaryPixel && topPosition <= highestBoundaryPixel) { 
-            return <BeatmapCard style={{top: topPosition}} key={beatmap.id} beatmap={beatmap} index={index}/>
+            return <SearchCard style={{top: topPosition}} key={beatmap.id} beatmap={beatmap} index={index}/>
         }
     });
 
+    const getEndPageMessage = () => {
+        if (search.endOfPage) {
+            if (search.results.length > 0) {
+                return "No more results...(╥_╥)";
+            }
+            return "No results...( ; ω ; )"
+        }
+        return "";
+    }
+
     return <>
         <SearchMenu />
-        <div className="beatmapCardWrapper" ref={beatmapCardWrapper} style={{height: search.length * componentHeight}}>
+        <div className="beatmapCardWrapper" ref={searchCardWrapper} style={{height: search.results.length * componentHeight}}>
             {beatmapCards}
         </div>
+        <span className="endPage">{getEndPageMessage()}</span>
     </>;
 }
 

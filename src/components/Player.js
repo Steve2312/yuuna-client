@@ -1,21 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {formatSeconds} from '../helpers/utils';
-import Electron from 'electron';
+import Electron, {shell} from 'electron';
 import path from 'path';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
 import PlayerHandler from '../helpers/PlayerHandler';
+import '../styles/PlayerBar.css';
 
 const appData = Electron.remote.app.getAppPath();
 const songsPath = path.join(appData, "songs");
 
-function Player() {
+function PlayerBar() {
     const [player, setPlayer] = useState(PlayerHandler.getPlayer());
-
     const [currentTime, setCurrentTime] = useState(0);
     const [drag, setDrag] = useState(false);
 
+    const forceUpdate = useState(0)[1];
+
     const cover = {
         backgroundImage: `url("${path.join(songsPath, player.id ? player.id : "", "cover.jpg").toString().replaceAll("\\", "/")}"), url("${thumbnail}")`
+    }
+
+    function openBeatmapPage() {
+        shell.openExternal(`https://osu.ppy.sh/beatmapsets/${player.beatmapset}`);
     }
 
     function getDuration() {
@@ -35,12 +41,27 @@ function Player() {
         PlayerHandler.seek(currentTime);
     }
 
+    function handleVolume(event) {
+        const volume = event.target.value;
+        forceUpdate(volume);
+        PlayerHandler.volume(volume);
+    }
+
+    function playbackRate() {
+        const rate = player.audio.playbackRate;
+        if (rate == 1.0) {
+            player.audio.playbackRate = 1.5;
+        } else {
+            player.audio.playbackRate = 1.0;
+        }
+    }
+
     useEffect(() => {
         const interval = setInterval(() => {
             if(!drag) {
                 setCurrentTime(PlayerHandler.seek());
             }
-        }, 500);
+        }, 200);
         return () => clearInterval(interval);
     }, [drag]);
 
@@ -51,11 +72,35 @@ function Player() {
 
     // ClassNames that need to be changed
     const playButtonClass = player.playing ? "fas fa-pause" : "fas fa-play";
-    const shuffleButtonClass = player.shuffle ? "options active" : "options";
+    const shuffleButtonClass = player.shuffle ? "option active" : "option";
 
-    return (<>
-        <div className="playerControlsWrapper">
-            <div className="playerControls">
+    function getVolumeIconClass() {
+        const volume = PlayerHandler.volume();
+        if (volume == 0) {
+            return "fas fa-volume-mute";
+        }
+
+        if (volume < 0.45) {
+            return "fas fa-volume-down";
+        }
+
+        if (volume >= 0.45) {
+            return "fas fa-volume-up";
+        }
+    }
+
+    return <>
+        <div className="playerData">
+            <div className="cover" style={cover}></div>
+            <div>
+                <span className="artist">{player.artist}</span>
+                <span className="title">{player.title}</span>
+                <span className="beatmapsetid">BEATMAPSET ID: <span onClick={openBeatmapPage}>{player.beatmapset}</span></span>
+            </div>
+        </div>
+
+        <div className="playerControl">
+            <div className="buttons">
                 <span className={shuffleButtonClass} onClick={PlayerHandler.toggleShuffle}>
                     <i className="fas fa-random"></i>
                 </span>
@@ -68,34 +113,30 @@ function Player() {
                 <span onClick={PlayerHandler.forward}>
                     <i className="fas fa-step-forward"></i>
                 </span>
-                <span className="options">
+                <span className="option">
                     <i className="fas fa-redo-alt"></i>
                 </span>
             </div>
-            <div className="playerVolume">
-                <input type="range" min="0" step="0.01" max="0.52" defaultValue={PlayerHandler.volume()} onChange={(event) => PlayerHandler.volume(event.target.value)} />
+            <div className="slider">
+                <input type="range" min="0" max={getDuration()} value={Math.round(currentTime)} onChange={handleDrag} onMouseDown={() => setDrag(true)} onMouseUp={seek}/>
+            </div>
+            <div className="range">
+                <span>{formatSeconds(currentTime)}</span>
+                <span>{formatSeconds(player.audio.duration)}</span>
             </div>
         </div>
-        <div className="playerDataWrapper">
-            <div className="cover" style={cover}></div>
 
-            <div className="playerMetaDataWrapper">
-
-                <div className="playerMetaData">
-                    <span className="artist">{player.artist}</span>
-                    <span className="title">{player.title}</span>
-                </div>
-
-                <div className="playerTimeControl">
-                    <div className="time">{formatSeconds(currentTime)}</div>
-                    <div className="playerSlider">
-                        <input type="range" min="0" max={getDuration()} value={Math.round(currentTime)} onChange={handleDrag} onMouseDown={() => setDrag(true)} onMouseUp={seek}/>
-                    </div>
-                    <div className="time">{formatSeconds(player.audio.duration)}</div>
-                </div>
+        <div className="playerOptions">
+            <span onClick={() => playbackRate(1.5)}>x1.0</span>
+            <span className="volumeIcon" onClick={PlayerHandler.toggleMute}>
+                <i className={getVolumeIconClass()}></i>
+            </span>
+            <div className="volume">
+                <input type="range" min="0" step="0.01" max="0.52" value={PlayerHandler.volume()} onChange={handleVolume} />
             </div>
+            <span className="icon"><i className="fas fa-poll-h"></i></span>
         </div>
-    </>);
+    </>;
 }
 
-export default Player;
+export default PlayerBar;

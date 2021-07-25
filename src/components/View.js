@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Banner from "./Banner";
-import Search from "./Search";
-import Library from './Library';
+import Search from "./search/Search";
+import Library from './library/Library';
 
 function View(props) {
     const HOME = 0;

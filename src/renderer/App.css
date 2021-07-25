@@ -13,7 +13,7 @@
   --accent_color: #f28482;
   --highlight_accent: #f29d9b;
   --red: #f04747;
-  --banner-overlay: #0c0c0c8f;
+  --banner-overlay: #00000054;
 }
 
 @font-face {
@@ -117,7 +117,6 @@ html, body, #root {
 
 ::-webkit-scrollbar-track {
   background: var(--bg_3_color);
-  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -134,7 +133,7 @@ html, body, #root {
 .watermark {
   display: flex;
   align-items: center;
-  margin: 10px;
+  margin: 10px 20px;
   background-color: var(--bg_2_color);
   border-radius: 10px;
   width: 100px;
@@ -208,6 +207,7 @@ html, body, #root {
   overflow-x: hidden;
   overflow-y: scroll;
   transition: width .5s cubic-bezier(.8,.18,.22,.96);
+  border-radius: 5px 0 0 0;
 }
 
 .viewWrapperShrink {
@@ -216,62 +216,87 @@ html, body, #root {
 
 /* Banner */
 
-.banner {
+.bannerWrapper {
+  position: relative;
   height: calc(15vw + 10vh);
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bannerWrapper h1 {
+  position: relative;
+  margin: 20px;
+  text-shadow: 6px 5px 13px #000000a1;
+  z-index: 10;
+}
+
+.banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-position: top;
   background-repeat: no-repeat;
   background-size: cover;
-  display: flex;
-  align-items: flex-end;
   transition: height 1s cubic-bezier(.8,.18,.22,.96);
 }
 
-.banner h1 {
-  margin: 20px;
-  text-shadow: 6px 5px 13px #000000a1;
-}
-
 /* MiniBanner */
-
-.miniBanner {
+.miniBannerWrapper {
   position: fixed;
-  top: 0px;
+  top: 50px;
+  z-index: 500;
   transform: translateY(-25px);
   width: calc(100% - 268px);
   height: 50px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0px 14px 16px -15px rgb(0, 0, 0, 63%);
-  transition: top .5s cubic-bezier(.8,.18,.22,.96), box-shadow .5s cubic-bezier(.8,.18,.22,.96), width .5s cubic-bezier(.8,.18,.22,.96);
+  transition: opacity .25s cubic-bezier(.8,.18,.22,.96), box-shadow .5s cubic-bezier(.8,.18,.22,.96), width .5s cubic-bezier(.8,.18,.22,.96);
+  overflow: hidden;
+  border-radius: 5px 0 0 0;
+}
+
+.miniBanner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transition: opacity .25s cubic-bezier(.8,.18,.22,.96), box-shadow .5s cubic-bezier(.8,.18,.22,.96), width .5s cubic-bezier(.8,.18,.22,.96);
   overflow: hidden;
   box-sizing: border-box;
   border-bottom: 1px solid var(--bg_4_color);
+  filter: blur(8px);
+  transform: scale(3);
 }
 
-.miniBanner p {
+.miniBannerWrapper p {
+  position: relative;
+  z-index: 10;
   margin: 20px;
   font-size: 17px;
   text-shadow: 6px 5px 13px #000000a1;
+  transition: transform .5s cubic-bezier(.8,.18,.22,.96), opacity .5s cubic-bezier(.8,.18,.22,.96);
 }
 
-.miniBanner span {
+.miniBannerWrapper span {
+  position: relative;
+  z-index: 10;
   margin: 20px;
   font-size: 13px;
   text-shadow: 6px 5px 13px #000000a1;
+  transition: transform .5s cubic-bezier(.8,.18,.22,.96), opacity .5s cubic-bezier(.8,.18,.22,.96);
 }
 
-.miniBanner span:hover {
+.miniBannerWrapper span:hover {
   text-decoration: underline;
   cursor: pointer;
-}
-
-.showMiniBanner {
-  top: 50px;
-  z-index: 500;
 }
 
 .miniBannerShrink {
@@ -323,7 +348,6 @@ html, body, #root {
   align-items: center;
   justify-content: space-between;
   padding: 0 5px;
-  border: 1px solid var(--bg_1_color);
   box-shadow: 1px 4px 6px 0px var(--bg_1_color);
 }
 
@@ -355,6 +379,15 @@ html, body, #root {
   border-radius: 5px;
   background-color: var(--bg_1_color);
   cursor: pointer;
+}
+
+.endPage {
+  display: block;
+  text-align: center;
+  font-family: NotoBold;
+  font-size: 10px;
+  color: var(--subject_color);
+  margin-bottom: 15px;
 }
 
 /* Player */
@@ -754,7 +787,7 @@ html, body, #root {
 }
 
 .beatmapCard:hover .cover{
-  box-shadow:inset 0 0 0 2000px rgba(0, 0, 0, 0.6);
+  box-shadow: 4px 0px 7px -3px black, inset 0 0 0 2000px rgba(0, 0, 0, 0.6);
 }
 
 .beatmapCard > .card > .cover > span {
@@ -879,7 +912,7 @@ html, body, #root {
 }
 
 .beatmapCardPlaying > .cover{
-  box-shadow:inset 0 0 0 2000px rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 4px 0px 7px -3px black, inset 0 0 0 2000px rgba(0, 0, 0, 0.6) !important;
 }
 
 .beatmapCardPlaying{

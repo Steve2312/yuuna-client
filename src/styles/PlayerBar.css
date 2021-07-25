@@ -1,7 +1,6 @@
 .playerWrapper {
     display: grid;
-    grid-template-columns: minmax(275px, 25%) 1fr minmax(275px, 25%);
-    
+    grid-template-columns: minmax(275px, 1fr) minmax(200px, 600px) minmax(275px, 1fr);
 }
 
 .playerWrapper > * {
@@ -21,6 +20,7 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+    box-shadow: rgb(27 27 27) 0px 4px 8px 0px;
 }
 
 .playerData > div {

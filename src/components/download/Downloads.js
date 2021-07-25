@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import DownloadQueueCard from './DownloadQueueCard';
-import ShowQueueContext from '../context/ShowQueueContext';
-import DownloadHandler from '../helpers/DownloadHandler';
+import DownloadsCard from './DownloadsCard';
+import ShowQueueContext from '../../context/ShowQueueContext';
+import DownloadHandler from '../../helpers/DownloadHandler';
 
-function downloadQueue() {
+function Downloads() {
     const [downloadData, setDownloadData] = useState(DownloadHandler.getDownloadData());
     const [showQueue, setShowQueue] = useContext(ShowQueueContext);
 
@@ -11,7 +11,7 @@ function downloadQueue() {
     var arrowIconClass = showQueue ? 'fas fa-long-arrow-alt-right' : 'fas fa-long-arrow-alt-left';
 
     const cards = downloadData.queue.map(beatmap => 
-        <DownloadQueueCard key={beatmap.id} beatmap={beatmap}/>
+        <DownloadsCard key={beatmap.id} beatmap={beatmap}/>
     );
 
     function toggleShowQueue() {
@@ -36,4 +36,4 @@ function downloadQueue() {
     </>;
 }
 
-export default downloadQueue;
+export default Downloads;
