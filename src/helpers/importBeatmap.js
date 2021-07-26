@@ -158,6 +158,9 @@ function getDuration(audioFilePath) {
 function download(url, pipePath) {
     return new Promise((resolve, reject) => {
         request(url, (error, response, body) => {
+            if (error) {
+                reject(error);
+            }
             if (response.statusCode == 403) {
                 deleteFile(pipePath);
             }
