@@ -57,13 +57,14 @@ function PlayerBar() {
     }
 
     useEffect(() => {
-        const interval = setInterval(() => {
+        function handleTime() {
             if(!drag) {
                 setCurrentTime(PlayerHandler.seek());
             }
-        }, 200);
-        return () => clearInterval(interval);
-    }, [drag]);
+        }
+        player.audio.addEventListener("timeupdate", handleTime);
+        return () => player.audio.removeEventListener("timeupdate", handleTime);
+    }, [player, drag]);
 
     useEffect(() => {
         PlayerHandler.addObserver(setPlayer);
