@@ -99,13 +99,17 @@ function getAudio(src) {
         navigator.mediaSession.playbackState = "playing";
         updatePlayingState();
     };
-    
-    audio.onended = async () => {
-        await forward();
-        if (getCurrentIndex() == 0) {
-            pause();
+
+    audio.ontimeupdate = async () => {
+        if (audio.duration && audio.duration - audio.currentTime <= 0.4 && !audio.paused) {
+            audio.ontimeupdate = null;
+            audio.currentTime = audio.duration - 0.4;
+            await forward();
+            if (getCurrentIndex() == 0) {
+                pause();
+            }
         }
-    };
+    }
 
     return new Promise((resolve, reject) => {
         audio.src = src;
