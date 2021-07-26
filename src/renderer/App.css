@@ -381,7 +381,7 @@ html, body, #root {
   cursor: pointer;
 }
 
-.endPage {
+.lastPage {
   display: block;
   text-align: center;
   font-family: NotoBold;
@@ -549,6 +549,27 @@ html, body, #root {
   position: relative;
   width: 100%;
   margin-top: 20px;
+}
+
+.searchingOverlay {
+  animation: searching;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  pointer-events: none;
+}
+
+@keyframes searching {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 
