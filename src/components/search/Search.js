@@ -61,14 +61,14 @@ function Search() {
 
     function requestNextPage(event) {
         const {scrollHeight, scrollTop, offsetHeight} = event.target;
-        if (scrollHeight - scrollTop - offsetHeight < 4000 && !search.endOfPage) {
+        if (scrollHeight - scrollTop - offsetHeight < 4000 && !search.results.lastPage) {
             SearchHandler.find();
         }
     }
 
     const lowestBoundaryPixel = verticalPosition - (prerenderCount * componentHeight);
     const highestBoundaryPixel = verticalPosition + viewHeight + (prerenderCount * componentHeight);
-    const beatmapCards = search.results.map((beatmap, index) => {
+    const beatmapCards = search.results.data.map((beatmap, index) => {
         const topPosition = index * componentHeight;
         if (topPosition >= lowestBoundaryPixel && topPosition <= highestBoundaryPixel) { 
             return <SearchCard style={{top: topPosition}} key={beatmap.id} beatmap={beatmap} index={index}/>
@@ -76,21 +76,33 @@ function Search() {
     });
 
     const getEndPageMessage = () => {
-        if (search.endOfPage) {
-            if (search.results.length > 0) {
-                return "No more results...(╥_╥)";
-            }
+        if (search.request.error != null && search.request.error.code === 'ETIMEDOUT') {
+            return "Connect timeout with the server (╥_╥)";
+        }
+        
+        if (search.results.lastPage && search.results.data.length > 0) {
+            return "No more results...(╥_╥)";
+        }
+
+        if (search.request.instance != null) {
+            return "Searching...(´｡• ᵕ •｡`)"
+        }
+
+        if (search.results.data.length == 0) {
             return "No results...( ; ω ; )"
         }
+
         return "";
     }
 
+    const beatmapCardWrapperClass = search.request.timeout != null ? "beatmapCardWrapper searchingOverlay" : "beatmapCardWrapper";
+    const lastPageClass = search.request.instance != null ? "lastPage searchingOverlay" : "lastPage";
     return <>
         <SearchMenu />
-        <div className="beatmapCardWrapper" ref={searchCardWrapper} style={{height: search.results.length * componentHeight}}>
+        <div className={beatmapCardWrapperClass} ref={searchCardWrapper} style={{height: search.results.data.length * componentHeight}}>
             {beatmapCards}
         </div>
-        <span className="endPage">{getEndPageMessage()}</span>
+        <span className={lastPageClass}>{getEndPageMessage()}</span>
     </>;
 }
 
