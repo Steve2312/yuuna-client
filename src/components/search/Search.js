@@ -61,7 +61,7 @@ function Search() {
 
     function requestNextPage(event) {
         const {scrollHeight, scrollTop, offsetHeight} = event.target;
-        if (scrollHeight - scrollTop - offsetHeight < 4000 && !search.results.lastPage) {
+        if (scrollHeight - scrollTop - offsetHeight < 3000 && !search.results.lastPage) {
             SearchHandler.find();
         }
     }

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import LibraryContext from '../../context/LibraryContext';
 import LibraryMenu from './LibraryMenu'
 import LibraryCard from './LibraryCard';
+import LibraryHandler from '../../helpers/LibraryHandler';
 
 function Library() {
-    const [library, setLibrary] = useContext(LibraryContext);
+    const [library, setLibrary] = useState(LibraryHandler.getLibrary());
     /**
      * Only render beatmapCard if visible
      */
@@ -16,6 +16,7 @@ function Library() {
     const componentHeight = 90;
 
     useEffect(() => {
+        LibraryHandler.addObserver(setLibrary);
         const view = document.getElementsByClassName("viewWrapper")[0];
 
         updateViewHeight();
@@ -25,6 +26,7 @@ function Library() {
         return() => {
             view.removeEventListener("scroll", updateVerticalPosition);
             window.removeEventListener("resize", updateViewHeight);
+            LibraryHandler.removeObserver(setLibrary);
         }
     }, []);
 
@@ -43,16 +45,16 @@ function Library() {
 
     const lowestBoundaryPixel = verticalPosition - (prerenderCount * componentHeight);
     const highestBoundaryPixel = verticalPosition + viewHeight + (prerenderCount * componentHeight);
-    const beatmapCards = library.map((beatmap, index) => {
+    const beatmapCards = library.all.map((beatmap, index) => {
         const topPosition = index * componentHeight;
         if (topPosition >= lowestBoundaryPixel && topPosition <= highestBoundaryPixel) { 
-            return <LibraryCard style={{top: topPosition}} key={beatmap.id} beatmap={beatmap} index={index} playlist={library}/>
+            return <LibraryCard style={{top: topPosition}} key={beatmap.id} beatmap={beatmap} index={index} playlist={library.all}/>
         }
     });
 
     return <>
-        <LibraryMenu />
-        <div className="beatmapCardWrapper" ref={beatmapCardWrapper} style={{height: library.length * componentHeight}}>
+        <LibraryMenu library={library.all}/>
+        <div className="beatmapCardWrapper" ref={beatmapCardWrapper} style={{height: library.all.length * componentHeight}}>
             {beatmapCards}
         </div>
         

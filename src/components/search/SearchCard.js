@@ -3,14 +3,14 @@ import {shell} from 'electron';
 import {formatSeconds} from '../../helpers/utils';
 import {addToDownloadQueue, inQueue} from '../../helpers/DownloadHandler';
 import thumbnail from '../../assets/images/no_thumbnail.jpg';
-import LibraryContext from '../../context/LibraryContext';
+import LibraryHandler from '../../helpers/LibraryHandler';
 import DownloadHandler from '../../helpers/DownloadHandler';
 import PreviewHandler from '../../helpers/PreviewHandler';
 
 function BeatmapCard(props) {
     const [preview, setPreview] = useState(PreviewHandler.getPreview());
 
-    const [library, setLibrary] = useContext(LibraryContext);
+    const [library, setLibrary] = useState(LibraryHandler.getLibrary());
     const [downloadData, setDownloadData] = useState(DownloadHandler.getDownloadData());
 
     const {artist, average_length, title, id, source, creator, bpm, user_id} = props.beatmap;
@@ -32,8 +32,8 @@ function BeatmapCard(props) {
     }
 
     function inLibrary() {
-        for (let x = 0; x < library.length; x++) {
-            const song = library[x];
+        for (let x = 0; x < library.all.length; x++) {
+            const song = library.all[x];
             if (song.beatmapset_id === id.toString()) {
                 return true;
             }
@@ -48,9 +48,11 @@ function BeatmapCard(props) {
     useEffect(() => {
         PreviewHandler.addObserver(setPreview);
         DownloadHandler.addObserver(setDownloadData);
+        LibraryHandler.addObserver(setLibrary);
         return () => {
             PreviewHandler.removeObserver(setPreview);
             DownloadHandler.removeObserver(setDownloadData);
+            LibraryHandler.removeObserver(setLibrary);
         }
     }, []);
 

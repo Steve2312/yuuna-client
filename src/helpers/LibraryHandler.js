@@ -2,16 +2,20 @@ import Electron from "electron";
 import { lstatSync } from "fs";
 import path from 'path';
 import { pathExists, getFilesInDirectory, readFile } from "./filesystem";
+import PlayerHandler from "./PlayerHandler";
 
-var setLibrary = null;
+const observers = [];
 
-export const updateLibrary = async () => {
-    const library = await getLibrary();
-    console.log(library);
-    setLibrary(library);
+const library = {
+    all: []
 }
 
-export const getLibrary = async () => {
+const updateLibrary = async () => {
+    library.all = await loadLibrary();
+    notifyObservers();
+}
+
+const loadLibrary = async () => {
     console.time('Time to load library');
     const appData = Electron.remote.app.getAppPath();
     const songsPath = path.join(appData, "songs");
@@ -33,6 +37,34 @@ export const getLibrary = async () => {
     return library.sort((a, b) => (b.date_added - a.date_added)).map((song, index) => ({...song, index}));
 }
 
-export const setLibrarySetter = async (library) => {
-    setLibrary = library;
+const addObserver = (observer) => {
+    observers.push(observer);
 }
+
+const removeObserver = (observer) => {
+    const index = observers.indexOf(observer);
+    if (index > -1) {
+        observers.splice(index, 1);
+    }
+}
+
+const notifyObservers = () => {
+    for (let x = 0; x < observers.length; x++) {
+        const update = observers[x];
+        update({...library});
+    }
+}
+
+const getLibrary = () => {
+    return library;
+}
+
+async function initialize() {
+    await updateLibrary();
+    await PlayerHandler.loadFromPlaylist("library", library.all, 0);
+    PlayerHandler.pause();
+}
+
+initialize();
+
+export default {updateLibrary, getLibrary, addObserver, removeObserver, notifyObservers}

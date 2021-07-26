@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
 import ShowQueueContext from '../context/ShowQueueContext';
-import LibraryContext from '../context/LibraryContext';
-import { setLibrarySetter, updateLibrary } from '../helpers/LibraryHandler';
 
 import Toolbar from './Toolbar';
 import Downloads from './download/Downloads';
@@ -17,19 +15,10 @@ import '../assets/fa/css/all.css';
 
 function App() {
   // View switcher
-  const [view, setView] = useState(1);
+  const [view, setView] = useState(3);
 
   // Show queue right hand side of the program
   const [showQueue, setShowQueue] = useState(true);
-
-  const [library, setLibrary] = useState();
-  setLibrarySetter(setLibrary);
-
-  useEffect(() => {
-    if (!library) {
-        updateLibrary();
-    }
-  }, [library]);
 
   var viewWrapperClass = showQueue ? 'viewWrapper viewWrapperShrink' : 'viewWrapper';
 
@@ -43,17 +32,15 @@ function App() {
         <NavigationButtons viewState={[view, setView]}/>
         <PlaylistButtons />
       </div>
-      <LibraryContext.Provider value={[library, setLibrary]}>
-        <ShowQueueContext.Provider value={[showQueue, setShowQueue]}>
-          <div className={viewWrapperClass} key={view}>
-            <View index={view}/>
-          </div>
-          <Downloads />
-        </ShowQueueContext.Provider>
-        <div className="playerWrapper">
-          <Player />
+      <ShowQueueContext.Provider value={[showQueue, setShowQueue]}>
+        <div className={viewWrapperClass} key={view}>
+          <View index={view}/>
         </div>
-      </LibraryContext.Provider>
+        <Downloads />
+      </ShowQueueContext.Provider>
+      <div className="playerWrapper">
+        <Player />
+      </div>
     </div>
   </>;
 }
