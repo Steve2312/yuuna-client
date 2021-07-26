@@ -3,53 +3,81 @@ import request from "request";
 const observers = [];
 
 const search = {
-    results: [],
-    page: -1,
-    endOfPage: false
+    input: {
+        query: "",
+        status: "ranked"
+    },
+    request: {
+        timeout: null,
+        instance: null,
+        error: null
+    },
+    results: {
+        data: [],
+        page: 0,
+        lastPage: false
+    }
 }
 
-var searchInput = "";
-var searchCategory = "ranked";
+const find = (userInput, userStatus) => {
+    const {request, results} = search;
+    const {timeout, instance} = request;
+    const {data, lastPage} = results;
 
-var timeout = null;
-var fetchRequest = null;
-
-const find = (input, category) => {
-    console.log("Find called")
-    if (input !== undefined && category !== undefined) {
-        searchInput = input;
-        searchCategory = category;
-        search.page = 0;
-        search.endOfPage = false;
+    if (userInput !== undefined && userStatus !== undefined) {
         clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            fetchRequest = request(getLink(), (error, response, body) => {
-                fetchRequest = null;
-                if (JSON.parse(body).beatmaps.length < 50) {
-                    search.endOfPage = true;
-                }
-                search.results = [...JSON.parse(body).beatmaps];
+        if (instance) {
+            instance.abort();
+        }
+
+        search.request.timeout = setTimeout(() => {
+            search.input.query = userInput;
+            search.input.status = userStatus;
+            search.results.page = 0;
+            search.results.lastPage = false;
+
+            createRequest((results) => {
+                search.results.data = [...results];
+                search.request.timeout = null;
                 notifyObservers();
             });
         }, 1000);
+        notifyObservers();
         return;
     }
     // IF END OF PAGE AND U SWITCH PAGE AND COME BACK, IT DOESNT REQUEST
-    if (!fetchRequest && !search.endOfPage) {
-        search.page++;
-        fetchRequest = request(getLink(), (error, response, body) => {
-            fetchRequest = null;
-            if (JSON.parse(body).beatmaps.length < 50) {
-                search.endOfPage = true;
-            }
-            search.results = [...search.results, ...JSON.parse(body).beatmaps];
+    if (!instance && !lastPage) {
+        createRequest((results) => {
+            search.results.data = [...data, ...results];
+            search.results.page++;
             notifyObservers();
         });
     }
 }
 
-function getLink() {
-    return encodeURI('https://beatconnect.io/api/search?token='+ process.env.BEATCONNECT_API_KEY + '&s=' + searchCategory + '&q=' + searchInput + '&p=' + search.page);
+function createRequest(callback) {
+    search.request.error = null;
+    search.request.instance = request(generateLink(), (error, response, body) => {
+        search.request.instance = null;
+        if (!error) {
+            const results = JSON.parse(body).beatmaps;
+            if (results.length < 50) {
+                search.results.lastPage = true;
+            }
+
+            callback(results);
+        }
+
+        if (error) {
+            search.request.error = error;
+            notifyObservers();
+        }
+    });
+    notifyObservers();
+}
+
+function generateLink() {
+    return encodeURI('https://beatconnect.io/api/search?token='+ process.env.BEATCONNECT_API_KEY + '&s=' + search.input.status + '&q=' + search.input.query + '&p=' + search.results.page);
 }
 
 const getSearch = () => {
@@ -57,11 +85,23 @@ const getSearch = () => {
 }
 
 const clearResults = () => {
-    search.results = [];
-    search.page = -1;
-    search.endOfPage = false;
-    searchInput = "";
-    searchCategory = "ranked";
+    const {request} = search;
+    const {timeout, instance} = request;
+
+    search.input.query = "";
+    search.input.status = "ranked";
+
+    clearTimeout(timeout);
+    search.request.timeout = null;
+    if (instance) {
+        instance.abort();
+        search.request.instance = null;
+    }
+    search.request.error = null;
+
+    search.results.data = [];
+    search.results.page = 0;
+    search.results.lastPage = false;
 }
 
 const addObserver = (observer) => {
