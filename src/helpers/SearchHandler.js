@@ -39,6 +39,7 @@ const find = (userInput, userStatus) => {
             createRequest((results) => {
                 search.results.data = [...results];
                 search.request.timeout = null;
+                search.results.page++;
                 notifyObservers();
             });
         }, 1000);
