@@ -79,6 +79,7 @@ function checkDownload() {
     if (!downloadData.queue.length == 0) {
         download();
     }
+    notifyObservers();
 }
 
 /**

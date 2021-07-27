@@ -10,7 +10,7 @@ const library = {
     all: []
 }
 
-const updateLibrary = async () => {
+export const updateLibrary = async () => {
     library.all = await loadLibrary();
     notifyObservers();
 }

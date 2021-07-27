@@ -76,8 +76,16 @@ function Search() {
     });
 
     const getEndPageMessage = () => {
-        if (search.request.error != null && search.request.error.code === 'ETIMEDOUT') {
-            return "Connect timeout with the server (╥_╥)";
+        if (search.request.error != null) {
+            if (search.request.error.code === 'ETIMEDOUT') {
+                return "Connect timeout with the server (╥_╥) \n You're either offline or the Beatconnect server are unavaliable at the moment.";
+            }
+
+            if (search.request.error.code === 'EAI_AGAIN') {
+                return "DNS lookup timed out (╥_╥) \n You're either offline or the Beatconnect server are unavaliable at the moment.";
+            }
+
+            return "An error has occured with code: " + search.request.error.code + "\n You're either offline or the Beatconnect server are unavaliable at the moment.";
         }
         
         if (search.results.lastPage && search.results.data.length > 0) {
@@ -88,7 +96,7 @@ function Search() {
             return "Searching...(´｡• ᵕ •｡`)"
         }
 
-        if (search.results.data.length == 0) {
+        if (search.results.lastPage && search.results.data.length == 0) {
             return "No results...( ; ω ; )"
         }
 

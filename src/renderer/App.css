@@ -383,6 +383,7 @@ html, body, #root {
 
 .lastPage {
   display: block;
+  white-space: break-spaces;
   text-align: center;
   font-family: NotoBold;
   font-size: 10px;
