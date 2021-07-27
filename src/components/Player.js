@@ -94,8 +94,8 @@ function PlayerBar() {
         <div className="playerData">
             <div className="cover" style={cover}></div>
             <div>
-                <span className="artist">{player.artist}</span>
-                <span className="title">{player.title}</span>
+                <span className="artist">{player.artist != null ? player.artist : "-"}</span>
+                <span className="title">{player.title != null ? player.title : "-"}</span>
                 <span className="beatmapsetid">BEATMAPSET ID: <span onClick={openBeatmapPage}>{player.beatmapset}</span></span>
             </div>
         </div>
