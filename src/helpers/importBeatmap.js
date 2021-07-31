@@ -32,6 +32,7 @@ export const importBeatmap = async (pipePath) => {
                 audio: audioFilename,
                 artist: beatmapData.metadata.Artist,
                 title: beatmapData.metadata.Title,
+                version: beatmapData.metadata.Version,
                 source: beatmapData.metadata.Source ? beatmapData.metadata.Source : null,
                 duration: await getDuration(path.join(extractPath, audioFilename)),
                 creator: beatmapData.metadata.Creator,
@@ -43,7 +44,12 @@ export const importBeatmap = async (pipePath) => {
         }
     }
     
-    console.log(mapsToImport);
+    if (mapsToImport.length > 1) {
+        mapsToImport.map((map) => {
+            map.title = map.title + " [" + map.version + "]";
+            return map;
+        });
+    }
 
     if (!pathExists(songsPath)) {
         createDirectory(songsPath);
