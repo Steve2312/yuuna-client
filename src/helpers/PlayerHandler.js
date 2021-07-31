@@ -1,6 +1,7 @@
 import path from 'path';
 import Electron from 'electron';
 import PreviewHandler from './PreviewHandler';
+import thumbnail from '../assets/images/no_thumbnail.jpg';
 
 const appData = Electron.remote.app.getAppPath();
 const songsPath = path.join(appData, "songs");
@@ -242,12 +243,27 @@ function unshuffle() {
 async function updateMediaSession() {
     const {title, artist, id} = player;
     const coverPath = path.join(songsPath, id, "cover.jpg");
-    const coverBlob = URL.createObjectURL(await (await fetch(coverPath)).blob());
+
+    const getCoverDataURL = async () => {
+
+        async function fetchToObjectURL(path) {
+            const data = await fetch(path);
+            const blob = await data.blob();
+            return URL.createObjectURL(blob);
+        }
+
+        try {
+            return await fetchToObjectURL(coverPath);
+        } catch {
+            return await fetchToObjectURL(thumbnail);
+        }
+    };
+
     if ("mediaSession" in navigator) {
         const mediaMetadata = new MediaMetadata({
             title,
             artist,
-            artwork: [{src: coverBlob, sizes: '512x512', type: 'image/jpeg'}]
+            artwork: [{src: await getCoverDataURL(), sizes: '512x512', type: 'image/jpeg'}]
         });
 
         navigator.mediaSession.metadata = mediaMetadata;
