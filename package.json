@@ -6,12 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron-webpack dev",
-    "build": "electron-webpack"
+    "compile": "electron-webpack",
+    "pack": "yarn compile && electron-builder --dir"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^13.1.4",
     "extract-zip": "^2.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -21,7 +21,9 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "electron": "^13.1.4",
     "@babel/preset-react": "^7.14.5",
+    "electron-builder": "^22.11.7",
     "electron-webpack": "^2.8.2",
     "file-loader": "^6.2.0",
     "webpack": "^4.44.0"
