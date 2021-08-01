@@ -1,13 +1,10 @@
 import request from "request";
 import progress from 'request-progress';
 import path from 'path';
-import Electron from "electron";
 import fs from 'fs';
 import {importBeatmap} from './importBeatmap';
-import { pathExists } from './filesystem';
-
-const appData = Electron.remote.app.getAppPath();
-const tempPath = path.join(appData, "temp");
+import { pathExists } from './fileSystem';
+import { tempPath } from "./paths";
 
 const observers = [];
 

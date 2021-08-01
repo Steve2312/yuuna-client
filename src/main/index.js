@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 
 const secondInstance = app.requestSingleInstanceLock();
@@ -59,3 +59,7 @@ app.on('second-instance', () => {
         mainWindow.focus();
     }
 });
+
+ipcMain.on("getPath", (event, type) => {
+    event.returnValue = app.getPath(type);
+})

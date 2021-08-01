@@ -1,10 +1,7 @@
 import path from 'path';
-import Electron from 'electron';
 import PreviewHandler from './PreviewHandler';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
-
-const appData = Electron.remote.app.getAppPath();
-const songsPath = path.join(appData, "songs");
+import { songsPath } from './paths';
 
 const observers = [];
 

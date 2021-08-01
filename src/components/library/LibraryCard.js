@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import path from 'path';
-import Electron, {shell} from 'electron';
+import {shell} from 'electron';
 import {formatSeconds} from '../../helpers/utils';
 import thumbnail from '../../assets/images/no_thumbnail.jpg';
 import PlayerHandler from '../../helpers/PlayerHandler';
-
-const appData = Electron.remote.app.getAppPath();
-const songsPath = path.join(appData, "songs");
+import {songsPath} from '../../helpers/paths';
 
 function LibraryCard(props) {
     const [player, setPlayer] = useState(PlayerHandler.getPlayer());

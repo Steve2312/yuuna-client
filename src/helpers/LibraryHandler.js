@@ -1,9 +1,8 @@
-import Electron from "electron";
 import { lstatSync } from "fs";
 import path from 'path';
-import { pathExists, getFilesInDirectory, readFile } from "./filesystem";
+import { pathExists, getFilesInDirectory, readFile } from "./fileSystem";
 import PlayerHandler from "./PlayerHandler";
-
+import { songsPath } from "./paths";
 const observers = [];
 
 const library = {
@@ -13,12 +12,15 @@ const library = {
 export const updateLibrary = async () => {
     library.all = await loadLibrary();
     notifyObservers();
+
+    if (PlayerHandler.getPlayer().id == null && library.all.length > 0) {
+        await PlayerHandler.loadFromPlaylist("library", library.all, 0);
+        PlayerHandler.pause();
+    }
 }
 
 const loadLibrary = async () => {
     console.time('Time to load library');
-    const appData = Electron.remote.app.getAppPath();
-    const songsPath = path.join(appData, "songs");
     const library = [];
     if (pathExists(songsPath)) {
         const songs = await getFilesInDirectory(songsPath);
@@ -61,8 +63,10 @@ const getLibrary = () => {
 
 async function initialize() {
     await updateLibrary();
-    await PlayerHandler.loadFromPlaylist("library", library.all, 0);
-    PlayerHandler.pause();
+    if (library.all.length > 0) {
+        await PlayerHandler.loadFromPlaylist("library", library.all, 0);
+        PlayerHandler.pause();
+    }
 }
 
 initialize();

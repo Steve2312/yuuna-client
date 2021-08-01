@@ -2,13 +2,12 @@ import Electron from "electron";
 import path from 'path';
 import request from "request";
 import fs from 'fs';
-import { unzip, getFilesInDirectory, readFile, pathExists, createDirectory, moveFile, createFile, deleteDirectory, copy, deleteFile } from "./filesystem";
+import { unzip, getFilesInDirectory, readFile, pathExists, createDirectory, moveFile, createFile, deleteDirectory, copy, deleteFile } from "./fileSystem";
 import { updateLibrary } from "./LibraryHandler";
 import { v4 as uuidv4 } from 'uuid';
+import { songsPath } from "./paths";
 
 export const importBeatmap = async (pipePath) => {
-    const appData = Electron.remote.app.getAppPath();
-    const songsPath = path.join(appData, "songs");
 
     const extractPath = await unzip(pipePath);
     if (!extractPath) {

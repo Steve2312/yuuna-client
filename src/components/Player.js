@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {formatSeconds} from '../helpers/utils';
-import Electron, {shell} from 'electron';
+import {shell} from 'electron';
 import path from 'path';
 import thumbnail from '../assets/images/no_thumbnail.jpg';
 import PlayerHandler from '../helpers/PlayerHandler';
 import '../styles/Player.css';
-
-const appData = Electron.remote.app.getAppPath();
-const songsPath = path.join(appData, "songs");
+import { songsPath } from '../helpers/paths';
+import { pathExists } from '../helpers/fileSystem';
 
 function PlayerBar() {
     const [player, setPlayer] = useState(PlayerHandler.getPlayer());
@@ -16,8 +15,12 @@ function PlayerBar() {
 
     const forceUpdate = useState(0)[1];
 
-    const cover = {
-        backgroundImage: `url("${path.join(songsPath, player.id ? player.id : "", "cover.jpg").toString().replaceAll("\\", "/")}"), url("${thumbnail}")`
+    function getCover() {
+        const coverPath = path.join(songsPath, player.id ? player.id : "", "cover.jpg").toString().replaceAll("\\", "/");
+        if (pathExists(coverPath)) {
+            return {backgroundImage: 'url("' + coverPath + '"), url("' + thumbnail + '")'}
+        }
+        return {backgroundImage: 'url("' + thumbnail + '")'}
     }
 
     function openBeatmapPage() {
@@ -92,7 +95,7 @@ function PlayerBar() {
 
     return <>
         <div className="playerData">
-            <div className="cover" style={cover}></div>
+            <div className="cover" style={getCover()}></div>
             <div>
                 <span className="artist">{player.artist != null ? player.artist : "-"}</span>
                 <span className="title">{player.title != null ? player.title : "-"}</span>
