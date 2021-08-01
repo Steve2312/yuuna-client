@@ -259,6 +259,7 @@ html, body, #root {
   transition: opacity .25s cubic-bezier(.8,.18,.22,.96), box-shadow .5s cubic-bezier(.8,.18,.22,.96), width .5s cubic-bezier(.8,.18,.22,.96);
   overflow: hidden;
   border-radius: 5px 0 0 0;
+  backdrop-filter: blur(3px);
 }
 
 .miniBanner {
@@ -274,6 +275,7 @@ html, body, #root {
   border-bottom: 1px solid var(--bg_4_color);
   filter: blur(8px);
   transform: scale(3);
+  opacity: 0.9;
 }
 
 .miniBannerWrapper p {
