@@ -3,7 +3,7 @@ import React, { useEffect, createRef, useContext, useState } from 'react';
 import homeBanner from '../assets/banners/home.png';
 import searchBanner from '../assets/banners/search.png';
 import importBanner from '../assets/banners/import.png';
-import libraryBanner from '../assets/banners/c35b0e102808543.602f20eab5024.png';
+import libraryBanner from '../assets/banners/1067786.png';
 import ShowQueueContext from '../context/ShowQueueContext';
 import { clamp } from '../helpers/utils';
 
