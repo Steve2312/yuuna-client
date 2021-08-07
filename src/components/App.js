@@ -9,6 +9,7 @@ import NavigationButtons from './navigation/NavigationButtons';
 import PlaylistButtons from './navigation/PlaylistButtons';
 import View from './View';
 import Player from './Player';
+import ContextMenu from './ContextMenu';
 
 import '../renderer/App.css';
 import '../assets/fa/css/all.css';
@@ -23,6 +24,7 @@ function App() {
   var viewWrapperClass = showQueue ? 'viewWrapper viewWrapperShrink' : 'viewWrapper';
 
   return <>
+    <ContextMenu/>
     <div className="appLayout">
       <div className="toolbarWrapper">
         <Toolbar />

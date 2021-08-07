@@ -15,3 +15,7 @@ export const formatSeconds = (duration) => {
 export const clamp = (value, min, max) => {
     return Math.min(Math.max(value, min), max);
 }
+
+export const preventDefault = function (e) {
+    e.preventDefault();
+}

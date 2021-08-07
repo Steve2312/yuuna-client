@@ -6,6 +6,7 @@ import thumbnail from '../../assets/images/no_thumbnail.jpg';
 import LibraryHandler from '../../helpers/LibraryHandler';
 import DownloadHandler from '../../helpers/DownloadHandler';
 import PreviewHandler from '../../helpers/PreviewHandler';
+import ContextMenuHandler from '../../helpers/ContextMenuHandler';
 
 function BeatmapCard(props) {
     const [preview, setPreview] = useState(PreviewHandler.getPreview());
@@ -74,8 +75,30 @@ function BeatmapCard(props) {
         }
     }
 
+    function createContext() {
+        return [
+            {
+                name: preview.id === id && preview.playing ? "Pause preview" : "Play preview",
+                function: () => PreviewHandler.playPreview(id)
+            },
+            {
+                name: inQueue(id) ? "Cancel download" : "Download",
+                function: install
+            },
+            {
+                name: "View beatmap listing on osu!",
+                function: openBeatmapPage
+            },
+            {
+                name: "View on " + creator + " on osu!",
+                function: openCreatorPage
+            }
+        ];
+        
+    }
+
     return (
-        <div style={props.style} className="beatmapCard">
+        <div style={props.style} className="beatmapCard" onContextMenu={(event) => ContextMenuHandler.showContext(event, createContext())}>
             <span className="index">
                 {props.index + 1}
             </span>
@@ -100,7 +123,7 @@ function BeatmapCard(props) {
                 </div>
                 <div className="options">
                     {downloadButton()}
-                    <span><i className="fas fa-ellipsis-h"></i></span>
+                    <span onClick={(event) => ContextMenuHandler.showContext(event, createContext())}><i className="fas fa-ellipsis-h"></i></span>
                 </div>
             </div>
         </div>

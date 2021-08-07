@@ -1,0 +1,95 @@
+#contextMenu {
+    position: fixed;
+    background: var(--bg_2_color);
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    height: auto;
+    font-size: 13px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px var(--bg_1_color);
+    z-index: 100000;
+    user-select: none;
+}
+
+#contextMenu ~ .appLayout {
+    opacity: 0.5;
+}
+
+#contextMenu > div:first-child { 
+    border-radius: 5px 5px 0px 0px;
+}
+
+#contextMenu > div:last-child { 
+    border-radius: 0px 0px 5px 5px;
+}
+
+#contextMenu > div { 
+    position: relative;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#contextMenu > div:hover { 
+    background: var(--bg_3_color);
+}
+
+#contextMenu > div:hover #subContextMenu { 
+    opacity: 1;
+}
+
+#contextMenu > div > i {
+    display: flex;
+    align-items: center;
+}
+
+/* #subContextMenu */
+
+#subContextMenu {
+    opacity: 0;
+    position: absolute;
+    background: var(--bg_2_color);
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    height: auto;
+    font-size: 13px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px var(--bg_1_color);
+    max-height: 250px;
+    overflow-y: auto;
+    bottom: 0;
+
+}
+
+#subContextMenu > div:first-child { 
+    border-radius: 5px 5px 0px 0px;
+}
+
+#subContextMenu > div:last-child { 
+    border-radius: 0px 0px 5px 5px;
+}
+
+#subContextMenu > div { 
+    position: relative;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* #subContextMenu > div > span {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
+} */
+
+#subContextMenu > div:hover { 
+    background: var(--bg_3_color);
+}
+
