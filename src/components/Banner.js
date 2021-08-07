@@ -26,11 +26,15 @@ function Banner(props) {
         opacity: clamp(headerOpacity, 0, 1)
     }
 
-    const scale = 1 + scrollTop / 500;
-    const blur = scrollTop / 100;
+    /**
+     * Blur caused a bit of lag which is why i disabled it.
+     */
+    const bannerScale = 1 + scrollTop / 500;
+    const bannerOpacity = bannerOffsetBottom ? 1 - (scrollTop / bannerOffsetBottom) : 1;
     const banner = {
-        transform: 'scale(' + clamp(scale, 0, 1.75) + ')',
-        filter: 'blur(' + clamp(blur, 0, 5) + 'px)'
+        transform: 'scale(' + clamp(bannerScale, 0, 1.75) + ')',
+        opacity: clamp(bannerOpacity, 0, 1)
+        // filter: 'blur(' + clamp(scrollTop / 100, 0, 5) + 'px)'
     }
 
     const headerItemOpacity = scrollTop > bannerOffsetBottom - 50 ? 1 : 0;
