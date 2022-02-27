@@ -43,11 +43,15 @@ function download() {
         
         downloadRequest = request('https://beatconnect.io/b/'+ id +'/' + unique_id + '/');
 
+        // downloadRequest = request('https://api.chimu.moe/v1/download/'+ id +'?n=0');
+
+        console.log('https://api.chimu.moe/v1/download/'+ id +'?n=0')
         progress(downloadRequest).on("progress", (state) => {
             updateProgress(id, state.speed, state.percent, false);
         }).on("end", async () => {
             updateProgress(id, 0, 0, true);
             await importBeatmap(pipePath);
+            updateProgress(null, 0, 0, false);
             checkDownload();
         }).on("error", (err) => {
             console.error(err);

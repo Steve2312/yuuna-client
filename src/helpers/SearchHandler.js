@@ -1,28 +1,28 @@
-import request from "request";
+import request from 'request';
 
 const observers = [];
 
 const search = {
     input: {
-        query: "",
-        status: "ranked"
+        query: '',
+        status: 'ranked',
     },
     request: {
         timeout: null,
         instance: null,
-        error: null
+        error: null,
     },
     results: {
         data: [],
         page: 0,
-        lastPage: false
-    }
-}
+        lastPage: false,
+    },
+};
 
 const find = (userInput, userStatus) => {
-    const {request, results} = search;
-    const {timeout, instance} = request;
-    const {data, lastPage} = results;
+    const { request, results } = search;
+    const { timeout, instance } = request;
+    const { data, lastPage } = results;
 
     if (userInput !== undefined && userStatus !== undefined) {
         clearTimeout(timeout);
@@ -54,7 +54,7 @@ const find = (userInput, userStatus) => {
             notifyObservers();
         });
     }
-}
+};
 
 function createRequest(callback) {
     search.request.error = null;
@@ -71,6 +71,7 @@ function createRequest(callback) {
 
         if (error) {
             search.request.error = error;
+            console.error(error);
             notifyObservers();
         }
     });
@@ -78,19 +79,19 @@ function createRequest(callback) {
 }
 
 function generateLink() {
-    return encodeURI('https://beatconnect.io/api/search?token='+ process.env.BEATCONNECT_API_KEY + '&s=' + search.input.status + '&q=' + search.input.query + '&p=' + search.results.page);
+    return encodeURI('https://beatconnect.io/api/search?token=' + process.env.BEATCONNECT_API_KEY + '&s=' + search.input.status + '&q=' + search.input.query + '&p=' + search.results.page);
 }
 
 const getSearch = () => {
     return search;
-}
+};
 
 const clearResults = () => {
-    const {request} = search;
-    const {timeout, instance} = request;
+    const { request } = search;
+    const { timeout, instance } = request;
 
-    search.input.query = "";
-    search.input.status = "ranked";
+    search.input.query = '';
+    search.input.status = 'ranked';
 
     clearTimeout(timeout);
     search.request.timeout = null;
@@ -103,25 +104,24 @@ const clearResults = () => {
     search.results.data = [];
     search.results.page = 0;
     search.results.lastPage = false;
-}
+};
 
 const addObserver = (observer) => {
     observers.push(observer);
-}
+};
 
 const removeObserver = (observer) => {
     const index = observers.indexOf(observer);
     if (index > -1) {
         observers.splice(index, 1);
     }
-}
+};
 
 const notifyObservers = () => {
     for (let x = 0; x < observers.length; x++) {
         const update = observers[x];
-        update({...search});
+        update({ ...search });
     }
-}
+};
 
-export default {find, getSearch, clearResults, addObserver, removeObserver, notifyObservers}
-
+export default { find, getSearch, clearResults, addObserver, removeObserver, notifyObservers };
