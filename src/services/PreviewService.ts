@@ -90,7 +90,7 @@ class PreviewService extends Observable {
         const beatmapSetID = this.beatmapSetID.toString();
         const coverPath = `https://assets.ppy.sh/beatmaps/${beatmapSetID}/covers/list@2x.jpg`;
 
-        MediaSessionService.display(this.title, "osu! Preview", coverPath);
+        MediaSessionService.display(this.title, "Yuuna Preview", coverPath);
 
         const mediaSession = MediaSessionService.getMediaSession();
 

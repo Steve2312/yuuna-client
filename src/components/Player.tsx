@@ -8,6 +8,7 @@ import { songsPath } from '../helpers/paths';
 import { pathExists } from '../helpers/fileSystem';
 import PlayerService from '../services/PlayerService';
 import usePlayerService from '../hooks/usePlayerService';
+import PreviewService from '../services/PreviewService';
 
 const PlayerBar: React.FC = () => {
 
@@ -100,6 +101,7 @@ const PlayerBar: React.FC = () => {
         const volume = element.valueAsNumber;
         setVolume(volume);
         PlayerService.volume(volume);
+        PreviewService.volume(volume);
     }
 
     const playButtonClass = player.playing ? 'fas fa-pause' : 'fas fa-play';
