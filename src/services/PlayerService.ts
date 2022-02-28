@@ -1,12 +1,13 @@
 import Song from '../interfaces/Song';
-import PreviewHandler from '../helpers/PreviewHandler';
 import { songsPath } from '../helpers/paths';
-import thumbnail from '../assets/images/no_thumbnail.jpg';
 import path from 'path';
+import PreviewService from './PreviewService';
+import AudioService from './AudioService';
+import MediaSessionService from './MediaSessionService';
+import Observable from './Observable';
 
-class PlayerService {
+class PlayerService extends Observable {
 
-    private observers: Function[] = [];
     private audio: HTMLAudioElement = new Audio();
 
     // Playback Propperties
@@ -15,31 +16,34 @@ class PlayerService {
     private muted: boolean = false;
 
     private defaultAudioVolume: number = 0.24;
-    private volumeBeforeMute: number = 0.24;
+    private volumeBeforeMute: number = 0;
+
     // Info
     private playlistName: string;
     private playlist: Song[];
 
-    private artist: string;
-    private title: string;
-    private beatmapSetID: number;
-    private beatmapID: number;
-
-    private mediaSession = navigator.mediaSession;
-
-    private loading: boolean = false;
+    private current: Song = {
+        audio: '',
+        artist: '',
+        title: '',
+        version: '',
+        source: '',
+        duration: 0,
+        creator: '',
+        bpm: '',
+        beatmapset_id: 0,
+        id: '',
+        date_added: 0
+    };
 
     constructor() {
+        super();
         this.audio.volume = this.defaultAudioVolume;
-        if (this.mediaSession) {
-            this.mediaSession.setActionHandler("previoustrack", this.backward);
-            this.mediaSession.setActionHandler("nexttrack", this.forward);
-            this.mediaSession.setActionHandler("play", this.play);
-            this.mediaSession.setActionHandler("pause", this.pause);
-        }
     }
 
     public play = () => {
+        PreviewService.pause();
+        
         if (this.audio) {
             this.audio.play();
         }
@@ -53,7 +57,7 @@ class PlayerService {
 
     public playPause = () => {
         if (this.audio) {
-            this.audio.paused ? this.audio.play() : this.audio.pause();
+            this.audio.paused ? this.play() : this.pause();
         }
     }
 
@@ -69,12 +73,9 @@ class PlayerService {
     public volume = (volume?: number): number => {
 
         if (volume != undefined) {
-
-            PreviewHandler.volume(volume);
-
             this.audio.volume = volume;
             this.muted = volume == 0;
-            this.notify();
+            this.notify(this.getState());
         }
 
         return this.audio.volume;
@@ -82,9 +83,8 @@ class PlayerService {
 
     public forward = async () => {
         const index = this.getNextPlaylistPosition();
-
         if (index != -1) {
-            await this.load(index);
+            await this.playAtPosition(index);
         
             if (index == 0) {
                 this.pause();
@@ -100,13 +100,124 @@ class PlayerService {
             const index = this.getPreviousPlaylistPosition();
 
             if (index != -1) {
-                this.load(index);
+                this.playAtPosition(index);
             }
         }
 
         this.seek(0);
     }
 
+    public mute = () => {
+
+        if (this.muted) {
+            this.volume(this.volumeBeforeMute);
+            this.muted = false;
+        } else {
+            this.volumeBeforeMute = this.volume();
+            this.volume(0);
+            this.muted = true;
+        }
+
+        this.notify(this.getState());
+    }
+
+    public playAtPosition = async (index: number) => {
+
+        const song: Song = this.playlist[index];
+        const songPath = path.join(songsPath, song.id, song.audio);
+        const volume = this.audio.volume;
+
+        try {
+            const audio = await AudioService.create(songPath, volume);
+
+            // Set Handlers
+            audio.onplay = this.handleOnPlayPause;
+            audio.onpause = this.handleOnPlayPause;
+            audio.ontimeupdate = this.handleOnTimeUpdate;
+
+            // Pause old playback
+            this.pause();
+
+            // Play new audio
+            this.audio = audio;
+            this.play();
+
+            // Update state
+            this.current = song;
+            this.updateMediaSession();
+
+            this.notify(this.getState());
+
+            // Pause Preview
+            PreviewService.pause();
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    public playFromPlaylist = async (playlistName: string, playlist: Song[], index: number) => {
+
+        const song: Song = playlist[index];
+        const songPath = path.join(songsPath, song.id, song.audio);
+        const volume = this.audio.volume;
+
+        if (this.current.id == song.id) {
+            this.playPause();
+            return;
+        }
+
+        try {
+            const audio = await AudioService.create(songPath, volume);
+
+            // Set Handlers
+            audio.onplay = this.handleOnPlayPause;
+            audio.onpause = this.handleOnPlayPause;
+            audio.ontimeupdate = this.handleOnTimeUpdate;
+
+            // Pause old playback
+            this.pause();
+
+            // Pause Preview
+            PreviewService.pause();
+
+            // Play new audio
+            this.audio = audio;
+            this.play();
+
+            // Update state
+            this.playlistName = playlistName;
+            this.playlist = playlist;
+            this.current = song;
+            this.updateMediaSession();
+
+            // Reshuffle Playlist
+            if (this.shuffled) {
+                this.shufflePlaylist();
+            }
+
+            this.notify(this.getState());
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    public updateMediaSession = async () => {
+        const coverPath = path.join(songsPath, this.current.id, "cover.jpg");
+        MediaSessionService.display(this.current.title, this.current.artist, coverPath);
+
+        const mediaSession = MediaSessionService.getMediaSession();
+
+        if (mediaSession) {
+            mediaSession.setActionHandler("previoustrack", this.backward);
+            mediaSession.setActionHandler("nexttrack", this.forward);
+            mediaSession.setActionHandler("play", this.play);
+            mediaSession.setActionHandler("pause", this.pause);
+        }
+    }
+
+    // TODO
     public shuffle = () => {
         // TODO
     }
@@ -119,167 +230,20 @@ class PlayerService {
         // TODO
     }
 
-    private updateMediaSession = async () => {
-        const beatmapID = this.beatmapID.toString();
-        const coverPath = path.join(songsPath, beatmapID, "cover.jpg");
-        let dataURL: string;
+    // Event Handlers 
+    private handleOnPlayPause = (event: Event) => {
+        const audio = event.target as HTMLAudioElement;
+        MediaSessionService.setPlaybackState(audio.paused ? 'paused' : 'playing')
+        this.playing = !audio.paused;
+        this.notify(this.getState());
 
-        try {
-            dataURL = await this.imageToDataURL(coverPath);
-        } catch {
-            dataURL = await this.imageToDataURL(thumbnail);
-        }
-
-        if (this.mediaSession) {
-            const metadata = new MediaMetadata({
-                title: this.title,
-                artist: this.artist,
-                artwork: [
-                    {
-                        src: dataURL,
-                        sizes: '512x512',
-                        type: 'image/jpeg'
-                    }
-                ]
-            });
-            
-            this.mediaSession.metadata = metadata;
-        }
-    }
-
-    private imageToDataURL = async (path: string): Promise<string> => {
-        const data = await fetch(path);
-        const blob = await data.blob();
-        return URL.createObjectURL(blob);
-    }
-
-    public mute = () => {
-        if (this.muted) {
-            this.volume(this.volumeBeforeMute);
-            this.muted = false;
-        } else {
-            this.volumeBeforeMute = this.volume();
-            this.volume(0);
-            this.muted = true;
-        }
-        this.notify();
-    }
-
-    public load = async (index: number) => {
-        
-        if (this.loading) {
-            return;
-        }
-
-        this.loading = true;
-
-        const beatmap: Song = this.playlist[index];
-
-        try {
-            const src = path.join(songsPath, beatmap.id.toString(), beatmap.audio);
-            const audio = await this.createAudio(src, true);
-
-            this.audio = audio;
-            this.artist = beatmap.artist;
-            this.title = beatmap.title;
-            this.beatmapSetID = beatmap.beatmapset_id;
-            this.beatmapID = beatmap.id;
-            
-            this.pausePreview();
+        if (MediaSessionService.getMediaSession().metadata?.title != this.current.title) {
             this.updateMediaSession();
-            this.notify();
-        } catch (err) {
-            console.error(err)
-        }
-
-        this.loading = false;
-    }
-
-    public loadPlaylist = async (playlistName: string, playlist: Song[], index: number) => {
-        const beatmap: Song = playlist[index];
-
-        if (beatmap.id == this.beatmapID) {
-            this.playPause();
-            return;
-        }
-
-        try {
-            const src = path.join(songsPath, beatmap.id.toString(), beatmap.audio);
-            const audio = await this.createAudio(src, true);
-
-            this.audio = audio;
-            this.playlistName = playlistName;
-            this.playlist = playlist;
-            this.artist = beatmap.artist;
-            this.title = beatmap.title;
-            this.beatmapSetID = beatmap.beatmapset_id;
-            this.beatmapID = beatmap.id;
-
-            if (this.shuffled) {
-                this.shufflePlaylist();
-            }
-            this.pausePreview();
-            this.updateMediaSession();
-            this.notify();
-        } catch (err) {
-            console.error(err)
         }
     }
 
-    private createAudio = (src: string, autoplay: boolean): Promise<HTMLAudioElement> => {
-        return new Promise((resolve, reject) => {
-            const audio: HTMLAudioElement = new Audio(src);
-
-            audio.onpause = () => {
-                if (this.mediaSession) {
-                    this.mediaSession.playbackState = 'paused';
-                }
-                
-                this.playing = false;
-                this.notify();
-            }
-
-            audio.onplay = () => {
-                if (this.mediaSession) {
-                    this.mediaSession.playbackState = 'playing';
-                }
-
-                this.playing = true;
-                this.notify();
-            }
-            
-            audio.ontimeupdate = () => {
-                this.handleTimeUpdate(audio);
-            }
-
-            audio.oncanplay = () => {
-                audio.oncanplay = null;
-                audio.volume = this.defaultAudioVolume;
-
-                if (this.audio) {
-                    audio.volume = this.audio.volume;
-                    this.audio.onpause = null;
-                    this.audio.pause();
-                }
-
-                if (autoplay) {
-
-                    audio.play();
-                }
-
-                resolve(audio);
-            }
-
-            audio.onerror = (err) => {
-                audio.onerror = null;
-                reject(err);
-            }
-
-        });
-
-    }
-
-    private handleTimeUpdate = (audio: HTMLAudioElement) => {
+    private handleOnTimeUpdate = (event: Event) => {
+        const audio = event.target as HTMLAudioElement;
         // Time Left before forwarding!
         const threshold = 0.4;
 
@@ -298,12 +262,7 @@ class PlayerService {
         }
     }
 
-    private pausePreview = () => {
-        if (PreviewHandler.getPreview().playing) {
-            PreviewHandler.pause();
-        }
-    }
-
+    // Index Calculation 
     private getNextPlaylistPosition = (): number => {
         const index = this.getPlaylistPosition();
 
@@ -327,29 +286,12 @@ class PlayerService {
     private getPlaylistPosition = (): number => {
         for (let i = 0; i < this.playlist.length; i++) {
             const song = this.playlist[i];
-            if (song.id == this.beatmapID) {
+            if (song.id == this.current.id) {
                 return i;
             }
         }
 
         return -1;
-    }
-
-    public attach = (observer: Function) => {
-        this.observers.push(observer);
-    }
-
-    public detach = (observer: Function) => {
-        const index = this.observers.indexOf(observer);
-        if (index > -1) {
-            this.observers.splice(index, 1);
-        }
-    }
-
-    public notify = () => {
-        for (let observer of this.observers) {
-            observer(this.getState());
-        }
     }
 
     public getState = () => {
@@ -360,10 +302,10 @@ class PlayerService {
             muted: this.muted,
             playlistName: this.playlistName,
             playlist: this.playlist,
-            artist: this.artist,
-            title: this.title,
-            beatmapSetID: this.beatmapSetID,
-            beatmapID: this.beatmapID
+            artist: this.current.artist,
+            title: this.current.title,
+            beatmapSetID: this.current.beatmapset_id,
+            id: this.current.id
         }
     }
 

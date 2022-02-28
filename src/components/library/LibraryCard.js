@@ -28,13 +28,13 @@ function LibraryCard(props) {
     }
 
     function playAudio() {
-        PlayerService.loadPlaylist('library', props.playlist, props.index);
+        PlayerService.playFromPlaylist('library', props.playlist, props.index);
     }
 
     function createContext() {
         return [
             {
-                name: player.beatmapID == id && player.playing ? 'Pause' : 'Play',
+                name: player.id == id && player.playing ? 'Pause' : 'Play',
                 function: playAudio,
             },
             {
@@ -69,8 +69,8 @@ function LibraryCard(props) {
         ];
     }
 
-    const playButtonClass = player.beatmapID == id && player.playing ? 'fas fa-pause' : 'fas fa-play';
-    const cardClass = player.beatmapID == id ? 'card beatmapCardPlaying' : 'card';
+    const playButtonClass = player.id == id && player.playing ? 'fas fa-pause' : 'fas fa-play';
+    const cardClass = player.id == id ? 'card beatmapCardPlaying' : 'card';
 
     return (
         <div className="beatmapCard" style={props.style} onContextMenu={(event) => ContextMenuHandler.showContext(event, createContext())}>

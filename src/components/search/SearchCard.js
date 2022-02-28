@@ -1,28 +1,28 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {shell} from 'electron';
-import {formatSeconds} from '../../helpers/utils';
-import {addToDownloadQueue, inQueue} from '../../helpers/DownloadHandler';
+import React, { useState, useContext, useEffect } from 'react';
+import { shell } from 'electron';
+import { formatSeconds } from '../../helpers/utils';
+import { addToDownloadQueue, inQueue } from '../../helpers/DownloadHandler';
 import thumbnail from '../../assets/images/no_thumbnail.jpg';
 import LibraryHandler from '../../helpers/LibraryHandler';
 import DownloadHandler from '../../helpers/DownloadHandler';
-import PreviewHandler from '../../helpers/PreviewHandler';
 import ContextMenuHandler from '../../helpers/ContextMenuHandler';
+import PreviewService from '../../services/PreviewService';
 
 function BeatmapCard(props) {
-    const [preview, setPreview] = useState(PreviewHandler.getPreview());
+    const [preview, setPreview] = useState(PreviewService.getState());
 
     const [library, setLibrary] = useState(LibraryHandler.getLibrary());
     const [downloadData, setDownloadData] = useState(DownloadHandler.getDownloadData());
 
-    const {artist, average_length, title, id, source, creator, bpm, user_id} = props.beatmap;
+    const { artist, average_length, title, id, source, creator, bpm, user_id } = props.beatmap;
 
     const cover = {
-        backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/list@2x.jpg"), url("${thumbnail}")`
-    }
+        backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/list@2x.jpg"), url("${thumbnail}")`,
+    };
 
     const header = {
-        backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/card@2x.jpg"), url("${thumbnail}")`
-    }
+        backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/card@2x.jpg"), url("${thumbnail}")`,
+    };
 
     function install() {
         addToDownloadQueue(props.beatmap);
@@ -47,83 +47,108 @@ function BeatmapCard(props) {
     }
 
     useEffect(() => {
-        PreviewHandler.addObserver(setPreview);
+        PreviewService.attach(setPreview);
         DownloadHandler.addObserver(setDownloadData);
         LibraryHandler.addObserver(setLibrary);
         return () => {
-            PreviewHandler.removeObserver(setPreview);
+            PreviewService.detach(setPreview);
             DownloadHandler.removeObserver(setDownloadData);
             LibraryHandler.removeObserver(setLibrary);
-        }
+        };
     }, []);
 
-    const playButtonClass = preview.id === id && preview.playing ? "fas fa-pause" : "fas fa-play";
-    const cardClass = preview.id === id ? "card beatmapCardPlaying" : "card";
+    const playButtonClass = preview.beatmapSetID === id && preview.playing ? 'fas fa-pause' : 'fas fa-play';
+    const cardClass = preview.beatmapSetID === id ? 'card beatmapCardPlaying' : 'card';
 
-    function downloadButton () {
+    function downloadButton() {
         if (inLibrary()) {
             return null;
         }
 
         if (downloadData.progress.id == id && downloadData.progress.importing) {
-            return <span><i className="fas fa-spinner loading"></i></span>;
+            return (
+                <span>
+                    <i className="fas fa-spinner loading"></i>
+                </span>
+            );
         }
 
-        const downloadButtonClass = inQueue(id) ? "fas fa-times" : "fas fa-download";
+        const downloadButtonClass = inQueue(id) ? 'fas fa-times' : 'fas fa-download';
         if (!inLibrary()) {
-            return <span onClick={install}><i className={downloadButtonClass}></i></span>;
+            return (
+                <span onClick={install}>
+                    <i className={downloadButtonClass}></i>
+                </span>
+            );
         }
     }
 
     function createContext() {
         return [
             {
-                name: preview.id === id && preview.playing ? "Pause preview" : "Play preview",
-                function: () => PreviewHandler.playPreview(id)
+                name: preview.beatmapSetID === id && preview.playing ? 'Pause preview' : 'Play preview',
+                function: () => PreviewService.playPreview(id, title),
             },
             {
-                name: inQueue(id) ? "Cancel download" : "Download",
-                function: install
+                name: inQueue(id) ? 'Cancel download' : 'Download',
+                function: install,
             },
             {
-                name: "View beatmap listing on osu!",
-                function: openBeatmapPage
+                name: 'View beatmap listing on osu!',
+                function: openBeatmapPage,
             },
             {
-                name: "View on " + creator + " on osu!",
-                function: openCreatorPage
-            }
+                name: 'View on ' + creator + ' on osu!',
+                function: openCreatorPage,
+            },
         ];
-        
     }
 
     return (
         <div style={props.style} className="beatmapCard" onContextMenu={(event) => ContextMenuHandler.showContext(event, createContext())}>
-            <span className="index">
-                {props.index + 1}
-            </span>
+            <span className="index">{props.index + 1}</span>
             <div className={cardClass}>
                 <div className="cover" style={cover}>
-                <span onClick={() => PreviewHandler.playPreview(id)}><i className={playButtonClass}></i></span>
+                    <span onClick={() => PreviewService.playPreview(id, title)}>
+                        <i className={playButtonClass}></i>
+                    </span>
                 </div>
-                <div className="metadataWrapper" onDoubleClick={() => PreviewHandler.playPreview(id)}>
-                    <div className="header" style={header}/>
+                <div className="metadataWrapper" onDoubleClick={() => PreviewService.playPreview(id, title)}>
+                    <div className="header" style={header} />
                     <div className="metadata">
                         <span className="title">{title}</span>
                         <span className="artist">{artist}</span>
-                        <span className="subject">SOURCE: <span className="value">{source ? source : "-"}</span></span>
-                        <span className="subject">CREATOR: <span className="value link" onClick={openCreatorPage}>{creator}</span></span>
+                        <span className="subject">
+                            SOURCE: <span className="value">{source ? source : '-'}</span>
+                        </span>
+                        <span className="subject">
+                            CREATOR:{' '}
+                            <span className="value link" onClick={openCreatorPage}>
+                                {creator}
+                            </span>
+                        </span>
                     </div>
 
                     <div className="metadata">
-                        <span className="box">DURATION: <span className="value">{formatSeconds(average_length)}</span></span>
-                        <span className="box">BPM: <span className="value">{bpm}</span></span>
-                        <span className="box">BEATMAP SET ID: <span className="value link" onClick={openBeatmapPage}>{id}</span></span>
+                        <span className="box">
+                            DURATION: <span className="value">{formatSeconds(average_length)}</span>
+                        </span>
+                        <span className="box">
+                            BPM: <span className="value">{bpm}</span>
+                        </span>
+                        <span className="box">
+                            BEATMAP SET ID:{' '}
+                            <span className="value link" onClick={openBeatmapPage}>
+                                {id}
+                            </span>
+                        </span>
                     </div>
                 </div>
                 <div className="options">
                     {downloadButton()}
-                    <span onClick={(event) => ContextMenuHandler.showContext(event, createContext())}><i className="fas fa-ellipsis-h"></i></span>
+                    <span onClick={(event) => ContextMenuHandler.showContext(event, createContext())}>
+                        <i className="fas fa-ellipsis-h"></i>
+                    </span>
                 </div>
             </div>
         </div>

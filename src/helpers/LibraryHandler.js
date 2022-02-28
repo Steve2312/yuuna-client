@@ -14,7 +14,7 @@ export const updateLibrary = async () => {
     notifyObservers();
 
     if (PlayerService.getState().beatmapID == null && library.all.length > 0) {
-        await PlayerService.loadPlaylist('library', library.all, 0);
+        await PlayerService.playFromPlaylist('library', library.all, 0);
         PlayerService.pause();
     }
 };
@@ -64,7 +64,7 @@ const getLibrary = () => {
 async function initialize() {
     await updateLibrary();
     if (library.all.length > 0) {
-        await PlayerService.loadPlaylist('library', library.all, 0);
+        await PlayerService.playFromPlaylist('library', library.all, 0);
         PlayerService.pause();
     }
 }

@@ -8,7 +8,7 @@ interface Song {
     creator: string,
     bpm: string,
     beatmapset_id: number,
-    id: number
+    id: string
     date_added: number,
 }
 

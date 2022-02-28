@@ -32,9 +32,9 @@ const PlayerBar: React.FC = () => {
 
     const getAlbumCoverStyle = (): React.CSSProperties => {
         
-        if (player.beatmapID) {
-            const beatmapID = player.beatmapID.toString();
-            const coverPath = path.join(songsPath, beatmapID, 'cover.jpg');
+        if (player.id) {
+            const id = player.id.toString();
+            const coverPath = path.join(songsPath, id, 'cover.jpg');
             if (pathExists(coverPath)) {
                 return {
                     backgroundImage: `url("${coverPath.replace(/\\/g, "/")}")`
