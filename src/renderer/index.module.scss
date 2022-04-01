@@ -1,0 +1,52 @@
+:root {
+    --text_color: #ffffff;
+    --subject_color: #8a8a8a;
+    --bg_1_color: #1e1e1e;
+    --bg_2_color: #252526;
+    --bg_3_color: #2d2d30;
+    --bg_4_color: #3e3e42;
+    --accent_color: #f28482;
+    --highlight_accent: #f29d9b;
+    --red: #f04747;
+    --banner-overlay: #00000054;
+}
+
+@font-face {
+    font-family: Noto;
+    src: url(../assets/fonts/NotoSans-Regular.ttf);
+}
+
+@font-face {
+    font-family: NotoBold;
+    src: url(../assets/fonts/NotoSans-Bold.ttf);
+}
+
+html, body, #root {
+    background-color: var(--bg_1_color);
+    color: var(--text_color);
+    font-family: Noto, serif;
+    height: 100%;
+    width: 100%;
+    min-width: 500px;
+    max-height: 100%;
+    overflow: hidden;
+    margin: 0;
+}
+
+/* ScrollBar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg_3_color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bg_4_color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--subject_color);
+}
