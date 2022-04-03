@@ -1,0 +1,34 @@
+.searchMenu {
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  align-items: center;
+  gap: 5px;
+  height: 50px;
+  padding: 0 5px;
+  background-color: var(--bg_2_color);
+  box-shadow: 1px 4px 6px 0 var(--bg_1_color);
+
+  input:focus, select:focus {
+    outline: none;
+  }
+
+  input {
+    border: none;
+    height: 30px;
+    color: var(--subject_color);
+    padding: 20px;
+    border-radius: 5px;
+    background-color: var(--bg_1_color);
+    cursor: text;
+  }
+
+  select {
+    border: none;
+    height: 40px;
+    color: var(--subject_color);
+    padding: 0 16px;
+    border-radius: 5px;
+    background-color: var(--bg_1_color);
+    cursor: pointer;
+  }
+}

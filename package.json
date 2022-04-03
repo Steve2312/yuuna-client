@@ -1,0 +1,42 @@
+{
+  "name": "yuuna-client",
+  "productName": "Yuuna",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Yuuna is a music player that uses the Beatconnect API to download osu! beatmaps.",
+  "author": "Steve2312",
+  "license": "MIT",
+  "main": "dist/main/index.cjs",
+  "scripts": {
+    "dev": "node scripts/watch.mjs",
+    "build": "tsc --noEmit -p packages/renderer/tsconfig.json && node scripts/build.mjs && electron-builder --config electron-builder-config.js"
+  },
+  "engines": {
+    "node": ">=14.17.0"
+  },
+  "dependencies": {
+    "axios": "^0.26.1",
+    "electron-store": "^8.0.1",
+    "react-icons": "^4.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.40",
+    "@types/react-dom": "^17.0.13",
+    "@vitejs/plugin-react": "^1.2.0",
+    "dotenv": "^16.0.0",
+    "electron": "^17.1.2",
+    "electron-builder": "^22.14.13",
+    "execa": "^6.1.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "sass": "^1.49.9",
+    "typescript": "^4.6.2",
+    "vite": "^2.8.6",
+    "vite-plugin-esmodule": "^1.2.5",
+    "vite-plugin-optimizer": "^1.3.2"
+  },
+  "env": {
+    "VITE_DEV_SERVER_HOST": "127.0.0.1",
+    "VITE_DEV_SERVER_PORT": 7777
+  }
+}
