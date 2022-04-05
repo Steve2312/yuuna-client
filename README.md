@@ -5,7 +5,7 @@ Yuuna is a music player that uses the Beatconnect API to download osu! beatmaps.
 ## Changelog
 
 ### 03-04-2022
-Refactoring the project
+Refactoring the project (check my other branch)
  - Typescript
  - SCSS
  - Vite JS as development environment
