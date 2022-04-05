@@ -54,7 +54,6 @@ const TitleBar: React.FC<Props> = ({title, src, scrollableElementRef}) => {
 
     const titleBarOpacity = firstElementOffsetBottom ? (scrollTop - firstElementOffsetBottom + 95) / 70 : 0
     const titleBarStyle = {
-        display: titleBarOpacity < 0 ? "none" : "flex",
         opacity: clamp(titleBarOpacity, 0, 1)
     }
 

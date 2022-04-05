@@ -45,6 +45,10 @@
         opacity: 0;
         transition: all linear 0.2s;
       }
+
+      svg:hover {
+        color: var(--accent_color)
+      }
     }
 
     .container {
