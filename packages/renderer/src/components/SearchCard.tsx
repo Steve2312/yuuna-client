@@ -1,6 +1,6 @@
 import React, {CSSProperties} from "react";
 import styles from '@/styles/searchcard.module.scss';
-import { FaPlay, FaPause, FaEllipsisH, FaDownload } from 'react-icons/fa';
+import { FaPlay, FaPause, FaEllipsisH, FaDownload, FaCircleNotch } from 'react-icons/fa';
 import thumbnail from '@/assets/images/no_thumbnail.jpg';
 import usePreviewService from "@/hooks/usePreviewService";
 import PreviewService from "@/services/PreviewService";
@@ -26,6 +26,12 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
     const [preview] = usePreviewService();
 
     const isPlaying = preview.beatmapSetID === id && preview.playing;
+    const isLoading = preview.loading;
+
+    const play = async () => {
+        if (preview.beatmapSetID === id) PreviewService.playPause();
+        else await PreviewService.playPreview(id);
+    }
 
     return (
         <div className={styles.searchCard} style={style}>
@@ -34,9 +40,12 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
                 <div className={styles.albumCover} style={cover}>
                     {
                         isPlaying ?
-                            <FaPause onClick={() => PreviewService.playPreview(id, title)}/>
+                            isLoading ?
+                                <FaCircleNotch className={styles.loading} />
+                                :
+                                <FaPause onClick={play}/>
                             :
-                            <FaPlay onClick={() => PreviewService.playPreview(id, title)}/>
+                            <FaPlay onClick={play}/>
                     }
                 </div>
                 <div className={styles.container}>

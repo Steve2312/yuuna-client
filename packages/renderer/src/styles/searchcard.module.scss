@@ -167,8 +167,31 @@
 
     svg {
       opacity: 1 !important;
+      animation: fadeIn 0.2s linear;
     }
   }
+}
+
+@-webkit-keyframes rotating {
+  from{
+    transform: rotate(0deg);
+  }
+  to{
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+}
+
+.loading {
+  animation: fadeIn 1s linear, rotating 2s infinite !important;
 }
 
 

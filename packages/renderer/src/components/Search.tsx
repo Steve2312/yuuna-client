@@ -1,6 +1,6 @@
 import React, {useEffect, useRef } from "react";
 import Banner from "@/components/Banner";
-import SearchBanner from "../assets/banners/search.png"
+import SearchBanner from "../assets/banners/409667.jpg"
 import SearchMenu from "@/components/SearchMenu";
 import useSearchService from "@/hooks/useSearchService";
 import SearchCard from "@/components/SearchCard";
