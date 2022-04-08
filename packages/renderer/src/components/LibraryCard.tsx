@@ -43,7 +43,7 @@ const LibraryCard: React.FC<Props> = ({song, style}) => {
         } else {
             const imagePath = path.replaceAll('\\', '/');
             return {
-                backgroundImage: `url("${imagePath}"), url("${thumbnail}")`
+                backgroundImage: `url("file://${imagePath}"), url("${thumbnail}")`
             }
         }
     }
