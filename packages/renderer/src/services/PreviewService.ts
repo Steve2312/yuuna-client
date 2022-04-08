@@ -5,7 +5,7 @@ class PreviewService extends Observable {
 
     private playing: boolean = false;
     private loading: boolean = false;
-    private beatmapSetID: number;
+    private beatmapSetID: number | null;
 
     private defaultAudioVolume: number = 0.24;
 
@@ -13,39 +13,34 @@ class PreviewService extends Observable {
     private gainNode = this.audioContext.createGain();
     private audioBufferSource: AudioBufferSourceNode | null;
 
-    private cancelToken = axios.CancelToken;
-    private source = this.cancelToken.source();
+    private cancelTokenSource = axios.CancelToken.source();
 
     constructor() {
         super();
+
         this.gainNode.gain.value = this.defaultAudioVolume;
     }
 
     public playPreview = async (beatmapSetID: number): Promise<void> => {
 
-        if (this.audioBufferSource) {
-            this.audioBufferSource.onended = null;
-            await this.audioBufferSource.stop();
-        }
+        if (this.loading) this.cancelAxiosRequest();
 
-        this.abortFetch();
-        this.handleAudioOnInitialize(beatmapSetID);
+        this.destroyAudioBufferSource();
+        this.notifyLoading(beatmapSetID);
 
         const url = `https://b.ppy.sh/preview/${beatmapSetID}.mp3`;
 
         try {
-            const arrayBuffer = await this.fetchArrayBuffer(url);
+            const arrayBuffer = await this.getArrayBuffer(url);
             const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
             this.audioBufferSource = this.createAudioBufferSource(audioBuffer);
-            this.audioBufferSource.onended = this.handleAudioOnEnd;
-
+            this.audioBufferSource.onended = this.notifyFinishedPlaying;
             this.gainNode.connect(this.audioContext.destination);
             this.audioBufferSource.start();
-
-            this.handleAudioOnPlay();
+            this.notifyFinishedLoading();
         } catch(error) {
             if (!axios.isCancel(error)) {
-                this.handleAudioOnEnd();
+                this.notifyFinishedPlaying();
                 console.error(error);
             }
         }
@@ -53,14 +48,12 @@ class PreviewService extends Observable {
 
     public play = () => {
         this.gainNode.connect(this.audioContext.destination)
-        this.playing = true;
-        this.notify(this.getState());
+        this.notifyPlaying();
     }
 
     public pause = async () => {
         this.gainNode.disconnect();
-        this.playing = false;
-        this.notify(this.getState());
+        this.notifyPaused();
     }
 
     public playPause = () => {
@@ -75,28 +68,10 @@ class PreviewService extends Observable {
         return this.gainNode.gain.value;
     }
 
-    private handleAudioOnInitialize = (beatmapSetID: number) => {
-        this.beatmapSetID = beatmapSetID;
-        this.loading = true;
-        this.playing = true;
-        this.notify(this.getState());
-    }
-
-    private handleAudioOnPlay = () => {
-        this.loading = false;
-        this.notify(this.getState());
-    }
-
-    private handleAudioOnEnd = () => {
-        this.beatmapSetID = -1;
-        this.playing = false;
-        this.notify(this.getState());
-    }
-
-    private fetchArrayBuffer = async (url: string): Promise<ArrayBuffer> => {
+    private getArrayBuffer = async (url: string): Promise<ArrayBuffer> => {
         const response = await axios.get(url, {
             responseType: "arraybuffer",
-            cancelToken: this.source.token
+            cancelToken: this.cancelTokenSource.token
         });
 
         return response.data;
@@ -109,13 +84,44 @@ class PreviewService extends Observable {
         return audioBufferSource;
     }
 
-    private abortFetch = () => {
-        if (this.loading) {
-            this.loading = false;
-            this.source.cancel();
-            this.cancelToken = axios.CancelToken;
-            this.source = this.cancelToken.source();
+    private cancelAxiosRequest =  () => {
+        this.cancelTokenSource.cancel();
+        this.cancelTokenSource = axios.CancelToken.source();
+    }
+
+    private destroyAudioBufferSource = () => {
+        if (this.audioBufferSource) {
+            this.audioBufferSource.onended = null;
+            this.audioBufferSource.stop();
         }
+    }
+
+    private notifyLoading = (beatmapSetID: number) => {
+        this.beatmapSetID = beatmapSetID;
+        this.loading = true;
+        this.playing = true;
+        this.notify(this.getState());
+    }
+
+    private notifyFinishedLoading = () => {
+        this.loading = false;
+        this.notify(this.getState());
+    }
+
+    private notifyFinishedPlaying = () => {
+        this.beatmapSetID = null;
+        this.playing = false;
+        this.notify(this.getState());
+    }
+
+    private notifyPlaying = () => {
+        this.playing = true;
+        this.notify(this.getState());
+    }
+
+    private notifyPaused = () => {
+        this.playing = false;
+        this.notify(this.getState());
     }
 
     public getState = () => {
