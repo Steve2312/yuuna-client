@@ -4,6 +4,7 @@ import { FaPlay, FaPause, FaEllipsisH, FaDownload, FaCircleNotch } from 'react-i
 import thumbnail from '@/assets/images/no_thumbnail.jpg';
 import usePreviewService from "@/hooks/usePreviewService";
 import PreviewService from "@/services/PreviewService";
+import { shell } from 'electron';
 
 type Props = {
     beatmap: any,
@@ -15,6 +16,26 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
 
     const { artist, average_length, title, id, source, creator, bpm, user_id } = beatmap;
 
+    const [preview] = usePreviewService();
+
+    const play = async () => {
+        if (preview.beatmapSetID === id) PreviewService.playPause();
+        else await PreviewService.playPreview(id);
+    }
+
+    const showBeatmapPage = async () => {
+        const beatmapInfoURL = 'https://osu.ppy.sh/beatmapsets/' + id;
+        await shell.openExternal(beatmapInfoURL);
+    }
+
+    const showCreatorPage = async () => {
+        const creatorURL = 'https://osu.ppy.sh/users/' + user_id;
+        await shell.openExternal(creatorURL);
+    }
+
+    const isPlaying = preview.beatmapSetID === id && preview.playing;
+    const isLoading = preview.loading;
+
     const cover = {
         backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/list@2x.jpg"), url("${thumbnail}")`,
     };
@@ -22,16 +43,6 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
     const header = {
         backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/card@2x.jpg"), url("${thumbnail}")`,
     };
-
-    const [preview] = usePreviewService();
-
-    const isPlaying = preview.beatmapSetID === id && preview.playing;
-    const isLoading = preview.loading;
-
-    const play = async () => {
-        if (preview.beatmapSetID === id) PreviewService.playPause();
-        else await PreviewService.playPreview(id);
-    }
 
     return (
         <div className={styles.searchCard} style={style}>
@@ -48,7 +59,7 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
                             <FaPlay onClick={play}/>
                     }
                 </div>
-                <div className={styles.container}>
+                <div className={styles.container} onDoubleClick={play}>
                     <div className={styles.cardCover} style={header} />
                     <div className={styles.section}>
                         <span className={styles.title}>{title}</span>
@@ -58,7 +69,7 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
                         </span>
                         <span className={styles.subject}>
                             CREATOR:{' '}
-                            <span className={styles.value + " " + styles.link}>
+                            <span className={styles.value + " " + styles.link} onClick={showCreatorPage}>
                                 {creator}
                             </span>
                         </span>
@@ -73,7 +84,7 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
                         </span>
                         <span className={styles.box}>
                             BEATMAP SET ID:{' '}
-                            <span className={styles.value + " " + styles.link}>
+                            <span className={styles.value + " " + styles.link} onClick={showBeatmapPage}>
                                 {id}
                             </span>
                         </span>

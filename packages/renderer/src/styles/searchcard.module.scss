@@ -3,7 +3,7 @@
   align-items: center;
   white-space: nowrap;
   width: calc(100% - 20px);
-  //position: absolute;
+  user-select: none;
 
   .index {
     font-size: 12px;
