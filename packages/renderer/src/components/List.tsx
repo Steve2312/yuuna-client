@@ -83,12 +83,18 @@ const List: React.ForwardRefExoticComponent<Props & React.RefAttributes<HTMLDivE
         if (props.header) return <props.header />
     }, []);
 
-    return (
-        <div className={styles.list} ref={listRef}>
-            {listHeader}
+    const listElements = useMemo( () => {
+        return (
             <div className={styles.listElements} ref={listElementsRef} style={{height: props.data.length * componentHeight}}>
                 {elements}
             </div>
+        )
+    }, [props.data, verticalPosition, listHeight]);
+
+    return (
+        <div className={styles.list} ref={listRef}>
+            {listHeader}
+            {listElements}
         </div>
     );
 });

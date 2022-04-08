@@ -9,11 +9,17 @@ const Outlet: React.FC = () => {
     const [outlet] = useOutletService();
 
     const getStyle = (route: string) => {
-        const style = {
-            display: 'none'
+        const style: React.CSSProperties = {
+            opacity: 0,
+            pointerEvents: "none",
+            zIndex: -1
         };
 
-        if (outlet.route == route) style.display = 'block';
+        if (outlet.route == route) {
+            style.opacity = 1;
+            style.pointerEvents = "auto"
+            style.zIndex = 1;
+        }
 
         return style;
     }
