@@ -12,6 +12,8 @@ class SearchService extends Observable{
     private errorStatus: number | null = null;
 
     private beatmaps: any[] = [];
+    private beatmapIds: Set<number> = new Set<number>();
+
     private page: number = 0;
     private lastPage: boolean = false;
 
@@ -70,7 +72,8 @@ class SearchService extends Observable{
 
     private handleSearch = (response: AxiosResponse) => {
         this.instance = null;
-        this.beatmaps = [...response.data.beatmaps]
+        this.beatmapIds.clear();
+        this.beatmaps = [...this.filterDuplicateBeatmaps(response.data.beatmaps)]
         this.lastPage = response.data.beatmaps.length < 50;
         this.timeout = null;
         this.page++;
@@ -79,11 +82,23 @@ class SearchService extends Observable{
 
     private handleSearchNext = (response: AxiosResponse) => {
         this.instance = null;
-        this.beatmaps = [...this.beatmaps, ...response.data.beatmaps]
+        this.beatmaps = [...this.beatmaps, ...this.filterDuplicateBeatmaps(response.data.beatmaps)]
         this.lastPage = response.data.beatmaps.length < 50;
         this.timeout = null;
         this.page++;
+
         this.notify(this.getState());
+    }
+
+    private filterDuplicateBeatmaps(beatmaps: any[]) {
+        return beatmaps.filter((beatmap) => {
+            if (this.beatmapIds.has(beatmap.id)) {
+                return false;
+            } else {
+                this.beatmapIds.add(beatmap.id);
+                return true;
+            }
+        })
     }
 
     private handleError = (error: AxiosError) => {
