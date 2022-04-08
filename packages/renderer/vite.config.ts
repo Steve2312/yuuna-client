@@ -12,7 +12,9 @@ export default defineConfig({
   mode: process.env.NODE_ENV,
   root: __dirname,
   plugins: [
-    react(),
+    react({
+      fastRefresh: false
+    }),
     resolveElectron(
       /**
        * Here you can specify other modules
