@@ -1,27 +1,27 @@
-import React, {CSSProperties} from "react";
+import React, {CSSProperties, useEffect, useState} from "react";
 import styles from '@/styles/search-librarycard.module.scss';
-import { FaPlay, FaPause, FaEllipsisH, FaDownload, FaCircleNotch } from 'react-icons/fa';
+import { FaPlay, FaPause, FaEllipsisH, FaDownload } from 'react-icons/fa';
 import thumbnail from '@/assets/images/no_thumbnail.jpg';
-import usePreviewService from "@/hooks/usePreviewService";
-import PreviewService from "@/services/PreviewService";
-import { shell } from 'electron';
+import Song from "@/interfaces/Song";
+import {getCoverPath, getHeaderPath} from "@/utils/Paths";
+import {shell} from "electron";
 
 type Props = {
-    beatmap: any,
-    index: number,
+    song: Song,
     style?: CSSProperties
 }
 
-const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
+const LibraryCard: React.FC<Props> = ({song, style}) => {
 
-    const { artist, average_length, title, id, source, creator, bpm, user_id } = beatmap;
+    const { title, artist, creator, source, id, beatmapset_id, duration, bpm, index } = song;
 
-    const [preview] = usePreviewService();
+    const [coverPath, setCoverPath] = useState<string | null>(null);
+    const [headerPath, setHeaderPath] = useState<string | null>(null);
 
-    const play = async () => {
-        if (preview.beatmapSetID === id) PreviewService.playPause();
-        else await PreviewService.playPreview(id);
-    }
+    useEffect(() => {
+        getCoverPath(song).then(setCoverPath)
+        getHeaderPath(song).then(setHeaderPath)
+    }, [])
 
     const showBeatmapPage = async () => {
         const beatmapInfoURL = 'https://osu.ppy.sh/beatmapsets/' + id;
@@ -29,38 +29,39 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
     }
 
     const showCreatorPage = async () => {
-        const creatorURL = 'https://osu.ppy.sh/users/' + user_id;
+        const creatorURL = 'https://osu.ppy.sh/users/' + creator;
         await shell.openExternal(creatorURL);
     }
 
-    const isPlaying = preview.beatmapSetID === id && preview.playing;
-    const isLoading = preview.loading;
+    const isPlaying = false;
 
-    const cover = {
-        backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/list@2x.jpg"), url("${thumbnail}")`,
-    };
-
-    const header = {
-        backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/card@2x.jpg"), url("${thumbnail}")`,
-    };
+    const getBackgroundImageStyle = (path: string | null) => {
+        if (path == null) {
+            return {
+                backgroundImage: `url("${thumbnail}")`
+            }
+        } else {
+            const imagePath = path.replaceAll('\\', '/');
+            return {
+                backgroundImage: `url("${imagePath}"), url("${thumbnail}")`
+            }
+        }
+    }
 
     return (
         <div className={styles.searchCard} style={style}>
             <span className={styles.index}>{index + 1}</span>
-            <div className={styles.content + (preview.beatmapSetID == id ? " " + styles.playing : '')}>
-                <div className={styles.albumCover} style={cover}>
+            <div className={styles.content}>
+                <div className={styles.albumCover} style={getBackgroundImageStyle(coverPath)}>
                     {
                         isPlaying ?
-                            isLoading ?
-                                <FaCircleNotch className={styles.loading} />
-                                :
-                                <FaPause onClick={play}/>
+                            <FaPause />
                             :
-                            <FaPlay onClick={play}/>
+                            <FaPlay />
                     }
                 </div>
-                <div className={styles.container} onDoubleClick={play}>
-                    <div className={styles.cardCover} style={header} />
+                <div className={styles.container}>
+                    <div className={styles.cardCover} style={getBackgroundImageStyle(headerPath)} />
                     <div className={styles.section}>
                         <span className={styles.title}>{title}</span>
                         <span className={styles.artist}>{artist}</span>
@@ -77,7 +78,7 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
 
                     <div className={styles.section}>
                         <span className={styles.box}>
-                            DURATION: <span className={styles.value}>{average_length}</span>
+                            DURATION: <span className={styles.value}>{duration}</span>
                         </span>
                         <span className={styles.box}>
                             BPM: <span className={styles.value}>{bpm}</span>
@@ -85,7 +86,7 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
                         <span className={styles.box}>
                             BEATMAP SET ID:{' '}
                             <span className={styles.value + " " + styles.link} onClick={showBeatmapPage}>
-                                {id}
+                                {beatmapset_id}
                             </span>
                         </span>
                     </div>
@@ -99,4 +100,4 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
     );
 }
 
-export default SearchCard;
+export default LibraryCard;

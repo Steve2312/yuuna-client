@@ -1,6 +1,6 @@
 {
   "name": "yuuna-client",
-  "productName": "Yuuna",
+  "productName": "yuuna-client",
   "private": true,
   "version": "1.0.0",
   "description": "Yuuna is a music player that uses the Beatconnect API to download osu! beatmaps.",

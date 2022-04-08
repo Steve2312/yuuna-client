@@ -61,3 +61,7 @@ ipcMain.on("maximize-me", () => {
 ipcMain.on("close-me", () => {
     app.quit();
 });
+
+ipcMain.on("appData-path", (event) => {
+    event.returnValue = app.getPath('userData');
+})
