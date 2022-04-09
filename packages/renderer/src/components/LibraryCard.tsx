@@ -92,7 +92,7 @@ const LibraryCard: React.FC<Props> = ({song, style}) => {
                     </div>
                 </div>
                 <div className={styles.options}>
-                    <FaDownload />
+                    <br/>
                     <FaEllipsisH />
                 </div>
             </div>
