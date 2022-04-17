@@ -5,6 +5,9 @@ import thumbnail from '@/assets/images/no_thumbnail.jpg';
 import usePreviewService from "@/hooks/usePreviewService";
 import PreviewService from "@/services/PreviewService";
 import { shell } from 'electron';
+import getBackgroundImageStyle from "@/utils/BackgroundImageStyle";
+import formatSeconds from "@/utils/FormatSeconds";
+import {openBeatmapPage, openCreatorPage} from "@/utils/Pages";
 
 type Props = {
     beatmap: any,
@@ -14,40 +17,23 @@ type Props = {
 
 const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
 
-    const { artist, average_length, title, id, source, creator, bpm, user_id } = beatmap;
-
     const [preview] = usePreviewService();
 
-    const play = async () => {
-        if (preview.beatmapSetID === id) PreviewService.playPause();
-        else await PreviewService.playPreview(id);
-    }
-
-    const showBeatmapPage = async () => {
-        const beatmapInfoURL = 'https://osu.ppy.sh/beatmapsets/' + id;
-        await shell.openExternal(beatmapInfoURL);
-    }
-
-    const showCreatorPage = async () => {
-        const creatorURL = 'https://osu.ppy.sh/users/' + user_id;
-        await shell.openExternal(creatorURL);
-    }
-
-    const isPlaying = preview.beatmapSetID === id && preview.playing;
+    const isPlaying = preview.beatmapSetID === beatmap.id && preview.playing;
     const isLoading = preview.loading;
 
-    const cover = {
-        backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/list@2x.jpg"), url("${thumbnail}")`,
-    };
+    const cover = getBackgroundImageStyle('https://', `assets.ppy.sh/beatmaps/${beatmap.id}/covers/list@2x.jpg`);
+    const header = getBackgroundImageStyle('https://',`assets.ppy.sh/beatmaps/${beatmap.id}/covers/card@2x.jpg`);
 
-    const header = {
-        backgroundImage: `url("https://assets.ppy.sh/beatmaps/${id}/covers/card@2x.jpg"), url("${thumbnail}")`,
-    };
+    const play = async () => {
+        if (preview.beatmapSetID === beatmap.id) PreviewService.playPause();
+        else await PreviewService.playPreview(beatmap.id);
+    }
 
     return (
         <div className={styles.searchCard} style={style}>
             <span className={styles.index}>{index + 1}</span>
-            <div className={styles.content + (preview.beatmapSetID == id ? " " + styles.playing : '')}>
+            <div className={styles.content + (preview.beatmapSetID == beatmap.id ? " " + styles.playing : '')}>
                 <div className={styles.albumCover} style={cover}>
                     {
                         isPlaying ?
@@ -62,30 +48,30 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
                 <div className={styles.container} onDoubleClick={play}>
                     <div className={styles.cardCover} style={header} />
                     <div className={styles.section}>
-                        <span className={styles.title}>{title}</span>
-                        <span className={styles.artist}>{artist}</span>
+                        <span className={styles.title}>{beatmap.title}</span>
+                        <span className={styles.artist}>{beatmap.artist}</span>
                         <span className={styles.subject}>
-                            SOURCE: <span className={styles.value}>{source ? source : '-'}</span>
+                            SOURCE: <span className={styles.value}>{beatmap.source ? beatmap.source : '-'}</span>
                         </span>
                         <span className={styles.subject}>
                             CREATOR:{' '}
-                            <span className={styles.value + " " + styles.link} onClick={showCreatorPage}>
-                                {creator}
+                            <span className={styles.value + " " + styles.link} onClick={() => openCreatorPage(beatmap.creator)}>
+                                {beatmap.creator}
                             </span>
                         </span>
                     </div>
 
                     <div className={styles.section}>
                         <span className={styles.box}>
-                            DURATION: <span className={styles.value}>{average_length}</span>
+                            DURATION: <span className={styles.value}>{formatSeconds(beatmap.average_length)}</span>
                         </span>
                         <span className={styles.box}>
-                            BPM: <span className={styles.value}>{bpm}</span>
+                            BPM: <span className={styles.value}>{beatmap.bpm}</span>
                         </span>
                         <span className={styles.box}>
                             BEATMAP SET ID:{' '}
-                            <span className={styles.value + " " + styles.link} onClick={showBeatmapPage}>
-                                {id}
+                            <span className={styles.value + " " + styles.link} onClick={() => openBeatmapPage(beatmap.id)}>
+                                {beatmap.id}
                             </span>
                         </span>
                     </div>

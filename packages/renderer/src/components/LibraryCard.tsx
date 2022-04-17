@@ -1,10 +1,14 @@
 import React, {CSSProperties, useEffect, useState} from "react";
 import styles from '@/styles/search-librarycard.module.scss';
-import { FaPlay, FaPause, FaEllipsisH, FaDownload } from 'react-icons/fa';
-import thumbnail from '@/assets/images/no_thumbnail.jpg';
+import { FaPlay, FaPause, FaEllipsisH } from 'react-icons/fa';
 import Song from "@/interfaces/Song";
 import {getCoverPath, getHeaderPath} from "@/utils/Paths";
-import {shell} from "electron";
+import getBackgroundImageStyle from "@/utils/BackgroundImageStyle";
+import PlayerService from "@/services/PlayerService";
+import LibraryService from "@/services/LibraryService";
+import usePlayerService from "@/hooks/usePlayerService";
+import formatSeconds from "@/utils/FormatSeconds";
+import {openBeatmapPage, openCreatorPage} from "@/utils/Pages";
 
 type Props = {
     song: Song,
@@ -13,80 +17,56 @@ type Props = {
 
 const LibraryCard: React.FC<Props> = ({song, style}) => {
 
-    const { title, artist, creator, source, id, beatmapset_id, duration, bpm, index } = song;
+    const [player] = usePlayerService();
 
-    const [coverPath, setCoverPath] = useState<string | null>(null);
-    const [headerPath, setHeaderPath] = useState<string | null>(null);
+    const coverPath = getCoverPath(song);
+    const headerPath = getHeaderPath(song);
 
-    useEffect(() => {
-        getCoverPath(song).then(setCoverPath)
-        getHeaderPath(song).then(setHeaderPath)
-    }, [])
+    const isPlaying = player.current?.id == song.id && player.playing;
 
-    const showBeatmapPage = async () => {
-        const beatmapInfoURL = 'https://osu.ppy.sh/beatmapsets/' + id;
-        await shell.openExternal(beatmapInfoURL);
-    }
-
-    const showCreatorPage = async () => {
-        const creatorURL = 'https://osu.ppy.sh/users/' + creator;
-        await shell.openExternal(creatorURL);
-    }
-
-    const isPlaying = false;
-
-    const getBackgroundImageStyle = (path: string | null) => {
-        if (path == null) {
-            return {
-                backgroundImage: `url("${thumbnail}")`
-            }
-        } else {
-            const imagePath = path.replaceAll('\\', '/');
-            return {
-                backgroundImage: `url("file://${imagePath}"), url("${thumbnail}")`
-            }
-        }
+    const play = async () => {
+        await PlayerService.playFromPlaylist("", LibraryService.getState().songs, song.index);
     }
 
     return (
         <div className={styles.searchCard} style={style}>
-            <span className={styles.index}>{index + 1}</span>
-            <div className={styles.content}>
-                <div className={styles.albumCover} style={getBackgroundImageStyle(coverPath)}>
+            <span className={styles.index}>{song.index + 1}</span>
+            <div className={styles.content + (player.current?.id == song.id ? " " + styles.playing : '')}>
+                <div className={styles.albumCover} style={getBackgroundImageStyle('file://', coverPath)}>
                     {
                         isPlaying ?
-                            <FaPause />
+                            <FaPause onClick={play}/>
                             :
-                            <FaPlay />
+                            <FaPlay onClick={play}/>
                     }
                 </div>
                 <div className={styles.container}>
-                    <div className={styles.cardCover} style={getBackgroundImageStyle(headerPath)} />
+                    <div className={styles.cardCover} style={getBackgroundImageStyle('file://', headerPath)} />
                     <div className={styles.section}>
-                        <span className={styles.title}>{title}</span>
-                        <span className={styles.artist}>{artist}</span>
+                        <span className={styles.title}>{song.title}</span>
+                        <span className={styles.artist}>{song.artist}</span>
                         <span className={styles.subject}>
-                            SOURCE: <span className={styles.value}>{source ? source : '-'}</span>
+                            SOURCE: <span className={styles.value}>{song.source ? song.source : '-'}</span>
                         </span>
                         <span className={styles.subject}>
                             CREATOR:{' '}
-                            <span className={styles.value + " " + styles.link} onClick={showCreatorPage}>
-                                {creator}
+                            <span className={styles.value + " " + styles.link} onClick={() => openCreatorPage(song.creator)}>
+                                {song.creator}
                             </span>
                         </span>
                     </div>
 
                     <div className={styles.section}>
                         <span className={styles.box}>
-                            DURATION: <span className={styles.value}>{duration}</span>
+                            DURATION: <span className={styles.value}>{formatSeconds(song.duration)}</span>
                         </span>
                         <span className={styles.box}>
-                            BPM: <span className={styles.value}>{bpm}</span>
+                            BPM: <span className={styles.value}>{song.bpm}</span>
                         </span>
                         <span className={styles.box}>
                             BEATMAP SET ID:{' '}
-                            <span className={styles.value + " " + styles.link} onClick={showBeatmapPage}>
-                                {beatmapset_id}
+                            <span className={styles.value + " " + styles.link} onClick={() => openBeatmapPage(song.beatmapset_id)}>
+                                {song.beatmapset_id}
                             </span>
                         </span>
                     </div>
