@@ -1,7 +1,7 @@
 import {shell} from "electron";
 
 export const openBeatmapPage = async (beatmapSetId: number) => {
-    const beatmapURL = 'https://osu.ppy.sh/users/' + beatmapSetId;
+    const beatmapURL = 'https://osu.ppy.sh/beatmapsets/' + beatmapSetId;
     await shell.openExternal(beatmapURL);
 }
 
