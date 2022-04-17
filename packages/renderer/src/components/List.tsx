@@ -30,39 +30,56 @@ const List: React.ForwardRefExoticComponent<Props & React.RefAttributes<HTMLDivE
     useEffect(() => {
         const listElement = listRef.current;
 
+        const updateListHeight = () => {
+            const clientHeight = listRef.current?.clientHeight;
+            if (clientHeight) setListHeight(clientHeight);
+        }
+
         if (listElement) {
             updateListHeight();
-            listElement.addEventListener("scroll", updateVerticalPosition);
-            listElement.addEventListener("scroll", checkEndReached);
             window.addEventListener("resize", updateListHeight);
             return () => {
-                listElement.removeEventListener("scroll", updateVerticalPosition);
-                listElement.removeEventListener("scroll", checkEndReached);
                 window.removeEventListener("resize", updateListHeight);
             }
         }
     }, [listRef]);
 
-    const updateListHeight = () => {
-        const clientHeight = listRef.current?.clientHeight;
-        if (clientHeight) setListHeight(clientHeight);
-    }
+    useEffect(() => {
+        const listElement = listRef.current;
 
-    const updateVerticalPosition = (event: Event) => {
-        const offsetTop = listElementsRef.current?.offsetTop || 0;
-        const scrollTop = (event.target as HTMLDivElement).scrollTop;
-        setVerticalPosition(scrollTop - offsetTop);
-    }
+        const updateVerticalPosition = (event: Event) => {
+            const offsetTop = listElementsRef.current?.offsetTop || 0;
+            const scrollTop = (event.target as HTMLDivElement).scrollTop;
+            const position = scrollTop - offsetTop;
+            const difference = Math.abs(position - verticalPosition);
+            const threshold = componentHeight * 2;
 
-    const checkEndReached = (event: Event) => {
-        if (props.onEndReached) {
-            const {scrollHeight, scrollTop, offsetHeight} = event.target as HTMLDivElement;
-            const threshold = props.thresholdEnd || 0;
-            if (scrollHeight - scrollTop - offsetHeight <= threshold) {
-                props.onEndReached();
+            if (difference > threshold) {
+                setVerticalPosition(position);
             }
         }
-    }
+
+        const checkEndReached = (event: Event) => {
+            if (props.onEndReached) {
+                const {scrollHeight, scrollTop, offsetHeight} = event.target as HTMLDivElement;
+                const threshold = props.thresholdEnd || 0;
+                if (scrollHeight - scrollTop - offsetHeight <= threshold) {
+                    props.onEndReached();
+                }
+            }
+        }
+
+        if (listElement) {
+            listElement.addEventListener("scroll", updateVerticalPosition);
+            listElement.addEventListener("scroll", checkEndReached);
+            return () => {
+                listElement.removeEventListener("scroll", updateVerticalPosition);
+                listElement.removeEventListener("scroll", checkEndReached);
+            }
+        }
+
+
+    }, [listRef, verticalPosition])
 
     const lowestBoundaryPixel = verticalPosition - (prerenderCount * componentHeight);
     const highestBoundaryPixel = verticalPosition + listHeight + (prerenderCount * componentHeight);
