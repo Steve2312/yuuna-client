@@ -171,7 +171,7 @@ class PlayerService extends Observable {
 
             // Play new audio
             this.audio = audio;
-            this.play();
+            await this.play();
 
             // Update state
             this.playlistName = playlistName;
