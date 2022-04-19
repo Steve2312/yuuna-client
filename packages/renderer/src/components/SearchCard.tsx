@@ -1,10 +1,8 @@
 import React, {CSSProperties} from "react";
 import styles from '@/styles/search-librarycard.module.scss';
 import { FaPlay, FaPause, FaEllipsisH, FaDownload, FaCircleNotch } from 'react-icons/fa';
-import thumbnail from '@/assets/images/no_thumbnail.jpg';
 import usePreviewService from "@/hooks/usePreviewService";
 import PreviewService from "@/services/PreviewService";
-import { shell } from 'electron';
 import getBackgroundImageStyle from "@/utils/BackgroundImageStyle";
 import formatSeconds from "@/utils/FormatSeconds";
 import {openBeatmapPage, openCreatorPage} from "@/utils/Pages";
@@ -19,7 +17,7 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
 
     const [preview] = usePreviewService();
 
-    const isPlaying = preview.beatmapSetID === beatmap.id && preview.playing;
+    const isPlaying = preview.beatmapSetID == beatmap.id && preview.playing;
     const isLoading = preview.loading;
 
     const cover = getBackgroundImageStyle(`https://assets.ppy.sh/beatmaps/${beatmap.id}/covers/list@2x.jpg`);

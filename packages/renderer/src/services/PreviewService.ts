@@ -1,5 +1,6 @@
 import Observable from "./Observable";
 import axios from "axios";
+import PlayerService from "@/services/PlayerService";
 
 class PreviewService extends Observable {
 
@@ -23,6 +24,8 @@ class PreviewService extends Observable {
 
     public playPreview = async (beatmapSetID: number): Promise<void> => {
 
+        await PlayerService.pause();
+
         if (this.loading) this.cancelAxiosRequest();
 
         this.destroyAudioBufferSource();
@@ -40,18 +43,18 @@ class PreviewService extends Observable {
             this.notifyFinishedLoading();
         } catch(error) {
             if (!axios.isCancel(error)) {
-                this.notifyFinishedPlaying();
                 console.error(error);
             }
         }
     }
 
-    public play = () => {
+    public play = async () => {
+        await PlayerService.pause();
         this.gainNode.connect(this.audioContext.destination)
         this.notifyPlaying();
     }
 
-    public pause = async () => {
+    public pause = () => {
         this.gainNode.disconnect();
         this.notifyPaused();
     }
@@ -84,9 +87,10 @@ class PreviewService extends Observable {
         return audioBufferSource;
     }
 
-    private cancelAxiosRequest =  () => {
+    public cancelAxiosRequest =  () => {
         this.cancelTokenSource.cancel();
         this.cancelTokenSource = axios.CancelToken.source();
+        this.notifyFinishedPlaying();
     }
 
     private destroyAudioBufferSource = () => {

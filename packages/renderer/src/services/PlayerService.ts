@@ -1,10 +1,9 @@
 import Song from '../interfaces/Song';
-import {getCoverPath, getSongPath, songsPath} from "@/utils/Paths";
-import path from 'path';
-import PreviewService from './PreviewService';
+import {getCoverPath, getSongPath} from "@/utils/Paths";
 import AudioService from './AudioService';
 import MediaSessionService from './MediaSessionService';
 import Observable from './Observable';
+import PreviewService from "@/services/PreviewService";
 
 class PlayerService extends Observable {
 
@@ -29,16 +28,14 @@ class PlayerService extends Observable {
     }
 
     public play = async () => {
-        await PreviewService.pause();
-        
         if (this.audio) {
             await this.audio.play();
         }
     }
 
-    public pause = () => {
+    public pause = async () => {
         if (this.audio) {
-            this.audio.pause();
+            await this.audio.pause();
         }
     }
 
@@ -74,7 +71,7 @@ class PlayerService extends Observable {
             await this.playAtPosition(index);
         
             if (index == 0) {
-                this.pause();
+                await this.pause();
             }
         }
     }
@@ -110,7 +107,6 @@ class PlayerService extends Observable {
     }
 
     public playAtPosition = async (index: number) => {
-
         const song: Song = this.playlist[index];
         const songPath = getSongPath(song);
         const volume = this.audio.volume;
@@ -119,12 +115,12 @@ class PlayerService extends Observable {
             const audio = await AudioService.create(songPath, volume);
 
             // Set Handlers
-            audio.onplay = this.handleOnPlayPause;
-            audio.onpause = this.handleOnPlayPause;
+            audio.onplay = this.handleOnPlay;
+            audio.onpause = this.handleOnPause;
             audio.ontimeupdate = this.handleOnTimeUpdate;
 
             // Pause old playback
-            this.pause();
+            await this.pause();
 
             // Play new audio
             this.audio = audio;
@@ -135,17 +131,12 @@ class PlayerService extends Observable {
             await this.updateMediaSession();
 
             this.notify(this.getState());
-
-            // Pause Preview
-            await PreviewService.pause();
-
         } catch (err) {
             console.error(err);
         }
     }
 
     public playFromPlaylist = async (playlistName: string, playlist: Song[], index: number) => {
-
         const song: Song = playlist[index];
         const songPath = getSongPath(song);
         const volume = this.audio.volume;
@@ -159,15 +150,12 @@ class PlayerService extends Observable {
             const audio = await AudioService.create(songPath, volume);
 
             // Set Handlers
-            audio.onplay = this.handleOnPlayPause;
-            audio.onpause = this.handleOnPlayPause;
+            audio.onplay = this.handleOnPlay;
+            audio.onpause = this.handleOnPause;
             audio.ontimeupdate = this.handleOnTimeUpdate;
 
             // Pause old playback
-            this.pause();
-
-            // Pause Preview
-            await PreviewService.pause();
+            await this.pause();
 
             // Play new audio
             this.audio = audio;
@@ -219,17 +207,28 @@ class PlayerService extends Observable {
         // TODO
     }
 
-    // Event Handlers 
-    private handleOnPlayPause = async (event: Event) => {
-        const audio = event.target as HTMLAudioElement;
-        this.playing = !audio.paused;
-        MediaSessionService.setPlaybackState(audio.paused ? 'paused' : 'playing')
-
+    // Event Handlers
+    private handleOnPlay = async (event: Event) => {
+        this.playing = true;
         this.notify(this.getState());
 
-        if (MediaSessionService.getMediaSession().metadata?.title != this.current.title) {
-            await this.updateMediaSession();
+        MediaSessionService.setPlaybackState("playing");
+
+        const preview = PreviewService.getState();
+
+        if (preview.playing) {
+            PreviewService.pause();
         }
+
+        if (preview.loading) {
+            PreviewService.cancelAxiosRequest();
+        }
+    }
+
+    private handleOnPause = async () => {
+        this.playing = false;
+        MediaSessionService.setPlaybackState("paused");
+        this.notify(this.getState());
     }
 
     private handleOnTimeUpdate = async (event: Event) => {
