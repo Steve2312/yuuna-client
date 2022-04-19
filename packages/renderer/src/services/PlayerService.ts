@@ -1,6 +1,5 @@
 import Song from '../interfaces/Song';
 import {getCoverPath, getSongPath} from "@/utils/Paths";
-import AudioService from './AudioService';
 import MediaSessionService from './MediaSessionService';
 import Observable from './Observable';
 import PreviewService from "@/services/PreviewService";
@@ -112,7 +111,7 @@ class PlayerService extends Observable {
         const volume = this.audio.volume;
 
         try {
-            const audio = await AudioService.create(songPath, volume);
+            const audio = await this.getPlayableAudioElement(songPath, volume);
 
             // Set Handlers
             audio.onplay = this.handleOnPlay;
@@ -147,7 +146,7 @@ class PlayerService extends Observable {
         }
 
         try {
-            const audio = await AudioService.create(songPath, volume);
+            const audio = await this.getPlayableAudioElement(songPath, volume);
 
             // Set Handlers
             audio.onplay = this.handleOnPlay;
@@ -280,6 +279,28 @@ class PlayerService extends Observable {
         }
 
         return -1;
+    }
+
+    private getPlayableAudioElement = (src: string, volume: number): Promise<HTMLAudioElement> => {
+        return new Promise((resolve, reject) => {
+            const audio = new Audio();
+
+            audio.volume = volume;
+
+            audio.addEventListener("canplay", () => {
+                resolve(audio);
+            }, {
+                once: true
+            });
+
+            audio.addEventListener("error", (error: ErrorEvent) => {
+                reject(error);
+            }, {
+                once: true
+            });
+
+            audio.src = src;
+        });
     }
 
     public getState = () => {
