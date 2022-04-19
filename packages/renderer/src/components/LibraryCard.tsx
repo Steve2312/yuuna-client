@@ -32,7 +32,7 @@ const LibraryCard: React.FC<Props> = ({song, style}) => {
         <div className={styles.searchCard} style={style}>
             <span className={styles.index}>{song.index + 1}</span>
             <div className={styles.content + (player.current?.id == song.id ? " " + styles.playing : '')}>
-                <div className={styles.albumCover} style={getBackgroundImageStyle('file://', coverPath)}>
+                <div className={styles.albumCover} style={getBackgroundImageStyle(coverPath)}>
                     {
                         isPlaying ?
                             <FaPause onClick={play}/>
@@ -41,7 +41,7 @@ const LibraryCard: React.FC<Props> = ({song, style}) => {
                     }
                 </div>
                 <div className={styles.container}>
-                    <div className={styles.cardCover} style={getBackgroundImageStyle('file://', headerPath)} />
+                    <div className={styles.cardCover} style={getBackgroundImageStyle(headerPath)} />
                     <div className={styles.section}>
                         <span className={styles.title}>{song.title}</span>
                         <span className={styles.artist}>{song.artist}</span>

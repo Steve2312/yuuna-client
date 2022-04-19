@@ -1,7 +1,7 @@
 import thumbnail from "@/assets/images/no_thumbnail.jpg";
 import React from "react";
 
-const getBackgroundImageStyle = (protocol: string, path: string | null): React.CSSProperties => {
+const getBackgroundImageStyle = (path: string | null): React.CSSProperties => {
     if (path == null || path == "") {
         return {
             backgroundImage: `url("${thumbnail}")`
@@ -9,7 +9,7 @@ const getBackgroundImageStyle = (protocol: string, path: string | null): React.C
     } else {
         const imagePath = path.replaceAll('\\', '/');
         return {
-            backgroundImage: `url("${protocol + imagePath}"), url("${thumbnail}")`
+            backgroundImage: `url("${imagePath}"), url("${thumbnail}")`
         }
     }
 }

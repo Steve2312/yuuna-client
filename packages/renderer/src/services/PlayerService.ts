@@ -1,5 +1,5 @@
 import Song from '../interfaces/Song';
-import {songsPath} from "@/utils/Paths";
+import {getCoverPath, getSongPath, songsPath} from "@/utils/Paths";
 import path from 'path';
 import PreviewService from './PreviewService';
 import AudioService from './AudioService';
@@ -112,7 +112,7 @@ class PlayerService extends Observable {
     public playAtPosition = async (index: number) => {
 
         const song: Song = this.playlist[index];
-        const songPath = path.join(songsPath, song.id, song.audio);
+        const songPath = getSongPath(song);
         const volume = this.audio.volume;
 
         try {
@@ -147,7 +147,7 @@ class PlayerService extends Observable {
     public playFromPlaylist = async (playlistName: string, playlist: Song[], index: number) => {
 
         const song: Song = playlist[index];
-        const songPath = path.join(songsPath, song.id, song.audio);
+        const songPath = getSongPath(song);
         const volume = this.audio.volume;
 
         if (this.current?.id == song.id) {
@@ -193,7 +193,7 @@ class PlayerService extends Observable {
     }
 
     public updateMediaSession = async () => {
-        const coverPath = path.join(songsPath, this.current.id, "cover.jpg");
+        const coverPath = getCoverPath(this.current);
         await MediaSessionService.display(this.current.title, this.current.artist, coverPath);
 
         const mediaSession = MediaSessionService.getMediaSession();

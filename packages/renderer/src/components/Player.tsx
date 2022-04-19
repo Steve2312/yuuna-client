@@ -87,7 +87,7 @@ const PlayerBar: React.FC = () => {
     return (
         <div className={styles.player}>
             <div className={styles.left}>
-                <div className={styles.cover} style={getBackgroundImageStyle("file://", coverPath)} />
+                <div className={styles.cover} style={getBackgroundImageStyle(coverPath)} />
                 <div className={styles.metaData}>
                     <span className={styles.artist}>{artist}</span>
                     <span className={styles.title}>{title}</span>

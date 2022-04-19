@@ -22,8 +22,8 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
     const isPlaying = preview.beatmapSetID === beatmap.id && preview.playing;
     const isLoading = preview.loading;
 
-    const cover = getBackgroundImageStyle('https://', `assets.ppy.sh/beatmaps/${beatmap.id}/covers/list@2x.jpg`);
-    const header = getBackgroundImageStyle('https://',`assets.ppy.sh/beatmaps/${beatmap.id}/covers/card@2x.jpg`);
+    const cover = getBackgroundImageStyle(`https://assets.ppy.sh/beatmaps/${beatmap.id}/covers/list@2x.jpg`);
+    const header = getBackgroundImageStyle(`https://assets.ppy.sh/beatmaps/${beatmap.id}/covers/card@2x.jpg`);
 
     const play = async () => {
         if (preview.beatmapSetID === beatmap.id) PreviewService.playPause();
