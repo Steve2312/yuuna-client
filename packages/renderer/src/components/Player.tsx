@@ -99,7 +99,7 @@ const PlayerBar: React.FC = () => {
             </div>
             <div className={styles.center}>
                 <div className={styles.controls}>
-                    <span className={styles.option}><FaRandom /></span>
+                    <span className={styles.option + (player.shuffled ? " " + styles.optionActive : "")} onClick={PlayerService.shuffle}><FaRandom /></span>
                     <span onClick={PlayerService.backward}><FaBackward /></span>
                     <span onClick={PlayerService.playPause}>
                         {

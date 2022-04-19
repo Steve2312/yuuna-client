@@ -195,15 +195,31 @@ class PlayerService extends Observable {
 
     // TODO
     public shuffle = () => {
-        // TODO
+        this.shuffled ? this.sortPlaylist() : this.shufflePlaylist();
     }
 
     private shufflePlaylist = () => {
-        // TODO
+        if (this.playlist && this.current) {
+            const current = this.current;
+            const shuffledPlaylist = this.playlist.filter(song => song != current)
+                .sort(() => Math.random() - 0.5);
+
+            shuffledPlaylist.unshift(current);
+
+            this.playlist = shuffledPlaylist;
+        }
+
+        this.shuffled = true;
+        this.notify(this.getState());
     }
 
     private sortPlaylist = () => {
-        // TODO
+        if (this.playlist) {
+            this.playlist = this.playlist.sort((a, b) => a.index - b.index);
+        }
+        
+        this.shuffled = false;
+        this.notify(this.getState());
     }
 
     // Event Handlers
