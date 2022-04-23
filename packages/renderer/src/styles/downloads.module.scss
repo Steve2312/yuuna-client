@@ -1,0 +1,61 @@
+.downloads {
+  position: relative;
+  width: 200px;
+  grid-area: downloads;
+  transition: width .5s cubic-bezier(.8,.18,.22,.96);
+
+  .header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    border-bottom: 1px solid var(--bg_2_color);
+    white-space: nowrap;
+
+    .icon {
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      padding: 30px 20px;
+      cursor: pointer;
+    }
+
+    .icon:hover {
+      transition: all 200ms linear;
+      color: var(--accent_color);
+    }
+
+    .content {
+      padding: 20px 0;
+      transition: opacity 200ms linear;
+
+      h1 {
+        font-size: 16px;
+        text-shadow: 6px 5px 13px #000000a1;
+        margin: 0;
+      }
+
+      p {
+        font-family: NotoBold, serif;
+        font-size: 10px;
+        color: var(--subject_color);
+        margin: 0;
+      }
+
+    }
+  }
+}
+
+.hidden {
+  width: 55px;
+
+  .content {
+    opacity: 0;
+  }
+}
+
+
+
+
+
+
+
