@@ -14,6 +14,7 @@ class Observable {
     }
 
     public notify = (state: {}) => {
+        console.log(`${this.constructor.name} notified ${this.observers.length} observer(s)`)
         for (let observer of this.observers) {
             observer(state);
         }
