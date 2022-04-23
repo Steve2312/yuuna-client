@@ -27,13 +27,13 @@ class PlayerService extends Observable {
     }
 
     public play = async () => {
-        if (this.audio) {
+        if (this.audio.src) {
             await this.audio.play();
         }
     }
 
     public pause = async () => {
-        if (this.audio) {
+        if (this.audio.src) {
             await this.audio.pause();
         }
     }
