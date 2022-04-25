@@ -5,7 +5,7 @@ A music player that extracts songs from osu! beatmaps and presents them in a use
 ## Technology
 - React (Typescript)
 - SASS (SCSS)
-- Vite / Electron
+- Webpack 5 / Electron
 
 ## Releases
 
