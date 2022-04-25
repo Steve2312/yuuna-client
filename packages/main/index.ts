@@ -1,5 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
+import Beatmap from "@/interfaces/Beatmap";
+import {Simulate} from "react-dom/test-utils";
+
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -64,4 +67,13 @@ ipcMain.on("close-me", () => {
 
 ipcMain.on("appData-path", (event) => {
     event.returnValue = app.getPath('userData');
+})
+
+ipcMain.on("download-beatmap", (event, args: {beatmap: Beatmap}) => {
+
+    console.log("Received in main thread")
+
+    let beatmap = args.beatmap;
+    let downloadURL = "https://beatconnect.io/b/" + beatmap.id + "/" + beatmap.unique_id;
+    let output = path.join(app.getPath('userData'), 'temp', beatmap.id + '.zip');
 })

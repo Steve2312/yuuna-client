@@ -6,9 +6,11 @@ import PreviewService from "@/services/PreviewService";
 import getBackgroundImageStyle from "@/utils/BackgroundImageStyle";
 import formatSeconds from "@/utils/FormatSeconds";
 import {openBeatmapPage, openCreatorPage} from "@/utils/Pages";
+import Beatmap from "@/interfaces/Beatmap";
+import DownloadService from "@/services/DownloadService";
 
 type Props = {
-    beatmap: any,
+    beatmap: Beatmap,
     index: number,
     style?: CSSProperties
 }
@@ -75,7 +77,7 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
                     </div>
                 </div>
                 <div className={styles.options}>
-                    <FaDownload />
+                    <FaDownload onClick={() => DownloadService.download(beatmap)}/>
                     <FaEllipsisH />
                 </div>
             </div>
