@@ -19,5 +19,5 @@ export const getSongPath = (song: Song) => {
 }
 
 export const getTempPath = (beatmap: Beatmap) => {
-    return "file://" + path.join(tempPath, beatmap.id + ".zip");
+    return path.join(tempPath, beatmap.id + ".zip");
 }

@@ -1,8 +1,5 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
-import Beatmap from "@/interfaces/Beatmap";
-import {Simulate} from "react-dom/test-utils";
-
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -26,11 +23,10 @@ async function createWindow() {
     });
 
     if (app.isPackaged) {
-        await win.loadFile(path.join(__dirname, '../renderer/index.html'))
+        await win.loadFile(path.join(__dirname, 'dist', '../index.html'))
     } else {
-        // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
         require('dotenv').config()
-        const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
+        const url = 'http://localhost:8081/'
         await win.loadURL(url)
     }
 }
@@ -67,13 +63,4 @@ ipcMain.on("close-me", () => {
 
 ipcMain.on("appData-path", (event) => {
     event.returnValue = app.getPath('userData');
-})
-
-ipcMain.on("download-beatmap", (event, args: {beatmap: Beatmap}) => {
-
-    console.log("Received in main thread")
-
-    let beatmap = args.beatmap;
-    let downloadURL = "https://beatconnect.io/b/" + beatmap.id + "/" + beatmap.unique_id;
-    let output = path.join(app.getPath('userData'), 'temp', beatmap.id + '.zip');
 })
