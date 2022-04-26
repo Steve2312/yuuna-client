@@ -26,7 +26,7 @@ async function createWindow() {
         await win.loadFile(path.join(__dirname, 'dist', '../index.html'))
     } else {
         require('dotenv').config()
-        const url = 'http://localhost:8081/'
+        const url = 'http://' + process.env.DEV_HOST + ":" + process.env.DEV_PORT
         await win.loadURL(url)
     }
 }

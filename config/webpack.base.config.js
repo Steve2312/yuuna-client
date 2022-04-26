@@ -1,4 +1,6 @@
+const process = require("process");
 const config = {
+    mode: process.env.NODE_ENV,
     module: {
         rules: [
             {
