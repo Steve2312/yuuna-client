@@ -30,9 +30,9 @@ const Library: React.FC = () => {
                 keyExtractor={data => data.id}
 
                 render={
-                    ({data}) => {
+                    ({data, style}) => {
                         return (
-                            <LibraryCard song={data} />
+                            <LibraryCard song={data} style={style} />
                         );
                     }
                 }

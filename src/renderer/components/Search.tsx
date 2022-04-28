@@ -38,9 +38,9 @@ const Search: React.FC = () => {
                 keyExtractor={data => data.id}
 
                 render={
-                    ({data, index}) => {
+                    ({data, index, style}) => {
                         return (
-                            <SearchCard beatmap={data} index={index}/>
+                            <SearchCard beatmap={data} index={index} style={style}/>
                         )
                     }
                 }
