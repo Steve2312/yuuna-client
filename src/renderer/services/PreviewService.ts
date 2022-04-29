@@ -44,6 +44,7 @@ class PreviewService extends Observable {
         } catch(error) {
             if (!axios.isCancel(error)) {
                 console.error(error);
+                this.notifyFinishedPlaying();
             }
         }
     }
