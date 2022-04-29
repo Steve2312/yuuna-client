@@ -16,6 +16,7 @@ type Props = {
     render: React.FC<RenderProps>,
     onEndReached?: Function,
     thresholdEnd?: number,
+    className?: string
 }
 
 const List: React.ForwardRefExoticComponent<Props & React.RefAttributes<HTMLDivElement>> = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -48,7 +49,7 @@ const List: React.ForwardRefExoticComponent<Props & React.RefAttributes<HTMLDivE
     }, [listRef])
 
     return (
-        <div className={styles.list} ref={listRef}>
+        <div className={styles.list + (props.className ? " " + props.className : "")} ref={listRef}>
             {listHeader}
             <ListElements
                 ref={listRef}
