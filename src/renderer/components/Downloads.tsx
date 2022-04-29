@@ -2,10 +2,14 @@ import React, {useState} from "react";
 import styles from "@/styles/downloads.module.scss";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import List from "@/components/List";
+import useDownloadService from "@/hooks/useDownloadService";
+import DownloadCard from "@/components/DownloadCard";
 
 const Downloads: React.FC = () => {
-
+    const [download] = useDownloadService();
     const [visibility, setVisibility] = useState<boolean>(true);
+
+    const activeDownloads = download.downloads.filter(download => download.status != "Failed").length
 
     const toggle = () => {
         setVisibility(visibility => !visibility);
@@ -26,9 +30,20 @@ const Downloads: React.FC = () => {
 
                 <div className={styles.content}>
                     <h1>Downloads</h1>
-                    <p>Active downloads: 0</p>
+                    <p>Active downloads: {activeDownloads}</p>
                 </div>
             </div>
+            <List
+                className={styles.list}
+                prerenderCount={7}
+                componentHeight={65}
+                keyExtractor={(data) => data.beatmap.id}
+                data={download.downloads}
+                render={({data, style}) => {
+                    return (
+                        <DownloadCard download={data} style={style} />
+                    )
+                }} />
         </div>
     );
 }

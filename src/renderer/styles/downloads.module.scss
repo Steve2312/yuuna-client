@@ -1,8 +1,12 @@
 .downloads {
-  position: relative;
-  width: 200px;
+  width: 210px;
   grid-area: downloads;
   transition: width .5s cubic-bezier(.8,.18,.22,.96);
+
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  overflow: hidden;
 
   .header {
     display: grid;
@@ -43,12 +47,21 @@
 
     }
   }
+
+  .list {
+    min-height: unset;
+    transition: opacity 200ms linear;
+  }
 }
 
 .hidden {
   width: 55px;
 
   .content {
+    opacity: 0;
+  }
+
+  .list {
     opacity: 0;
   }
 }

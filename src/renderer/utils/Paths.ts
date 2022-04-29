@@ -1,7 +1,7 @@
 import {ipcRenderer} from "electron";
 import * as path from "path";
-import Song from "@/interfaces/Song";
-import Beatmap from "@/interfaces/Beatmap";
+import Song from "@/types/Song";
+import Beatmap from "@/types/Beatmap";
 
 export const appDataPath = ipcRenderer.sendSync("appData-path");
 export const songsPath = path.join(appDataPath, "songs");
@@ -18,6 +18,6 @@ export const getSongPath = (song: Song) => {
     return "file://" + path.join(songsPath, song.id, song.audio);
 }
 
-export const getTempPath = (beatmap: Beatmap) => {
+export const getTempOutputPath = (beatmap: Beatmap) => {
     return path.join(tempPath, beatmap.id + ".zip");
 }
