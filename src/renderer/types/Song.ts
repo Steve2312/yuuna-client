@@ -1,4 +1,4 @@
-interface Song {
+type Song = {
     audio: string,
     artist: string,
     title: string,

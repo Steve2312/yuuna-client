@@ -6,7 +6,7 @@ import PreviewService from "@/services/PreviewService";
 import getBackgroundImageStyle from "@/utils/BackgroundImageStyle";
 import formatSeconds from "@/utils/FormatSeconds";
 import {openBeatmapPage, openCreatorPage} from "@/utils/Pages";
-import Beatmap from "@/interfaces/Beatmap";
+import Beatmap from "@/types/Beatmap";
 import DownloadService from "@/services/DownloadService";
 
 type Props = {

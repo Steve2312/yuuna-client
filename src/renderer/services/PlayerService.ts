@@ -1,4 +1,4 @@
-import Song from '../interfaces/Song';
+import Song from '../types/Song';
 import {getCoverPath, getSongPath} from "@/utils/Paths";
 import MediaSessionService from './MediaSessionService';
 import Observable from './Observable';

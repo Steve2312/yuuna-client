@@ -1,5 +1,5 @@
 import Observable from "@/services/Observable";
-import Song from "@/interfaces/Song";
+import Song from "@/types/Song";
 import * as path from "path";
 import * as fs from "fs";
 import {songsPath} from "@/utils/Paths";

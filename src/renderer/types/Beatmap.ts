@@ -1,4 +1,4 @@
-interface Beatmap {
+type Beatmap = {
     id: number,
     title: string,
     artist: string,

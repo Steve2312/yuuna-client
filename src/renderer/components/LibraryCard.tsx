@@ -1,7 +1,7 @@
 import React, {CSSProperties, useEffect, useState} from "react";
 import styles from '@/styles/search-librarycard.module.scss';
 import { FaPlay, FaPause, FaEllipsisH } from 'react-icons/fa';
-import Song from "@/interfaces/Song";
+import Song from "@/types/Song";
 import {getCoverPath, getHeaderPath} from "@/utils/Paths";
 import getBackgroundImageStyle from "@/utils/BackgroundImageStyle";
 import PlayerService from "@/services/PlayerService";
