@@ -1,5 +1,7 @@
 # yuuna-client
 
+[![CodeFactor](https://www.codefactor.io/repository/github/steve2312/yuuna-client/badge)](https://www.codefactor.io/repository/github/steve2312/yuuna-client)
+
 A music player that extracts songs from osu! beatmaps and presents them in a user-friendly way. With the help of the Beatconnect API, Yuuna is able to provide search and download of osu! beatmaps within the app.
 
 ## Technology
