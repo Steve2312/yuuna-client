@@ -91,7 +91,7 @@ class SearchService extends Observable{
         this.notify(this.getState());
     }
 
-    private filterDuplicateBeatmaps(beatmaps: any[]) {
+    private filterDuplicateBeatmaps(beatmaps: Beatmap[]) {
         return beatmaps.filter((beatmap) => {
             if (this.beatmapIds.has(beatmap.id)) {
                 return false;
