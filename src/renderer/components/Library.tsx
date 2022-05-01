@@ -11,6 +11,17 @@ const Library: React.FC = () => {
     const listRef = useRef<HTMLDivElement>(null);
     const [library] = useLibraryService();
 
+    const dummyArray: {id: string, oogABOOGA: string}[] = [
+        {
+            id: "Hello",
+            oogABOOGA: "seee"
+        },
+        {
+            id: "Steve",
+            oogABOOGA: "342323"
+        }
+    ]
+
     return (
         <>
             <TitleBar title="Library" src={LibraryBanner} scrollableElementRef={listRef} />

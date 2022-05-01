@@ -47,8 +47,7 @@ const TitleBar: React.FC<Props> = ({title, src, scrollableElementRef}) => {
     const backToTop = () => {
         const scrollableElement = scrollableElementRef.current;
         if (scrollableElement) scrollableElement.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+            top: 0
         })
     }
 

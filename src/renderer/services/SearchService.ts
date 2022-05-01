@@ -1,6 +1,7 @@
 import Observable from "@/services/Observable";
 import Beatconnect from "@/utils/Beatconnect";
 import axios, {AxiosError, AxiosInstance, AxiosResponse} from "axios";
+import Beatmap from "@/types/Beatmap";
 
 class SearchService extends Observable{
 
@@ -11,7 +12,7 @@ class SearchService extends Observable{
     private instance: Promise<AxiosInstance | void> | null = null;
     private errorStatus: number | null = null;
 
-    private beatmaps: any[] = [];
+    private beatmaps: Beatmap[] = [];
     private beatmapIds: Set<number> = new Set<number>();
 
     private page: number = 0;

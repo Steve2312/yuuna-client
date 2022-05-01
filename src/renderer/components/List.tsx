@@ -1,25 +1,33 @@
 import React, {ReactNode, UIEventHandler, useEffect, useMemo, useRef, useState} from "react";
 import styles from "@/styles/list.module.scss";
 
-type RenderProps = {
-    data: any,
+type RenderProps<T> = {
+    data: T,
     index: number,
     style: React.CSSProperties
 }
 
-type Props = {
+type ListProps<T> = {
     prerenderCount: number,
     componentHeight: number,
     header?: React.FC,
-    keyExtractor: (data: any) => any,
-    data: any[],
-    render: React.FC<RenderProps>,
+    keyExtractor: (data: T) => string | number,
+    data: T[],
+    render: React.FC<RenderProps<T>>,
     onEndReached?: Function,
     thresholdEnd?: number,
     className?: string
 }
 
-const List: React.ForwardRefExoticComponent<Props & React.RefAttributes<HTMLDivElement>> = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
+type ListElementsProps<T> = {
+    prerenderCount: number,
+    componentHeight: number,
+    keyExtractor: (data: T) => string | number,
+    data: T[],
+    render: React.FC<RenderProps<T>>,
+}
+
+const List = React.forwardRef(<T extends unknown>(props: ListProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
 
     const listRef = ref as React.RefObject<HTMLDivElement> || useRef<HTMLDivElement>(null);
 
@@ -63,15 +71,7 @@ const List: React.ForwardRefExoticComponent<Props & React.RefAttributes<HTMLDivE
     );
 });
 
-type ListElementsProps = {
-    prerenderCount: number,
-    componentHeight: number,
-    keyExtractor: (data: any) => any,
-    data: any[],
-    render: React.FC<RenderProps>
-}
-
-const ListElements: React.ForwardRefExoticComponent<ListElementsProps & React.RefAttributes<HTMLDivElement>> = React.forwardRef<HTMLDivElement, ListElementsProps>((props, ref) => {
+const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
 
     const {prerenderCount, componentHeight} = props;
     const listRef = ref as React.RefObject<HTMLDivElement>;
@@ -142,5 +142,11 @@ const ListElements: React.ForwardRefExoticComponent<ListElementsProps & React.Re
         </div>
     )
 });
+
+declare module "react" {
+    function forwardRef<T, P = {}>(
+        render: (props: P, ref: React.Ref<T>) => React.ReactElement | null
+    ): (props: P & React.RefAttributes<T>) => React.ReactElement | null;
+}
 
 export default List;
