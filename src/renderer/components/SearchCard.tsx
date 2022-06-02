@@ -28,7 +28,7 @@ const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
     const play = async () => {
         if (preview.beatmapSetID === beatmap.id) PreviewService.playPause();
         else await PreviewService.playPreview(beatmap.id);
-    }
+    };
 
     return (
         <div className={styles.searchCard} style={style}>
@@ -83,6 +83,6 @@ const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
             </div>
         </div>
     );
-}, () => true)
+}, () => true);
 
 export default SearchCard;

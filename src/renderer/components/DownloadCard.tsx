@@ -26,6 +26,6 @@ const DownloadCard: React.FC<Props> = ({download, style}) => {
 
         </div>
     );
-}
+};
 
 export default DownloadCard;

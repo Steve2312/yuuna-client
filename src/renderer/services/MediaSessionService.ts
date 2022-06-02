@@ -24,17 +24,17 @@ class MediaSessionService {
             this.mediaSession.metadata = metadata;
         }
 
-    }
+    };
 
     public setPlaybackState = (state: "paused" | "playing") => {
         if (this.mediaSession) {
             this.mediaSession.playbackState = state;
         }
-    }
+    };
 
     public getMediaSession = (): MediaSession => {
         return this.mediaSession;
-    }
+    };
 
     private imageToDataURL = async (path: string): Promise<string> => {
         try {
@@ -46,7 +46,7 @@ class MediaSessionService {
             const blob = await data.blob();
             return URL.createObjectURL(blob);
         }
-    }
+    };
 }
 
 export default new MediaSessionService();

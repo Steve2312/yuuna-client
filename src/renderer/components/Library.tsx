@@ -22,7 +22,7 @@ const Library: React.FC = () => {
                             <>
                                 <Banner title="Library" src={LibraryBanner} scrollableElementRef={listRef}/>
                             </>
-                        )
+                        );
                     }
                 }
                 data={library.songs}
@@ -43,6 +43,6 @@ const Library: React.FC = () => {
             />
         </>
     );
-}
+};
 
 export default Library;

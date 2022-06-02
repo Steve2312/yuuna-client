@@ -15,7 +15,7 @@ const TitleBar: React.FC<Props> = ({title, src, scrollableElementRef}) => {
 
     const headerImage = {
         backgroundImage: `linear-gradient(var(--banner-overlay), var(--banner-overlay)), url(${src})`,
-    }
+    };
 
     useEffect(() => {
         const scrollableElement = scrollableElementRef?.current;
@@ -27,14 +27,14 @@ const TitleBar: React.FC<Props> = ({title, src, scrollableElementRef}) => {
             return () => {
                 scrollableElement.removeEventListener("scroll", updateScrollTop);
                 window.removeEventListener("resize", updateOffsetFirstElement);
-            }
+            };
         }
-    }, [scrollableElementRef])
+    }, [scrollableElementRef]);
 
     const updateScrollTop = (event: Event) => {
         const element = event.target as HTMLDivElement;
         setScrollTop(element.scrollTop);
-    }
+    };
 
     const updateOffsetFirstElement = () => {
         const firstElement = scrollableElementRef.current?.firstElementChild as HTMLDivElement;
@@ -42,26 +42,26 @@ const TitleBar: React.FC<Props> = ({title, src, scrollableElementRef}) => {
             const firstElementOffsetBottom = firstElement.offsetTop + firstElement.offsetHeight;
             setFirstElementOffsetBottom(firstElementOffsetBottom);
         }
-    }
+    };
 
     const backToTop = () => {
         const scrollableElement = scrollableElementRef.current;
         if (scrollableElement) scrollableElement.scrollTo({
             top: 0
-        })
-    }
+        });
+    };
 
-    const titleBarOpacity = firstElementOffsetBottom ? (scrollTop - firstElementOffsetBottom + 95) / 70 : 0
+    const titleBarOpacity = firstElementOffsetBottom ? (scrollTop - firstElementOffsetBottom + 95) / 70 : 0;
     const titleBarStyle = {
         opacity: clamp(titleBarOpacity, 0, 1)
-    }
+    };
 
     const titleBarItemOpacity = scrollTop > firstElementOffsetBottom - 50 ? 1 : 0;
     const titleBarItemTransformY = scrollTop > firstElementOffsetBottom - 50 ? 0 : 50;
     const titleBarItemStyle = {
         opacity: titleBarItemOpacity,
         transform: 'translateY(' + titleBarItemTransformY + '%)',
-    }
+    };
 
     return (
         <div className={styles.titleBar} style={titleBarStyle}>
@@ -70,6 +70,6 @@ const TitleBar: React.FC<Props> = ({title, src, scrollableElementRef}) => {
             <div className={styles.titleBarImage} style={headerImage}/>
         </div>
     );
-}
+};
 
 export default TitleBar;

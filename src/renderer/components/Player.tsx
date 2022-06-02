@@ -33,26 +33,26 @@ const PlayerBar: React.FC = () => {
             if (!drag) {
                 setCurrentTime(PlayerService.seek());
             }
-        }
+        };
 
         player.audio.addEventListener('timeupdate', handleTimeUpdate);
 
         return () => {
             player.audio.removeEventListener('timeupdate', handleTimeUpdate);
-        }
+        };
     }, [player, drag]);
 
     const duration = player.audio.duration && !isNaN(player.audio.duration) ? Math.round(player.audio.duration) : 0;
 
     const handleDrag = (event: ChangeEvent) => {
         const element = event.target as HTMLInputElement;
-        setCurrentTime(element.valueAsNumber)
-    }
+        setCurrentTime(element.valueAsNumber);
+    };
 
     const seek = () => {
         setDrag(false);
         PlayerService.seek(currentTime);
-    }
+    };
 
     const volumeIcon = () => {
         if (volume == 0 || player.muted) {
@@ -60,7 +60,7 @@ const PlayerBar: React.FC = () => {
         }
 
         if (volume > 0 && volume < 0.1) {
-            return <FaVolumeOff />
+            return <FaVolumeOff />;
         }
 
         if (volume < 0.45) {
@@ -70,7 +70,7 @@ const PlayerBar: React.FC = () => {
         if (volume >= 0.45) {
             return <FaVolumeUp />;
         }
-    }
+    };
 
     const handleVolume = (event: ChangeEvent) => {
         const element = event.target as HTMLInputElement;
@@ -78,7 +78,7 @@ const PlayerBar: React.FC = () => {
         setVolume(volume);
         PlayerService.volume(volume);
         PreviewService.volume(volume);
-    }
+    };
 
     const artist = player.current?.artist ? player.current.artist : '-';
     const title = player.current?.title ? player.current.title : '-';
@@ -130,6 +130,6 @@ const PlayerBar: React.FC = () => {
             </div>
         </div>
     );
-}
+};
 
 export default PlayerBar;

@@ -35,4 +35,4 @@ module.exports = {
         target: ["AppImage"],
         artifactName: "${productName}-${version}-Installer.${ext}",
     },
-}
+};

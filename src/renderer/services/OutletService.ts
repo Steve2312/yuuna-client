@@ -10,13 +10,13 @@ class OutletService extends Observable{
             this.route = route;
             this.notify(this.getState());
         }
-    }
+    };
 
     public getState = () => {
         return {
             route: this.route
-        }
-    }
+        };
+    };
 }
 
 export default new OutletService();

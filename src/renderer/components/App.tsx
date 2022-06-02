@@ -20,6 +20,6 @@ const App: React.FC = () => {
           <Player />
       </div>
   );
-}
+};
 
 export default App;

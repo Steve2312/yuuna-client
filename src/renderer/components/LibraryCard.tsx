@@ -26,7 +26,7 @@ const LibraryCard: React.FC<Props> = React.memo(({song, style}) => {
 
     const play = async () => {
         await PlayerService.playFromPlaylist("", LibraryService.getState().songs, song.index);
-    }
+    };
 
     return (
         <div className={styles.searchCard} style={style}>

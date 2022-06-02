@@ -7,15 +7,15 @@ const Window: React.FC = () => {
 
     const maximize = (): void => {
         ipcRenderer.send('maximize-me');
-    }
+    };
 
     const minimize = (): void => {
         ipcRenderer.send('minimize-me');
-    }
+    };
 
     const close = (): void => {
         ipcRenderer.send('close-me');
-    }
+    };
     if (process.platform != "darwin") {
         return (
           <div className={styles.window}>
@@ -26,10 +26,10 @@ const Window: React.FC = () => {
                   <div onClick={close} className={styles.closeButton}><VscChromeClose/></div>
               </div>
           </div>
-        )
+        );
     }
 
     return null;
-}
+};
 
 export default Window;
