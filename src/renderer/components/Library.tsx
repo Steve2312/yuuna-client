@@ -20,7 +20,7 @@ const Library: React.FC = () => {
                     () => {
                         return (
                             <>
-                                <Banner title="Library" src={LibraryBanner} />
+                                <Banner title="Library" src={LibraryBanner} scrollableElementRef={listRef}/>
                             </>
                         )
                     }
