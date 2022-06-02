@@ -16,17 +16,20 @@ const Window: React.FC = () => {
     const close = (): void => {
         ipcRenderer.send('close-me');
     }
+    if (process.platform != "darwin") {
+        return (
+          <div className={styles.window}>
+              <div className={styles.dragRegion}/>
+              <div className={styles.controls}>
+                  <div onClick={minimize} className={styles.minButton}><VscChromeMinimize/></div>
+                  <div onClick={maximize} className={styles.maxButton}><VscChromeMaximize/></div>
+                  <div onClick={close} className={styles.closeButton}><VscChromeClose/></div>
+              </div>
+          </div>
+        )
+    }
 
-    return (
-        <div className={styles.window}>
-            <div className={styles.dragRegion}/>
-            <div className={styles.controls}>
-                <div onClick={minimize} className={styles.minButton}><VscChromeMinimize /></div>
-                <div onClick={maximize} className={styles.maxButton}><VscChromeMaximize /></div>
-                <div onClick={close} className={styles.closeButton}><VscChromeClose /></div>
-            </div>
-        </div>
-    )
+    return null;
 }
 
 export default Window;

@@ -10,6 +10,10 @@
     "player player player";
 }
 
+.darwin {
+    grid-template-rows: 0 1fr 100px !important;
+}
+
 .outlet {
     grid-area: outlet;
     position: relative;

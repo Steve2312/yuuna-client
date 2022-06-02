@@ -10,6 +10,8 @@ const Navigation: React.FC = () => {
     return (
         <div className={styles.navigation} >
 
+            { process.platform == "darwin" && <div style={{height: "40px"}}/> }
+
             <div className={styles.watermark}>
                 <img src={logo} alt="Yuuna"/>
                 <span>Yuuna</span>

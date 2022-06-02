@@ -14,6 +14,7 @@ async function createWindow() {
         minHeight: 600,
         minWidth: 800,
         frame: false,
+        titleBarStyle: process.platform == "darwin" ? "hiddenInset" : "hidden",
         backgroundColor: '#1e1e1e',
         webPreferences: {
             nodeIntegration: true,
@@ -25,7 +26,7 @@ async function createWindow() {
     if (app.isPackaged) {
         await win.loadFile(path.join(__dirname, 'dist', '../index.html'))
     } else {
-        await session.defaultSession.loadExtension("C:\\Users\\stefl\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.24.7_0")
+        // await session.defaultSession.loadExtension("C:\\Users\\stefl\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.24.7_0")
         require('dotenv').config()
         const url = 'http://' + process.env.DEV_HOST + ":" + process.env.DEV_PORT
         await win.loadURL(url)
