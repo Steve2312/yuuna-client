@@ -15,7 +15,7 @@ const Banner: React.FC<Props> = ({title, src, scrollableElementRef}) => {
     const [scrollTop, setScrollTop] = useState<number>(0);
 
     const backgroundImage = {
-        backgroundImage: `linear-gradient(transparent, var(--bg_1_color)), url(${src})`
+        backgroundImage: `linear-gradient(transparent, var(--bg_1_color)), url(${src})`,
     };
 
     useEffect(() => {
