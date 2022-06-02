@@ -69,7 +69,7 @@ class DownloadService extends Observable {
 
         this.downloadHandler();
     };
-
+    
     private addToDownloads = (beatmap: Beatmap) => {
 
         const duplicateDownload = this.downloads.find(download => download.beatmap.id == beatmap.id);

@@ -132,3 +132,4 @@ const PlayerBar: React.FC = () => {
 };
 
 export default PlayerBar;
+
