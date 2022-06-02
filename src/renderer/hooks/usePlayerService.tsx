@@ -10,10 +10,10 @@ const usePlayerService = () => {
 
         return () => {
             PlayerService.detach(setPlayer);
-        };
+        }
     }, []);
 
     return [player];
-};
+}
 
 export default usePlayerService;

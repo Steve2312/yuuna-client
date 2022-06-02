@@ -9,11 +9,11 @@ const Downloads: React.FC = () => {
     const [download] = useDownloadService();
     const [visibility, setVisibility] = useState<boolean>(true);
 
-    const activeDownloads = download.downloads.filter(download => download.status != "Failed").length;
+    const activeDownloads = download.downloads.filter(download => download.status != "Failed").length
 
     const toggle = () => {
         setVisibility(visibility => !visibility);
-    };
+    }
 
     return (
         <div className={styles.downloads + (!visibility ? " " + styles.hidden : "")}>
@@ -21,7 +21,7 @@ const Downloads: React.FC = () => {
                 <span className={styles.icon} onClick={toggle}>
                     {
                         visibility
-                            ?
+                        ?
                             <FaArrowRight/>
                             :
                             <FaArrowLeft />
@@ -44,11 +44,11 @@ const Downloads: React.FC = () => {
                     ({data, style}) => {
                         return (
                             <DownloadCard download={data} style={style}/>
-                        );
+                        )
                     }
                 } />
         </div>
     );
-};
+}
 
 export default Downloads;

@@ -10,11 +10,11 @@ const useLibraryService = () => {
 
         return () => {
             LibraryService.detach(setLibrary);
-        };
-    }, []);
+        }
+    }, [])
 
     return [library];
 
-};
+}
 
 export default useLibraryService;

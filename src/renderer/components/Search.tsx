@@ -1,6 +1,6 @@
 import React, {useEffect, useRef } from "react";
 import Banner from "@/components/Banner";
-import SearchBanner from "../assets/banners/409667.jpg";
+import SearchBanner from "../assets/banners/409667.jpg"
 import SearchMenu from "@/components/SearchMenu";
 import useSearchService from "@/hooks/useSearchService";
 import SearchCard from "@/components/SearchCard";
@@ -15,8 +15,8 @@ const Search: React.FC = () => {
     const [search] = useSearchService();
 
     useEffect(() => {
-        SearchService.search("", "ranked");
-    }, []);
+        SearchService.search('', 'ranked');
+    }, [])
 
     return (
         <>
@@ -30,7 +30,7 @@ const Search: React.FC = () => {
                                 <Banner title="Search" src={SearchBanner} scrollableElementRef={listRef}/>
                                 <SearchMenu />
                             </>
-                        );
+                        )
                     }
                 }
                 data={search.results.beatmaps}
@@ -41,7 +41,7 @@ const Search: React.FC = () => {
                     ({data, index, style}) => {
                         return (
                             <SearchCard beatmap={data} index={index} style={style}/>
-                        );
+                        )
                     }
                 }
 
@@ -57,6 +57,6 @@ const Search: React.FC = () => {
             />
         </>
     );
-};
+}
 
 export default Search;

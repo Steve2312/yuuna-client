@@ -8,17 +8,18 @@ import Player from "@/components/Player";
 import Downloads from "@/components/Downloads";
 
 const App: React.FC = () => {
-    return (
-        <div className={styles.app + (process.platform == "darwin" ? " " + styles.darwin : "")}>
-            <Window />
-            <Navigation />
-            <div className={styles.outlet}>
-                <Outlet />
-            </div>
-            <Downloads />
-            <Player />
-        </div>
-    );
-};
+
+  return (
+      <div className={styles.app + (process.platform == "darwin" ? " " + styles.darwin : "")}>
+          <Window />
+          <Navigation />
+          <div className={styles.outlet}>
+              <Outlet />
+          </div>
+          <Downloads />
+          <Player />
+      </div>
+  );
+}
 
 export default App;

@@ -33,7 +33,7 @@ class LibraryService extends Observable{
         }
 
         return this.sortSongsByDateAdded(songs).map((song, index) => ({...song, index}));
-    };
+    }
 
     private fetchSongIdentifiers = async () => {
         const directoryEntities = await fs.promises.readdir(songsPath, { withFileTypes: true });
@@ -42,23 +42,23 @@ class LibraryService extends Observable{
         }).map(directoryEntity => {
             return directoryEntity.name;
         });
-    };
+    }
 
     private readFile = (src: string) => {
-        return fs.promises.readFile(src, "utf-8");
-    };
+        return fs.promises.readFile(src, 'utf-8');
+    }
 
     private sortSongsByDateAdded = (songs: Song[]) => {
         return songs.sort((a, b) => {
             return b.date_added - a.date_added;
-        });
-    };
+        })
+    }
 
     public getState = () => {
         return {
             songs: this.songs
-        };
-    };
+        }
+    }
 
 }
 

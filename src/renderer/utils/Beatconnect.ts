@@ -5,4 +5,4 @@ export default axios.create({
     headers: {
         "Token": <string>process.env.BEATCONNECT_API_KEY
     }
-});
+})

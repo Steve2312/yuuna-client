@@ -10,11 +10,11 @@ const useOutletService = () => {
 
         return () => {
             OutletService.detach(setOutlet);
-        };
-    }, []);
+        }
+    }, [])
 
     return [outlet];
 
-};
+}
 
 export default useOutletService;

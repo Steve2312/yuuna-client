@@ -10,11 +10,11 @@ const useSearchService = () => {
 
         return () => {
             SearchService.detach(setSearch);
-        };
-    }, []);
+        }
+    }, [])
 
     return [search];
 
-};
+}
 
 export default useSearchService;
