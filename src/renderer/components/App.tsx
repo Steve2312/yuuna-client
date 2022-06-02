@@ -10,7 +10,7 @@ import Downloads from "@/components/Downloads";
 const App: React.FC = () => {
 
   return (
-      <div className={styles.app + (process.platform == "darwin" && " " + styles.darwin)}>
+      <div className={styles.app + (process.platform == "darwin" ? " " + styles.darwin : "")}>
           <Window />
           <Navigation />
           <div className={styles.outlet}>
