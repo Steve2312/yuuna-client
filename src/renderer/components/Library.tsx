@@ -38,8 +38,8 @@ const Library: React.FC = () => {
                 }
 
                 prerenderCount={7}
-                componentHeight={90}
-
+                componentHeight={70}
+                spaceBetween={20}
             />
         </>
     );

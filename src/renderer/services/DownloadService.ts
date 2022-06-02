@@ -111,7 +111,7 @@ class DownloadService extends Observable {
 
     public getState = () => {
         return {
-            downloads: this.downloads
+            downloads: [...this.downloads]
         }
     }
 }

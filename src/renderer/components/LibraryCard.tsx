@@ -15,7 +15,7 @@ type Props = {
     style?: CSSProperties
 }
 
-const LibraryCard: React.FC<Props> = ({song, style}) => {
+const LibraryCard: React.FC<Props> = React.memo(({song, style}) => {
 
     const [player] = usePlayerService();
 
@@ -78,6 +78,6 @@ const LibraryCard: React.FC<Props> = ({song, style}) => {
             </div>
         </div>
     );
-}
+}, () => true);
 
 export default LibraryCard;

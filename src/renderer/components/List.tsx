@@ -1,10 +1,19 @@
-import React, {ReactNode, UIEventHandler, useEffect, useMemo, useRef, useState} from "react";
+import React, {
+    ReactComponentElement,
+    ReactNode,
+    UIEventHandler,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState
+} from "react";
 import styles from "@/styles/list.module.scss";
 
 type RenderProps<T> = {
     data: T,
     index: number,
-    style: React.CSSProperties
+    style: React.CSSProperties,
 }
 
 type ListProps<T> = {
@@ -16,7 +25,8 @@ type ListProps<T> = {
     render: React.FC<RenderProps<T>>,
     onEndReached?: Function,
     thresholdEnd?: number,
-    className?: string
+    className?: string,
+    spaceBetween?: number,
 }
 
 type ListElementsProps<T> = {
@@ -25,6 +35,7 @@ type ListElementsProps<T> = {
     keyExtractor: (data: T) => string | number,
     data: T[],
     render: React.FC<RenderProps<T>>,
+    spaceBetween: number,
 }
 
 const List = React.forwardRef(<T extends unknown>(props: ListProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
@@ -66,6 +77,7 @@ const List = React.forwardRef(<T extends unknown>(props: ListProps<T>, ref: Reac
                 keyExtractor={props.keyExtractor}
                 data={props.data}
                 render={props.render}
+                spaceBetween={props.spaceBetween || 0}
             />
         </div>
     );
@@ -73,12 +85,16 @@ const List = React.forwardRef(<T extends unknown>(props: ListProps<T>, ref: Reac
 
 const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
 
-    const {prerenderCount, componentHeight} = props;
+    const {prerenderCount, componentHeight, spaceBetween} = props;
     const listRef = ref as React.RefObject<HTMLDivElement>;
     const listElementsRef = useRef<HTMLDivElement>(null);
 
     const [verticalPosition, setVerticalPosition] = useState(0);
     const [listHeight, setListHeight] = useState(0);
+
+    const [listElementComponents, setListElementComponents] = useState<(React.ReactElement<any, any> | null)[]>([]);
+
+    const listTotalHeight = props.data.length * (componentHeight + (props.spaceBetween || 0));
 
     useEffect(() => {
         const listElement = listRef.current;
@@ -92,6 +108,7 @@ const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsPro
 
         updateListHeight();
         window.addEventListener("resize", updateListHeight);
+
         return () => {
             window.removeEventListener("resize", updateListHeight);
         }
@@ -108,6 +125,24 @@ const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsPro
 
     }, [listRef])
 
+    useEffect(() => {
+        const elements = props.data.map((data, index) => {
+            return (
+                <props.render
+                    data={data}
+                    index={index}
+                    key={props.keyExtractor(data)}
+                    style={{
+                        top: index * componentHeight + (spaceBetween * (index + 1)),
+                        position: "absolute",
+                    }}
+                />
+            );
+        });
+        setListElementComponents(elements);
+
+    }, [props.data]);
+
     const updateVerticalPosition = (event: Event) => {
         const offsetTop = listElementsRef.current?.offsetTop || 0;
         const scrollTop = (event.target as HTMLDivElement).scrollTop;
@@ -115,32 +150,24 @@ const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsPro
         setVerticalPosition(position);
     }
 
-    const lowestBoundaryPixel = verticalPosition - (prerenderCount * componentHeight);
-    const highestBoundaryPixel = verticalPosition + listHeight + (prerenderCount * componentHeight);
-    const elements = props.data.map((data, index) => {
+    const getElementsInWindow = () => {
+        const componentHeightWithSpacing = listTotalHeight / props.data.length;
+        const numberOfComponentsInWindow = Math.round(listHeight / componentHeightWithSpacing);
 
-        const topPosition = index * componentHeight;
+        const start = verticalPosition / componentHeightWithSpacing - prerenderCount;
+        const end = verticalPosition / componentHeightWithSpacing + numberOfComponentsInWindow + prerenderCount;
 
-        if (topPosition >= lowestBoundaryPixel && topPosition <= highestBoundaryPixel) {
-            return (
-                <props.render
-                    key={props.keyExtractor(data)}
-                    data={data}
-                    index={index}
-                    style={{
-                        top: topPosition,
-                        position: "absolute"
-                    }}
-                />
-            )
-        }
-    });
+        return listElementComponents.slice(
+            Math.max(0, Math.round(start)),
+            Math.round(end)
+        );
+    }
 
     return (
-        <div className={styles.listElements} ref={listElementsRef} style={{height: props.data.length * componentHeight}}>
-            {elements}
+        <div className={styles.listElements} ref={listElementsRef} style={{height: listTotalHeight}}>
+            {getElementsInWindow()}
         </div>
-    )
+    );
 });
 
 declare module "react" {

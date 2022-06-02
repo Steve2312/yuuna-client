@@ -15,7 +15,7 @@ type Props = {
     style?: CSSProperties
 }
 
-const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
+const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
 
     const [preview] = usePreviewService();
 
@@ -83,6 +83,6 @@ const SearchCard: React.FC<Props> = ({beatmap, index, style}) => {
             </div>
         </div>
     );
-}
+}, () => true)
 
 export default SearchCard;

@@ -46,7 +46,8 @@ const Search: React.FC = () => {
                 }
 
                 prerenderCount={7}
-                componentHeight={90}
+                componentHeight={70}
+                spaceBetween={20}
                 onEndReached={() => {
                     if (!search.results.lastPage) {
                         SearchService.searchNext();

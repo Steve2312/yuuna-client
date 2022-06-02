@@ -36,14 +36,16 @@ const Downloads: React.FC = () => {
             <List
                 className={styles.list}
                 prerenderCount={7}
-                componentHeight={65}
+                componentHeight={45}
                 keyExtractor={(data) => data.beatmap.id}
                 data={download.downloads}
-                render={({data, style}) => {
-                    return (
-                        <DownloadCard download={data} style={style} />
-                    )
-                }} />
+                render={
+                    ({data, style}) => {
+                        return (
+                            <DownloadCard download={data} style={style}/>
+                        )
+                    }
+                } />
         </div>
     );
 }
