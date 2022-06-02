@@ -2,7 +2,6 @@
  * @type {import('electron-builder').Configuration}
  * @see https://www.electron.build/configuration/configuration
  */
-
 module.exports = {
     appId: "yuuna-client",
     productName: "Yuuna",

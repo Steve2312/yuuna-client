@@ -16,7 +16,7 @@ class LibraryService extends Observable{
             this.notify(this.getState());
         });
     }
-    
+
     private loadSongs = async () => {
         const songIdentifiers = await this.fetchSongIdentifiers();
 

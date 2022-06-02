@@ -9,7 +9,7 @@ if (!app.requestSingleInstanceLock()) {
 let win: BrowserWindow | null = null;
 
 async function createWindow() {
-    win = new BrowserWindow({
+    win = new BrowserWindow( {
         width: 1280,
         height: 720,
         minHeight: 600,

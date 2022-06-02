@@ -23,7 +23,7 @@ class MediaSessionService {
         }
 
     };
-    
+
     public setPlaybackState = (state: "paused" | "playing") => {
         if (this.mediaSession) {
             this.mediaSession.playbackState = state;
