@@ -14,9 +14,9 @@ class DownloadService extends Observable {
     private downloads: Download[] = [];
 
     public download = (beatmap: Beatmap) => {
-        this.addToDownloads(beatmap)
+        this.addToDownloads(beatmap);
         this.downloadHandler();
-    }
+    };
 
     public downloadHandler = () => {
 
@@ -37,38 +37,38 @@ class DownloadService extends Observable {
                         this.onDownloadProgress(download, progress);
                     }
                 }).then(response => {
-                    console.log(outputPath)
+                    console.log(outputPath);
                     fs.promises.writeFile(outputPath, Buffer.from(response.data)).then(async r => {
                         await this.onFinishedDownloading(download);
-                    })
-                }).catch(error => this.onDownloadError(download, error))
+                    });
+                }).catch(error => this.onDownloadError(download, error));
             }
         }
-    }
+    };
 
     private onDownloadProgress = (download: Download, progress: {loaded: number, total: number}) => {
         download.status = "Downloading";
         download.percentage = progress.loaded / progress.total * 100;
         this.notify(this.getState());
-    }
+    };
 
     private onFinishedDownloading = async (download: Download) => {
         download.status = "Importing";
         this.notify(this.getState());
         // Send path to Library service
 
-        this.downloads.splice(this.downloads.indexOf(download), 1)
+        this.downloads.splice(this.downloads.indexOf(download), 1);
         this.notify(this.getState());
 
         this.downloadHandler();
-    }
+    };
 
     private onDownloadError = (download: Download, error: Error) => {
-        download.status = "Failed"
+        download.status = "Failed";
         this.notify(this.getState());
 
         this.downloadHandler();
-    }
+    };
 
     private addToDownloads = (beatmap: Beatmap) => {
 
@@ -78,21 +78,21 @@ class DownloadService extends Observable {
             this.downloads.unshift({
                 beatmap: beatmap,
                 percentage: null,
-                status: "Waiting",
+                status: "Waiting"
             });
         } else if (duplicateDownload.status == "Failed") {
             duplicateDownload.percentage = null;
             duplicateDownload.status = "Waiting";
         }
 
-        this.notify(this.getState())
-    }
+        this.notify(this.getState());
+    };
 
     private getAllDownloading = () => {
         return this.downloads.filter(download => {
             return download.status == "Downloading" || download.status == "Initializing";
-        })
-    }
+        });
+    };
 
     private getNextWaitingInDownloads = (): Download | null => {
         for (let i = 0; i < this.downloads.length; i++) {
@@ -103,17 +103,17 @@ class DownloadService extends Observable {
         }
 
         return null;
-    }
+    };
 
     private getDownloadURL = (beatmap: Beatmap) => {
         return "https://beatconnect.io/b/" + beatmap.id + "/" + beatmap.unique_id;
-    }
+    };
 
     public getState = () => {
         return {
             downloads: [...this.downloads]
-        }
-    }
+        };
+    };
 }
 
 export default new DownloadService();

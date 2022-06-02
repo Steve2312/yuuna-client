@@ -10,11 +10,11 @@ const useDownloadService = () => {
 
         return () => {
             DownloadService.detach(setDownload);
-        }
-    }, [])
+        };
+    }, []);
 
     return [download];
 
-}
+};
 
 export default useDownloadService;

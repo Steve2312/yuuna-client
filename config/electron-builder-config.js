@@ -9,30 +9,30 @@ module.exports = {
     asar: true,
     directories: {
         output: "release/${version}",
-        buildResources: "resources",
+        buildResources: "resources"
     },
     files: ["dist", "resources/*"],
     win: {
         target: [
             {
                 target: "nsis",
-                arch: ["x64"],
-            },
+                arch: ["x64"]
+            }
         ],
-        artifactName: "${productName}-${version}-Setup.${ext}",
+        artifactName: "${productName}-${version}-Setup.${ext}"
     },
     nsis: {
         oneClick: false,
         perMachine: false,
         allowToChangeInstallationDirectory: true,
-        deleteAppDataOnUninstall: false,
+        deleteAppDataOnUninstall: false
     },
     mac: {
         target: ["dmg"],
-        artifactName: "${productName}-${version}-Installer.${ext}",
+        artifactName: "${productName}-${version}-Installer.${ext}"
     },
     linux: {
         target: ["AppImage"],
-        artifactName: "${productName}-${version}-Installer.${ext}",
-    },
-}
+        artifactName: "${productName}-${version}-Installer.${ext}"
+    }
+};

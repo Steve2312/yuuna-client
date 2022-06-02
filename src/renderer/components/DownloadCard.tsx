@@ -23,9 +23,8 @@ const DownloadCard: React.FC<Props> = ({download, style}) => {
                 <span className={styles.title}>{download.beatmap.title}</span>
                 <span className={styles.status}>{status}</span>
             </div>
-
         </div>
     );
-}
+};
 
 export default DownloadCard;

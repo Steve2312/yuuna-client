@@ -1,4 +1,3 @@
-const process = require("process");
 const config = {
     mode: process.env.NODE_ENV,
     module: {
@@ -10,8 +9,8 @@ const config = {
             },
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/,
+                use: "ts-loader",
+                exclude: /node_modules/
             },
             {
                 test: /\.s[ac]ss$/i,
@@ -23,9 +22,9 @@ const config = {
                             modules: {
                                 localIdentName: "[local]_[hash:base64:5]"
                             }
-                        },
+                        }
                     },
-                    "sass-loader",
+                    "sass-loader"
                 ],
                 include: /\.module\.scss$/
             },
@@ -38,18 +37,18 @@ const config = {
                 test: /\.(png|jpe?g|gif|svg)$/i,
                 use: [
                     {
-                        loader: 'file-loader',
-                    },
-                ],
-            },
+                        loader: "file-loader"
+                    }
+                ]
+            }
         ]
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: [".tsx", ".ts", ".js"],
         alias: {
-            '@': '/src/renderer'
+            "@": "/src/renderer"
         }
-    },
+    }
 };
 
 module.exports = config;

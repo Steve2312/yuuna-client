@@ -16,6 +16,6 @@
     "isolatedModules": true,
     "noEmit": false,
     "jsx": "react-jsx",
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
   }
 }

@@ -15,8 +15,8 @@ class SearchService extends Observable{
     private beatmaps: Beatmap[] = [];
     private beatmapIds: Set<number> = new Set<number>();
 
-    private page: number = 0;
-    private lastPage: boolean = false;
+    private page = 0;
+    private lastPage = false;
 
     private cancelToken = axios.CancelToken;
     private source = this.cancelToken.source();
@@ -39,7 +39,7 @@ class SearchService extends Observable{
                 }).catch(error => {
                     this.handleError(error);
                 }
-            );
+                );
         }, 1000);
     }
 
@@ -49,11 +49,11 @@ class SearchService extends Observable{
                 .then(response => {
                     this.handleSearchNext(response);
                 }).catch(error => {
-                        this.handleError(error);
-                    }
+                    this.handleError(error);
+                }
                 );
         }
-    }
+    };
 
     private cancel = () => {
         if (this.instance) {
@@ -62,34 +62,34 @@ class SearchService extends Observable{
             this.source = this.cancelToken.source();
             this.instance = null;
         }
-    }
+    };
 
     private clearTimeout = () => {
         if (this.timeout) {
             clearTimeout(this.timeout);
             this.timeout = null;
         }
-    }
+    };
 
     private handleSearch = (response: AxiosResponse) => {
         this.instance = null;
         this.beatmapIds.clear();
-        this.beatmaps = [...this.filterDuplicateBeatmaps(response.data.beatmaps)]
+        this.beatmaps = [...this.filterDuplicateBeatmaps(response.data.beatmaps)];
         this.lastPage = response.data.beatmaps.length < 50;
         this.timeout = null;
         this.page++;
         this.notify(this.getState());
-    }
+    };
 
     private handleSearchNext = (response: AxiosResponse) => {
         this.instance = null;
-        this.beatmaps = [...this.beatmaps, ...this.filterDuplicateBeatmaps(response.data.beatmaps)]
+        this.beatmaps = [...this.beatmaps, ...this.filterDuplicateBeatmaps(response.data.beatmaps)];
         this.lastPage = response.data.beatmaps.length < 50;
         this.timeout = null;
         this.page++;
 
         this.notify(this.getState());
-    }
+    };
 
     private filterDuplicateBeatmaps(beatmaps: Beatmap[]) {
         return beatmaps.filter((beatmap) => {
@@ -99,7 +99,7 @@ class SearchService extends Observable{
                 this.beatmapIds.add(beatmap.id);
                 return true;
             }
-        })
+        });
     }
 
     private handleError = (error: AxiosError) => {
@@ -109,7 +109,7 @@ class SearchService extends Observable{
             this.errorStatus = error.request.status;
             this.notify(this.getState());
         }
-    }
+    };
 
     private getRequestConfig = () => {
         return {
@@ -119,27 +119,27 @@ class SearchService extends Observable{
                 s: this.status,
                 p: this.page
             }
-        }
-    }
+        };
+    };
 
     public getState = () => {
         return {
             input: {
                 query: this.query,
-                status: this.status,
+                status: this.status
             },
             request: {
                 timeout: this.timeout,
                 instance: this.instance,
-                errorStatus: this.errorStatus,
+                errorStatus: this.errorStatus
             },
             results: {
                 beatmaps: this.beatmaps,
                 page: this.page,
-                lastPage: this.lastPage,
+                lastPage: this.lastPage
             }
-        }
-    }
+        };
+    };
 
 }
 

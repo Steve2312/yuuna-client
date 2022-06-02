@@ -7,6 +7,6 @@ concurrently(
         "npm run serve",
         "wait-on " + DEV_SERVER + " && electron ."
     ], {
-        killOthers: ['failure', 'success']
+        killOthers: ["failure", "success"]
     }
-)
+);
