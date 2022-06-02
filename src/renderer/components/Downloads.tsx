@@ -37,6 +37,7 @@ const Downloads: React.FC = () => {
                 className={styles.list}
                 prerenderCount={7}
                 componentHeight={45}
+                spaceBetween={15}
                 keyExtractor={(data) => data.beatmap.id}
                 data={download.downloads}
                 render={
