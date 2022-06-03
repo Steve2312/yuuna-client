@@ -223,7 +223,7 @@ class PlayerService extends Observable {
     };
 
     // Event Handlers
-    private handleOnPlay = async (event: Event) => {
+    private handleOnPlay = async () => {
         this.playing = true;
         this.notify(this.getState());
 
