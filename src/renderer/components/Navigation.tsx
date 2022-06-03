@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../assets/images/logo.png"
+import logo from "../assets/images/logo.png";
 import styles from "../styles/navigation.module.scss";
 import OutletService from "@/services/OutletService";
 
@@ -32,6 +32,6 @@ const Navigation: React.FC = () => {
             </ul>
         </div>
     );
-}
+};
 
 export default Navigation;

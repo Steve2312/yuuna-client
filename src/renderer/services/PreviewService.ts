@@ -4,11 +4,11 @@ import PlayerService from "@/services/PlayerService";
 
 class PreviewService extends Observable {
 
-    private playing: boolean = false;
-    private loading: boolean = false;
+    private playing = false;
+    private loading = false;
     private beatmapSetID: number | null;
 
-    private defaultAudioVolume: number = 0.24;
+    private defaultAudioVolume = 0.24;
 
     private audioContext = new AudioContext();
     private gainNode = this.audioContext.createGain();
@@ -47,22 +47,22 @@ class PreviewService extends Observable {
                 this.notifyFinishedPlaying();
             }
         }
-    }
+    };
 
     public play = async () => {
         await PlayerService.pause();
-        this.gainNode.connect(this.audioContext.destination)
+        this.gainNode.connect(this.audioContext.destination);
         this.notifyPlaying();
-    }
+    };
 
     public pause = () => {
         this.gainNode.disconnect();
         this.notifyPaused();
-    }
+    };
 
     public playPause = () => {
         this.playing ? this.pause() : this.play();
-    }
+    };
 
     public volume = (volume? :number): number => {
         if (volume != undefined) {
@@ -70,7 +70,7 @@ class PreviewService extends Observable {
         }
 
         return this.gainNode.gain.value;
-    }
+    };
 
     private getArrayBuffer = async (url: string): Promise<ArrayBuffer> => {
         const response = await axios.get(url, {
@@ -79,63 +79,63 @@ class PreviewService extends Observable {
         });
 
         return response.data;
-    }
+    };
 
     private createAudioBufferSource = (buffer: AudioBuffer) => {
         const audioBufferSource = this.audioContext.createBufferSource();
         audioBufferSource.buffer = buffer;
         audioBufferSource.connect(this.gainNode);
         return audioBufferSource;
-    }
+    };
 
     public cancelAxiosRequest =  () => {
         this.cancelTokenSource.cancel();
         this.cancelTokenSource = axios.CancelToken.source();
         this.notifyFinishedPlaying();
-    }
+    };
 
     private destroyAudioBufferSource = () => {
         if (this.audioBufferSource) {
             this.audioBufferSource.onended = null;
             this.audioBufferSource.stop();
         }
-    }
+    };
 
     private notifyLoading = (beatmapSetID: number) => {
         this.beatmapSetID = beatmapSetID;
         this.loading = true;
         this.playing = true;
         this.notify(this.getState());
-    }
+    };
 
     private notifyFinishedLoading = () => {
         this.loading = false;
         this.notify(this.getState());
-    }
+    };
 
     private notifyFinishedPlaying = () => {
         this.beatmapSetID = null;
         this.playing = false;
         this.notify(this.getState());
-    }
+    };
 
     private notifyPlaying = () => {
         this.playing = true;
         this.notify(this.getState());
-    }
+    };
 
     private notifyPaused = () => {
         this.playing = false;
         this.notify(this.getState());
-    }
+    };
 
     public getState = () => {
         return {
             playing: this.playing,
             loading: this.loading,
             beatmapSetID: this.beatmapSetID
-        }
-    }
+        };
+    };
 }
 
 export default new PreviewService();

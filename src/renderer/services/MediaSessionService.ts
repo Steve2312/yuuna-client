@@ -1,4 +1,4 @@
-import thumbnail from '../assets/images/no_thumbnail.jpg';
+import thumbnail from "../assets/images/no_thumbnail.jpg";
 
 class MediaSessionService {
 
@@ -15,8 +15,8 @@ class MediaSessionService {
                 artwork: [
                     {
                         src: dataURL,
-                        sizes: '512x512',
-                        type: 'image/jpeg'
+                        sizes: "512x512",
+                        type: "image/jpeg"
                     }
                 ]
             });
@@ -24,17 +24,17 @@ class MediaSessionService {
             this.mediaSession.metadata = metadata;
         }
 
-    }
+    };
 
     public setPlaybackState = (state: "paused" | "playing") => {
         if (this.mediaSession) {
             this.mediaSession.playbackState = state;
         }
-    }
+    };
 
     public getMediaSession = (): MediaSession => {
         return this.mediaSession;
-    }
+    };
 
     private imageToDataURL = async (path: string): Promise<string> => {
         try {
@@ -46,7 +46,7 @@ class MediaSessionService {
             const blob = await data.blob();
             return URL.createObjectURL(blob);
         }
-    }
+    };
 }
 
 export default new MediaSessionService();

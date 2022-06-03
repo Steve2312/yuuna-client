@@ -1,8 +1,4 @@
 import React, {
-    ReactComponentElement,
-    ReactNode,
-    UIEventHandler,
-    useCallback,
     useEffect,
     useMemo,
     useRef,
@@ -23,7 +19,7 @@ type ListProps<T> = {
     keyExtractor: (data: T) => string | number,
     data: T[],
     render: React.FC<RenderProps<T>>,
-    onEndReached?: Function,
+    onEndReached?: () => void,
     thresholdEnd?: number,
     className?: string,
     spaceBetween?: number,
@@ -38,12 +34,12 @@ type ListElementsProps<T> = {
     spaceBetween: number,
 }
 
-const List = React.forwardRef(<T extends unknown>(props: ListProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const List = React.forwardRef(<T,>(props: ListProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
 
     const listRef = ref as React.RefObject<HTMLDivElement> || useRef<HTMLDivElement>(null);
 
     const listHeader = useMemo(() => {
-        if (props.header) return <props.header />
+        if (props.header) return <props.header />;
     }, []);
 
     const checkEndReached = (event: Event) => {
@@ -54,18 +50,18 @@ const List = React.forwardRef(<T extends unknown>(props: ListProps<T>, ref: Reac
                 props.onEndReached();
             }
         }
-    }
+    };
 
     useEffect(() => {
         const listElement = listRef.current;
         if (listElement) {
-            listElement.addEventListener("scroll", checkEndReached)
+            listElement.addEventListener("scroll", checkEndReached);
             return () => {
-                listElement.removeEventListener("scroll", checkEndReached)
-            }
+                listElement.removeEventListener("scroll", checkEndReached);
+            };
         }
 
-    }, [listRef])
+    }, [listRef]);
 
     return (
         <div className={styles.list + (props.className ? " " + props.className : "")} ref={listRef}>
@@ -83,8 +79,7 @@ const List = React.forwardRef(<T extends unknown>(props: ListProps<T>, ref: Reac
     );
 });
 
-const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
-
+const ListElements = React.forwardRef(<T,>(props: ListElementsProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const {prerenderCount, componentHeight, spaceBetween} = props;
     const listRef = ref as React.RefObject<HTMLDivElement>;
     const listElementsRef = useRef<HTMLDivElement>(null);
@@ -104,26 +99,26 @@ const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsPro
                 const clientHeight = listElement.clientHeight;
                 if (clientHeight) setListHeight(clientHeight);
             }
-        }
+        };
 
         updateListHeight();
         window.addEventListener("resize", updateListHeight);
 
         return () => {
             window.removeEventListener("resize", updateListHeight);
-        }
+        };
     }, [listRef]);
 
     useEffect(() => {
         const listElement = listRef.current;
         if (listElement) {
-            listElement.addEventListener("scroll", updateVerticalPosition)
+            listElement.addEventListener("scroll", updateVerticalPosition);
             return () => {
-                listElement.removeEventListener("scroll", updateVerticalPosition)
-            }
+                listElement.removeEventListener("scroll", updateVerticalPosition);
+            };
         }
 
-    }, [listRef])
+    }, [listRef]);
 
     useEffect(() => {
         const elements = props.data.map((data, index) => {
@@ -148,7 +143,7 @@ const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsPro
         const scrollTop = (event.target as HTMLDivElement).scrollTop;
         const position = scrollTop - offsetTop;
         setVerticalPosition(position);
-    }
+    };
 
     const getElementsInWindow = () => {
         const componentHeightWithSpacing = listTotalHeight / props.data.length;
@@ -161,7 +156,7 @@ const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsPro
             Math.max(0, Math.round(start)),
             Math.round(end)
         );
-    }
+    };
 
     return (
         <div className={styles.listElements} ref={listElementsRef} style={{height: listTotalHeight}}>
@@ -171,7 +166,7 @@ const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsPro
 });
 
 declare module "react" {
-    function forwardRef<T, P = {}>(
+    function forwardRef<T, P = unknown>(
         render: (props: P, ref: React.Ref<T>) => React.ReactElement | null
     ): (props: P & React.RefAttributes<T>) => React.ReactElement | null;
 }

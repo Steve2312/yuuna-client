@@ -1,19 +1,19 @@
-import Song from '../types/Song';
+import Song from "../types/Song";
 import {getCoverPath, getSongPath} from "@/utils/Paths";
-import MediaSessionService from './MediaSessionService';
-import Observable from './Observable';
+import MediaSessionService from "./MediaSessionService";
+import Observable from "./Observable";
 import PreviewService from "@/services/PreviewService";
 
 class PlayerService extends Observable {
 
     private audio: HTMLAudioElement = new Audio();
 
-    private playing: boolean = false;
-    private shuffled: boolean = false;
-    private muted: boolean = false;
+    private playing = false;
+    private shuffled = false;
+    private muted = false;
 
-    private defaultAudioVolume: number = 0.24;
-    private volumeBeforeMute: number = 0;
+    private defaultAudioVolume = 0.24;
+    private volumeBeforeMute = 0;
 
     // Info
     private playlistName: string;
@@ -30,19 +30,19 @@ class PlayerService extends Observable {
         if (this.audio.src) {
             await this.audio.play();
         }
-    }
+    };
 
     public pause = async () => {
         if (this.audio.src) {
             await this.audio.pause();
         }
-    }
+    };
 
     public playPause = () => {
         if (this.audio) {
             this.audio.paused ? this.play() : this.pause();
         }
-    }
+    };
 
     public seek = (time?: number) => {
 
@@ -51,7 +51,7 @@ class PlayerService extends Observable {
         }
 
         return this.audio.currentTime;
-    }
+    };
 
     public volume = (volume?: number): number => {
 
@@ -62,7 +62,7 @@ class PlayerService extends Observable {
         }
 
         return this.audio.volume;
-    }
+    };
 
     public forward = async () => {
         const index = this.getNextIndexOfSongInPlaylist();
@@ -73,7 +73,7 @@ class PlayerService extends Observable {
                 await this.pause();
             }
         }
-    }
+    };
 
     public backward = async () => {
         const threshold = 0.5;
@@ -89,7 +89,7 @@ class PlayerService extends Observable {
         }
 
         this.seek(0);
-    }
+    };
 
     public mute = () => {
 
@@ -103,7 +103,7 @@ class PlayerService extends Observable {
         }
 
         this.notify(this.getState());
-    }
+    };
 
     public playAtPosition = async (index: number) => {
         const song: Song = this.playlist[index];
@@ -133,7 +133,7 @@ class PlayerService extends Observable {
         } catch (err) {
             console.error(err);
         }
-    }
+    };
 
     public playFromPlaylist = async (playlistName: string, playlist: Song[], index: number) => {
         const song: Song = playlist[index];
@@ -177,7 +177,7 @@ class PlayerService extends Observable {
         } catch (err) {
             console.error(err);
         }
-    }
+    };
 
     public updateMediaSession = async () => {
         const coverPath = getCoverPath(this.current);
@@ -191,12 +191,12 @@ class PlayerService extends Observable {
             mediaSession.setActionHandler("play", this.play);
             mediaSession.setActionHandler("pause", this.pause);
         }
-    }
+    };
 
     // TODO
     public shuffle = () => {
         this.shuffled ? this.sortPlaylist() : this.shufflePlaylist();
-    }
+    };
 
     private shufflePlaylist = () => {
         if (this.playlist && this.current) {
@@ -211,7 +211,7 @@ class PlayerService extends Observable {
 
         this.shuffled = true;
         this.notify(this.getState());
-    }
+    };
 
     private sortPlaylist = () => {
         if (this.playlist) {
@@ -220,7 +220,7 @@ class PlayerService extends Observable {
         
         this.shuffled = false;
         this.notify(this.getState());
-    }
+    };
 
     // Event Handlers
     private handleOnPlay = async (event: Event) => {
@@ -238,13 +238,13 @@ class PlayerService extends Observable {
         if (preview.loading) {
             PreviewService.cancelAxiosRequest();
         }
-    }
+    };
 
     private handleOnPause = async () => {
         this.playing = false;
         MediaSessionService.setPlaybackState("paused");
         this.notify(this.getState());
-    }
+    };
 
     private handleOnTimeUpdate = async (event: Event) => {
         const audio = event.target as HTMLAudioElement;
@@ -264,7 +264,7 @@ class PlayerService extends Observable {
             }
 
         }
-    }
+    };
 
     private getNextIndexOfSongInPlaylist = (): number => {
         const index = this.getIndexOfSongInPlaylist();
@@ -274,7 +274,7 @@ class PlayerService extends Observable {
         }
 
         return (index + 1) % this.playlist.length;
-    }
+    };
 
     private getPreviousIndexOfSongInPlaylist = (): number => {
         const index = this.getIndexOfSongInPlaylist();
@@ -284,7 +284,7 @@ class PlayerService extends Observable {
         }
 
         return index - 1 == -1 ? this.playlist.length - 1 : index - 1;
-    }
+    };
 
     private getIndexOfSongInPlaylist = (): number => {
         for (let i = 0; i < this.playlist.length; i++) {
@@ -295,7 +295,7 @@ class PlayerService extends Observable {
         }
 
         return -1;
-    }
+    };
 
     private getPlayableAudioElement = (src: string, volume: number): Promise<HTMLAudioElement> => {
         return new Promise((resolve, reject) => {
@@ -317,7 +317,7 @@ class PlayerService extends Observable {
 
             audio.src = src;
         });
-    }
+    };
 
     public getState = () => {
         return {
@@ -328,9 +328,8 @@ class PlayerService extends Observable {
             playlistName: this.playlistName,
             playlist: this.playlist,
             current: this.current
-        }
-    }
-
+        };
+    };
 }
 
 export default new PlayerService();

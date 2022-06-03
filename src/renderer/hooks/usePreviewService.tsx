@@ -11,11 +11,11 @@ const usePreviewService = () => {
 
         return () => {
             PreviewService.detach(setPreview);
-        }
-    }, [])
+        };
+    }, []);
 
     return [preview];
 
-}
+};
 
 export default usePreviewService;

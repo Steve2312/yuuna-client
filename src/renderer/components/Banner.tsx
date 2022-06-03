@@ -16,7 +16,7 @@ const Banner: React.FC<Props> = ({title, src, scrollableElementRef}) => {
 
     const backgroundImage = {
         backgroundImage: `linear-gradient(transparent, var(--bg_1_color)), url(${src})`,
-    }
+    };
 
     useEffect(() => {
         const scrollableElement = scrollableElementRef?.current;
@@ -27,14 +27,14 @@ const Banner: React.FC<Props> = ({title, src, scrollableElementRef}) => {
             return () => {
                 scrollableElement.removeEventListener("scroll", updateScrollTop);
                 window.removeEventListener("resize", updateBannerOffset);
-            }
+            };
         }
-    }, [scrollableElementRef])
+    }, [scrollableElementRef]);
 
     const updateScrollTop = (event: Event) => {
         const element = event.target as HTMLDivElement;
         setScrollTop(element.scrollTop);
-    }
+    };
 
     const updateBannerOffset = () => {
         const bannerElement = bannerRef.current;
@@ -42,19 +42,19 @@ const Banner: React.FC<Props> = ({title, src, scrollableElementRef}) => {
             const bannerOffsetBottom = bannerElement.offsetTop + bannerElement.offsetHeight;
             setBannerOffsetBottom(bannerOffsetBottom);
         }
-    }
+    };
 
     const titleOpacity = 1 - scrollTop / 200;
     const titleStyle = {
         opacity: clamp(titleOpacity, 0, 1)
-    }
+    };
 
     const bannerScale = 1 + scrollTop / 500;
     const bannerOpacity = bannerOffsetBottom ? 1 - (scrollTop / bannerOffsetBottom) : 1;
     const bannerStyle = {
-        transform: 'scale(' + clamp(bannerScale, 0, 1.75) + ')',
+        transform: "scale(" + clamp(bannerScale, 0, 1.75) + ")",
         opacity: clamp(bannerOpacity, 0, 1)
-    }
+    };
 
     return (
         <>
@@ -64,6 +64,6 @@ const Banner: React.FC<Props> = ({title, src, scrollableElementRef}) => {
             </div>
         </>
     );
-}
+};
 
 export default Banner;

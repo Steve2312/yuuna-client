@@ -1,6 +1,6 @@
 import React, {CSSProperties} from "react";
-import styles from '@/styles/search-librarycard.module.scss';
-import { FaPlay, FaPause, FaEllipsisH, FaDownload, FaCircleNotch } from 'react-icons/fa';
+import styles from "@/styles/search-librarycard.module.scss";
+import { FaPlay, FaPause, FaEllipsisH, FaDownload, FaCircleNotch } from "react-icons/fa";
 import usePreviewService from "@/hooks/usePreviewService";
 import PreviewService from "@/services/PreviewService";
 import getBackgroundImageStyle from "@/utils/BackgroundImageStyle";
@@ -28,12 +28,12 @@ const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
     const play = async () => {
         if (preview.beatmapSetID === beatmap.id) PreviewService.playPause();
         else await PreviewService.playPreview(beatmap.id);
-    }
+    };
 
     return (
         <div className={styles.searchCard} style={style}>
             <span className={styles.index}>{index + 1}</span>
-            <div className={styles.content + (preview.beatmapSetID == beatmap.id ? " " + styles.playing : '')}>
+            <div className={styles.content + (preview.beatmapSetID == beatmap.id ? " " + styles.playing : "")}>
                 <div className={styles.albumCover} style={cover}>
                     {
                         isPlaying ?
@@ -51,10 +51,10 @@ const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
                         <span className={styles.title}>{beatmap.title}</span>
                         <span className={styles.artist}>{beatmap.artist}</span>
                         <span className={styles.subject}>
-                            SOURCE: <span className={styles.value}>{beatmap.source ? beatmap.source : '-'}</span>
+                            SOURCE: <span className={styles.value}>{beatmap.source ? beatmap.source : "-"}</span>
                         </span>
                         <span className={styles.subject}>
-                            CREATOR:{' '}
+                            CREATOR:{" "}
                             <span className={styles.value + " " + styles.link} onClick={() => openCreatorPage(beatmap.creator)}>
                                 {beatmap.creator}
                             </span>
@@ -69,7 +69,7 @@ const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
                             BPM: <span className={styles.value}>{beatmap.bpm}</span>
                         </span>
                         <span className={styles.box}>
-                            BEATMAP SET ID:{' '}
+                            BEATMAP SET ID:{" "}
                             <span className={styles.value + " " + styles.link} onClick={() => openBeatmapPage(beatmap.id)}>
                                 {beatmap.id}
                             </span>
@@ -83,6 +83,6 @@ const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
             </div>
         </div>
     );
-}, () => true)
+}, () => true);
 
 export default SearchCard;

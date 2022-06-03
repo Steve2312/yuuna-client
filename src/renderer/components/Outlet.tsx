@@ -17,12 +17,12 @@ const Outlet: React.FC = () => {
 
         if (outlet.route == route) {
             style.opacity = 1;
-            style.pointerEvents = "auto"
+            style.pointerEvents = "auto";
             style.zIndex = 1;
         }
 
         return style;
-    }
+    };
 
     return (
         <>
@@ -35,6 +35,6 @@ const Outlet: React.FC = () => {
             </div>
         </>
     );
-}
+};
 
 export default Outlet;
