@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { shell } from "electron";
 import styles from "@/styles/player.module.scss";
 import {getCoverPath} from "@/utils/Paths";
 import PlayerService from "../services/PlayerService";
