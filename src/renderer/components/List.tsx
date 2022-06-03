@@ -92,7 +92,7 @@ const ListElements = React.forwardRef(<T extends unknown>(props: ListElementsPro
     const [verticalPosition, setVerticalPosition] = useState(0);
     const [listHeight, setListHeight] = useState(0);
 
-    const [listElementComponents, setListElementComponents] = useState<(React.ReactElement<any, any> | null)[]>([]);
+    const [listElementComponents, setListElementComponents] = useState<(JSX.Element | null)[]>([]);
 
     const listTotalHeight = props.data.length * (componentHeight + (props.spaceBetween || 0));
 
