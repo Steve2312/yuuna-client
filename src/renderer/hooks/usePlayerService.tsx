@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import PlayerService from "@/services/PlayerService";
+import { useEffect, useState } from 'react';
+import PlayerService, { PlayerServiceStateProps } from '@/services/PlayerService';
 
-const usePlayerService = () => {
+const usePlayerService = (): [PlayerServiceStateProps] => {
 
     const [player, setPlayer] = useState(PlayerService.getState());
 
@@ -10,10 +10,10 @@ const usePlayerService = () => {
 
         return () => {
             PlayerService.detach(setPlayer);
-        }
+        };
     }, []);
 
     return [player];
-}
+};
 
 export default usePlayerService;

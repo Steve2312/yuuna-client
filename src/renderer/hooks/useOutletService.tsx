@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import OutletService from "@/services/OutletService";
+import { useEffect, useState } from 'react';
+import OutletService, { OutletServiceStateProps } from '@/services/OutletService';
 
-const useOutletService = () => {
+const useOutletService = (): [OutletServiceStateProps] => {
 
     const [outlet, setOutlet] = useState(OutletService.getState());
 
@@ -10,11 +10,11 @@ const useOutletService = () => {
 
         return () => {
             OutletService.detach(setOutlet);
-        }
-    }, [])
+        };
+    }, []);
 
     return [outlet];
 
-}
+};
 
 export default useOutletService;

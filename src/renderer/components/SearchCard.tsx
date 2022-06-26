@@ -1,13 +1,13 @@
-import React, {CSSProperties} from "react";
+import React, { CSSProperties } from 'react';
 import styles from '@/styles/search-librarycard.module.scss';
 import { FaPlay, FaPause, FaEllipsisH, FaDownload, FaCircleNotch } from 'react-icons/fa';
-import usePreviewService from "@/hooks/usePreviewService";
-import PreviewService from "@/services/PreviewService";
-import getBackgroundImageStyle from "@/utils/BackgroundImageStyle";
-import formatSeconds from "@/utils/FormatSeconds";
-import {openBeatmapPage, openCreatorPage} from "@/utils/Pages";
-import Beatmap from "@/types/Beatmap";
-import DownloadService from "@/services/DownloadService";
+import usePreviewService from '@/hooks/usePreviewService';
+import PreviewService from '@/services/PreviewService';
+import getBackgroundImageStyle from '@/utils/BackgroundImageStyle';
+import formatSeconds from '@/utils/FormatSeconds';
+import { openBeatmapPage, openCreatorPage } from '@/utils/Pages';
+import Beatmap from '@/types/Beatmap';
+import DownloadService from '@/services/DownloadService';
 
 type Props = {
     beatmap: Beatmap,
@@ -15,7 +15,7 @@ type Props = {
     style?: CSSProperties
 }
 
-const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
+const SearchCard: React.FC<Props> = React.memo(({ beatmap, index, style }) => {
 
     const [preview] = usePreviewService();
 
@@ -25,15 +25,15 @@ const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
     const cover = getBackgroundImageStyle(`https://assets.ppy.sh/beatmaps/${beatmap.id}/covers/list@2x.jpg`);
     const header = getBackgroundImageStyle(`https://assets.ppy.sh/beatmaps/${beatmap.id}/covers/card@2x.jpg`);
 
-    const play = async () => {
+    const play = async (): Promise<void> => {
         if (preview.beatmapSetID === beatmap.id) PreviewService.playPause();
         else await PreviewService.playPreview(beatmap.id);
-    }
+    };
 
     return (
         <div className={styles.searchCard} style={style}>
             <span className={styles.index}>{index + 1}</span>
-            <div className={styles.content + (preview.beatmapSetID == beatmap.id ? " " + styles.playing : '')}>
+            <div className={styles.content + (preview.beatmapSetID == beatmap.id ? ' ' + styles.playing : '')}>
                 <div className={styles.albumCover} style={cover}>
                     {
                         isPlaying ?
@@ -55,7 +55,7 @@ const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
                         </span>
                         <span className={styles.subject}>
                             CREATOR:{' '}
-                            <span className={styles.value + " " + styles.link} onClick={() => openCreatorPage(beatmap.creator)}>
+                            <span className={styles.value + ' ' + styles.link} onClick={() => openCreatorPage(beatmap.creator)}>
                                 {beatmap.creator}
                             </span>
                         </span>
@@ -70,7 +70,7 @@ const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
                         </span>
                         <span className={styles.box}>
                             BEATMAP SET ID:{' '}
-                            <span className={styles.value + " " + styles.link} onClick={() => openBeatmapPage(beatmap.id)}>
+                            <span className={styles.value + ' ' + styles.link} onClick={() => openBeatmapPage(beatmap.id)}>
                                 {beatmap.id}
                             </span>
                         </span>
@@ -83,6 +83,6 @@ const SearchCard: React.FC<Props> = React.memo(({beatmap, index, style}) => {
             </div>
         </div>
     );
-}, () => true)
+}, () => true);
 
 export default SearchCard;

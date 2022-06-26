@@ -1,27 +1,27 @@
-import React, {useState} from "react";
-import styles from "@/styles/downloads.module.scss";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import List from "@/components/List";
-import useDownloadService from "@/hooks/useDownloadService";
-import DownloadCard from "@/components/DownloadCard";
+import React, { useState } from 'react';
+import styles from '@/styles/downloads.module.scss';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import List from '@/components/List';
+import useDownloadService from '@/hooks/useDownloadService';
+import DownloadCard from '@/components/DownloadCard';
 
 const Downloads: React.FC = () => {
     const [download] = useDownloadService();
     const [visibility, setVisibility] = useState<boolean>(true);
 
-    const activeDownloads = download.downloads.filter(download => download.status != "Failed").length
+    const activeDownloads = download.downloads.filter(download => download.status != 'Failed').length;
 
-    const toggle = () => {
+    const toggle = (): void => {
         setVisibility(visibility => !visibility);
-    }
+    };
 
     return (
-        <div className={styles.downloads + (!visibility ? " " + styles.hidden : "")}>
+        <div className={styles.downloads + (!visibility ? ' ' + styles.hidden : '')}>
             <div className={styles.header}>
                 <span className={styles.icon} onClick={toggle}>
                     {
                         visibility
-                        ?
+                            ?
                             <FaArrowRight/>
                             :
                             <FaArrowLeft />
@@ -41,14 +41,14 @@ const Downloads: React.FC = () => {
                 keyExtractor={(data) => data.beatmap.id}
                 data={download.downloads}
                 render={
-                    ({data, style}) => {
+                    ({ data, style }) => {
                         return (
                             <DownloadCard download={data} style={style}/>
-                        )
+                        );
                     }
                 } />
         </div>
     );
-}
+};
 
 export default Downloads;

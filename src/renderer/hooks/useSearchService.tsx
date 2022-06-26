@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import SearchService from "@/services/SearchService";
+import { useEffect, useState } from 'react';
+import SearchService, { SearchServiceStateProps } from '@/services/SearchService';
 
-const useSearchService = () => {
+const useSearchService = (): [SearchServiceStateProps] => {
 
     const [search, setSearch] = useState(SearchService.getState());
 
@@ -10,11 +10,11 @@ const useSearchService = () => {
 
         return () => {
             SearchService.detach(setSearch);
-        }
-    }, [])
+        };
+    }, []);
 
     return [search];
 
-}
+};
 
 export default useSearchService;

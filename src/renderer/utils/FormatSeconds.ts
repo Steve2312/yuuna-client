@@ -1,15 +1,15 @@
-const formatSeconds = (duration: number) => {
+const formatSeconds = (duration: number): string => {
     if (!duration) {
-        return "00:00"
+        return '00:00';
     }
-    function format(number: number) {
-        return number.toString().padStart(2, "0");
+    function format(number: number): string {
+        return number.toString().padStart(2, '0');
     }
     duration = Math.round(duration);
-    let minutes = Math.floor(duration / 60);
-    let seconds = duration % 60;
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
 
     return format(minutes) + ':' + format(seconds);
-}
+};
 
 export default formatSeconds;

@@ -1,14 +1,20 @@
-import Observable from "./Observable";
-import axios from "axios";
-import PlayerService from "@/services/PlayerService";
+import Observable from './Observable';
+import axios from 'axios';
+import PlayerService from '@/services/PlayerService';
 
-class PreviewService extends Observable {
+export type PreviewServiceStateProps = {
+    playing: boolean,
+    loading: boolean,
+    beatmapSetID: number | null
+}
 
-    private playing: boolean = false;
-    private loading: boolean = false;
+class PreviewService extends Observable<PreviewServiceStateProps> {
+
+    private playing = false;
+    private loading = false;
     private beatmapSetID: number | null;
 
-    private defaultAudioVolume: number = 0.24;
+    private defaultAudioVolume = 0.24;
 
     private audioContext = new AudioContext();
     private gainNode = this.audioContext.createGain();
@@ -41,28 +47,28 @@ class PreviewService extends Observable {
             this.gainNode.connect(this.audioContext.destination);
             this.audioBufferSource.start();
             this.notifyFinishedLoading();
-        } catch(error) {
+        } catch (error) {
             if (!axios.isCancel(error)) {
                 console.error(error);
                 this.notifyFinishedPlaying();
             }
         }
-    }
+    };
 
-    public play = async () => {
+    public play = async (): Promise<void> => {
         await PlayerService.pause();
-        this.gainNode.connect(this.audioContext.destination)
+        this.gainNode.connect(this.audioContext.destination);
         this.notifyPlaying();
-    }
+    };
 
-    public pause = () => {
+    public pause = (): void => {
         this.gainNode.disconnect();
         this.notifyPaused();
-    }
+    };
 
-    public playPause = () => {
+    public playPause = (): void => {
         this.playing ? this.pause() : this.play();
-    }
+    };
 
     public volume = (volume? :number): number => {
         if (volume != undefined) {
@@ -70,72 +76,72 @@ class PreviewService extends Observable {
         }
 
         return this.gainNode.gain.value;
-    }
+    };
 
     private getArrayBuffer = async (url: string): Promise<ArrayBuffer> => {
         const response = await axios.get(url, {
-            responseType: "arraybuffer",
+            responseType: 'arraybuffer',
             cancelToken: this.cancelTokenSource.token
         });
 
         return response.data;
-    }
+    };
 
-    private createAudioBufferSource = (buffer: AudioBuffer) => {
+    private createAudioBufferSource = (buffer: AudioBuffer): AudioBufferSourceNode => {
         const audioBufferSource = this.audioContext.createBufferSource();
         audioBufferSource.buffer = buffer;
         audioBufferSource.connect(this.gainNode);
         return audioBufferSource;
-    }
+    };
 
-    public cancelAxiosRequest =  () => {
+    public cancelAxiosRequest = (): void => {
         this.cancelTokenSource.cancel();
         this.cancelTokenSource = axios.CancelToken.source();
         this.notifyFinishedPlaying();
-    }
+    };
 
-    private destroyAudioBufferSource = () => {
+    private destroyAudioBufferSource = (): void => {
         if (this.audioBufferSource) {
             this.audioBufferSource.onended = null;
             this.audioBufferSource.stop();
         }
-    }
+    };
 
-    private notifyLoading = (beatmapSetID: number) => {
+    private notifyLoading = (beatmapSetID: number): void => {
         this.beatmapSetID = beatmapSetID;
         this.loading = true;
         this.playing = true;
         this.notify(this.getState());
-    }
+    };
 
-    private notifyFinishedLoading = () => {
+    private notifyFinishedLoading = (): void => {
         this.loading = false;
         this.notify(this.getState());
-    }
+    };
 
-    private notifyFinishedPlaying = () => {
+    private notifyFinishedPlaying = (): void => {
         this.beatmapSetID = null;
         this.playing = false;
         this.notify(this.getState());
-    }
+    };
 
-    private notifyPlaying = () => {
+    private notifyPlaying = (): void => {
         this.playing = true;
         this.notify(this.getState());
-    }
+    };
 
-    private notifyPaused = () => {
+    private notifyPaused = (): void => {
         this.playing = false;
         this.notify(this.getState());
-    }
+    };
 
-    public getState = () => {
+    public getState = (): PreviewServiceStateProps => {
         return {
             playing: this.playing,
             loading: this.loading,
             beatmapSetID: this.beatmapSetID
-        }
-    }
+        };
+    };
 }
 
 export default new PreviewService();

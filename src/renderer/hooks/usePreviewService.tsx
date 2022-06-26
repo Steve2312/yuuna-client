@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
-import PreviewService from "@/services/PreviewService";
+import { useEffect, useState } from 'react';
+import PreviewService, { PreviewServiceStateProps } from '@/services/PreviewService';
 
 
-const usePreviewService = () => {
+const usePreviewService = (): [PreviewServiceStateProps] => {
 
     const [preview, setPreview] = useState(PreviewService.getState());
 
@@ -11,11 +11,11 @@ const usePreviewService = () => {
 
         return () => {
             PreviewService.detach(setPreview);
-        }
-    }, [])
+        };
+    }, []);
 
     return [preview];
 
-}
+};
 
 export default usePreviewService;

@@ -1,18 +1,18 @@
-import React, {createRef, useRef, useState} from "react";
-import styles from "@/styles/searchmenu.module.scss";
-import SearchService from "@/services/SearchService";
+import React, { useRef } from 'react';
+import styles from '@/styles/searchmenu.module.scss';
+import SearchService from '@/services/SearchService';
 
 const SearchMenu: React.FC = () => {
 
     const inputRef = useRef<HTMLInputElement>(null);
     const selectRef = useRef<HTMLSelectElement>(null);
 
-    const handleChange = () => {
-        let inputValue = inputRef.current?.value || '';
-        let selectValue = selectRef.current?.value || 'ranked';
+    const handleChange = (): void => {
+        const inputValue = inputRef.current?.value || '';
+        const selectValue = selectRef.current?.value || 'ranked';
 
         SearchService.search(inputValue, selectValue);
-    }
+    };
 
     return (
         <div className={styles.searchMenu}>
@@ -27,6 +27,6 @@ const SearchMenu: React.FC = () => {
             </select>
         </div>
     );
-}
+};
 
 export default SearchMenu;

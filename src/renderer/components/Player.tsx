@@ -1,11 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { shell } from 'electron';
 import styles from '@/styles/player.module.scss';
-import {getCoverPath} from "@/utils/Paths";
+import { getCoverPath } from '@/utils/Paths';
 import PlayerService from '../services/PlayerService';
 import PreviewService from '../services/PreviewService';
-import usePlayerService from "@/hooks/usePlayerService";
-import getBackgroundImageStyle from "@/utils/BackgroundImageStyle";
+import usePlayerService from '@/hooks/usePlayerService';
+import getBackgroundImageStyle from '@/utils/BackgroundImageStyle';
 import {
     FaPollH,
     FaVolumeDown,
@@ -16,9 +15,9 @@ import {
     FaPause,
     FaPlay,
     FaForward, FaRedoAlt, FaVolumeOff
-} from "react-icons/fa";
-import formatSeconds from "@/utils/FormatSeconds";
-import {openBeatmapPage} from "@/utils/Pages";
+} from 'react-icons/fa';
+import formatSeconds from '@/utils/FormatSeconds';
+import { openBeatmapPage } from '@/utils/Pages';
 
 const PlayerBar: React.FC = () => {
 
@@ -29,38 +28,38 @@ const PlayerBar: React.FC = () => {
     const coverPath = player.current ? getCoverPath(player.current) : null;
 
     useEffect(() => {
-        const handleTimeUpdate =() => {
+        const handleTimeUpdate = (): void => {
             if (!drag) {
                 setCurrentTime(PlayerService.seek());
             }
-        }
+        };
 
         player.audio.addEventListener('timeupdate', handleTimeUpdate);
 
         return () => {
             player.audio.removeEventListener('timeupdate', handleTimeUpdate);
-        }
+        };
     }, [player, drag]);
 
     const duration = player.audio.duration && !isNaN(player.audio.duration) ? Math.round(player.audio.duration) : 0;
 
-    const handleDrag = (event: ChangeEvent) => {
+    const handleDrag = (event: ChangeEvent): void => {
         const element = event.target as HTMLInputElement;
-        setCurrentTime(element.valueAsNumber)
-    }
+        setCurrentTime(element.valueAsNumber);
+    };
 
-    const seek = () => {
+    const seek = (): void => {
         setDrag(false);
         PlayerService.seek(currentTime);
-    }
+    };
 
-    const volumeIcon = () => {
+    const volumeIcon = (): JSX.Element | undefined => {
         if (volume == 0 || player.muted) {
             return <FaVolumeMute />;
         }
 
         if (volume > 0 && volume < 0.1) {
-            return <FaVolumeOff />
+            return <FaVolumeOff />;
         }
 
         if (volume < 0.45) {
@@ -70,15 +69,15 @@ const PlayerBar: React.FC = () => {
         if (volume >= 0.45) {
             return <FaVolumeUp />;
         }
-    }
+    };
 
-    const handleVolume = (event: ChangeEvent) => {
+    const handleVolume = (event: ChangeEvent): void => {
         const element = event.target as HTMLInputElement;
         const volume = element.valueAsNumber;
         setVolume(volume);
         PlayerService.volume(volume);
         PreviewService.volume(volume);
-    }
+    };
 
     const artist = player.current?.artist ? player.current.artist : '-';
     const title = player.current?.title ? player.current.title : '-';
@@ -99,7 +98,7 @@ const PlayerBar: React.FC = () => {
             </div>
             <div className={styles.center}>
                 <div className={styles.controls}>
-                    <span className={styles.option + (player.shuffled ? " " + styles.optionActive : "")} onClick={PlayerService.shuffle}><FaRandom /></span>
+                    <span className={styles.option + (player.shuffled ? ' ' + styles.optionActive : '')} onClick={PlayerService.shuffle}><FaRandom /></span>
                     <span onClick={PlayerService.backward}><FaBackward /></span>
                     <span onClick={PlayerService.playPause}>
                         {
@@ -130,6 +129,6 @@ const PlayerBar: React.FC = () => {
             </div>
         </div>
     );
-}
+};
 
 export default PlayerBar;
