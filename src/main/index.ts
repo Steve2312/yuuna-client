@@ -10,8 +10,8 @@ let win: BrowserWindow | null = null;
 
 async function createWindow(): Promise<void> {
     win = new BrowserWindow( {
-        width: 1280,
-        height: 720,
+        width: 1200,
+        height: 700,
         minHeight: 600,
         minWidth: 800,
         frame: false,
