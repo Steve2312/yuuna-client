@@ -40,7 +40,7 @@ const LibraryCard: React.FC<Props> = React.memo<Props>(({ song, style }) => {
                             <FaPlay onClick={play}/>
                     }
                 </div>
-                <div className={styles.container}>
+                <div className={styles.container} onDoubleClick={play}>
                     <div className={styles.cardCover} style={getBackgroundImageStyle(headerPath)} />
                     <div className={styles.section}>
                         <span className={styles.title}>{song.title}</span>
