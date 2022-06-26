@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import PreviewService from '@/services/PreviewService';
+import PreviewService, { PreviewServiceStateProps } from '@/services/PreviewService';
 
 
-const usePreviewService = () => {
+const usePreviewService = (): [PreviewServiceStateProps] => {
 
     const [preview, setPreview] = useState(PreviewService.getState());
 

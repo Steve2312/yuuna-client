@@ -2,13 +2,13 @@ import Observable from './Observable';
 import axios from 'axios';
 import PlayerService from '@/services/PlayerService';
 
-type StateProps = {
+export type PreviewServiceStateProps = {
     playing: boolean,
     loading: boolean,
     beatmapSetID: number | null
 }
 
-class PreviewService extends Observable<StateProps> {
+class PreviewService extends Observable<PreviewServiceStateProps> {
 
     private playing = false;
     private loading = false;
@@ -135,7 +135,7 @@ class PreviewService extends Observable<StateProps> {
         this.notify(this.getState());
     };
 
-    public getState = (): StateProps => {
+    public getState = (): PreviewServiceStateProps => {
         return {
             playing: this.playing,
             loading: this.loading,

@@ -4,7 +4,7 @@ import MediaSessionService from './MediaSessionService';
 import Observable from './Observable';
 import PreviewService from '@/services/PreviewService';
 
-type StateProps = {
+export type PlayerServiceStateProps = {
     audio: HTMLAudioElement,
     playing: boolean,
     shuffled: boolean,
@@ -14,7 +14,7 @@ type StateProps = {
     current: Song
 }
 
-class PlayerService extends Observable<StateProps> {
+class PlayerService extends Observable<PlayerServiceStateProps> {
 
     private audio: HTMLAudioElement = new Audio();
 
@@ -329,7 +329,7 @@ class PlayerService extends Observable<StateProps> {
         });
     };
 
-    public getState = (): StateProps => {
+    public getState = (): PlayerServiceStateProps => {
         return {
             audio: this.audio,
             playing: this.playing,

@@ -5,11 +5,11 @@ import * as fs from 'fs';
 import { getTempOutputPath } from '@/utils/Paths';
 import Download from '@/types/Download';
 
-type StateProps = {
+export type DownloadServiceStateProps = {
     downloads: Download[]
 }
 
-class DownloadService extends Observable<StateProps> {
+class DownloadService extends Observable<DownloadServiceStateProps> {
 
     // Chrome allows a maximum of 6 connections per domain.
     // Leave 1 connection open for fetching data
@@ -113,7 +113,7 @@ class DownloadService extends Observable<StateProps> {
         return 'https://beatconnect.io/b/' + beatmap.id + '/' + beatmap.unique_id;
     };
 
-    public getState = (): StateProps => {
+    public getState = (): DownloadServiceStateProps => {
         return {
             downloads: [...this.downloads]
         };

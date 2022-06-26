@@ -3,7 +3,7 @@ import Beatconnect from '@/utils/Beatconnect';
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import Beatmap from '@/types/Beatmap';
 
-type StateProps = {
+export type SearchServiceStateProps = {
     input: {
         query: string,
         status: string
@@ -20,7 +20,7 @@ type StateProps = {
     }
 }
 
-class SearchService extends Observable<StateProps> {
+class SearchService extends Observable<SearchServiceStateProps> {
 
     private query: string;
     private status: string;
@@ -138,7 +138,7 @@ class SearchService extends Observable<StateProps> {
         };
     };
 
-    public getState = (): StateProps => {
+    public getState = (): SearchServiceStateProps => {
         return {
             input: {
                 query: this.query,

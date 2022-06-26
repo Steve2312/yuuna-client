@@ -4,11 +4,11 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { songsPath } from '@/utils/Paths';
 
-type StateProps = {
+export type LibraryServiceStateProps = {
     songs: Song[]
 }
 
-class LibraryService extends Observable<StateProps> {
+class LibraryService extends Observable<LibraryServiceStateProps> {
 
     private songs: Song[] = [];
 
@@ -58,7 +58,7 @@ class LibraryService extends Observable<StateProps> {
         });
     };
 
-    public getState = (): StateProps => {
+    public getState = (): LibraryServiceStateProps => {
         return {
             songs: this.songs
         };

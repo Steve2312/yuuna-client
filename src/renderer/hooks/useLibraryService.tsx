@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import LibraryService from '@/services/LibraryService';
+import LibraryService, { LibraryServiceStateProps } from '@/services/LibraryService';
 
-const useLibraryService = () => {
+const useLibraryService = (): [LibraryServiceStateProps] => {
 
     const [library, setLibrary] = useState(LibraryService.getState());
 

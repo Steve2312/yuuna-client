@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import OutletService from '@/services/OutletService';
+import OutletService, { OutletServiceStateProps } from '@/services/OutletService';
 
-const useOutletService = () => {
+const useOutletService = (): [OutletServiceStateProps] => {
 
     const [outlet, setOutlet] = useState(OutletService.getState());
 

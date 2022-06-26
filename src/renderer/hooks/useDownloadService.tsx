@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import DownloadService from '@/services/DownloadService';
+import DownloadService, { DownloadServiceStateProps } from '@/services/DownloadService';
 
-const useDownloadService = () => {
+const useDownloadService = (): [DownloadServiceStateProps] => {
 
     const [download, setDownload] = useState(DownloadService.getState());
 

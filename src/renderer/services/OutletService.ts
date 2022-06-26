@@ -1,10 +1,10 @@
 import Observable from '@/services/Observable';
 
-type StateProps = {
+export type OutletServiceStateProps = {
     route: string
 }
 
-class OutletService extends Observable<StateProps> {
+class OutletService extends Observable<OutletServiceStateProps> {
 
     private routes = ['search', 'library'];
     private route: string = this.routes[0];
@@ -16,7 +16,7 @@ class OutletService extends Observable<StateProps> {
         }
     };
 
-    public getState = (): StateProps => {
+    public getState = (): OutletServiceStateProps => {
         return {
             route: this.route
         };
