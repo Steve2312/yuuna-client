@@ -14,7 +14,9 @@ import {
     FaBackward,
     FaPause,
     FaPlay,
-    FaForward, FaRedoAlt, FaVolumeOff
+    FaForward,
+    FaRedoAlt,
+    FaVolumeOff
 } from 'react-icons/fa';
 import formatSeconds from '@/utils/FormatSeconds';
 import { openBeatmapPage } from '@/utils/Pages';
@@ -48,7 +50,7 @@ const PlayerBar: React.FC = () => {
                 await PlayerService.pause();
             });
         }
-    }, [library])
+    }, [library]);
 
     const duration = player.audio.duration && !isNaN(player.audio.duration) ? Math.round(player.audio.duration) : 0;
 
