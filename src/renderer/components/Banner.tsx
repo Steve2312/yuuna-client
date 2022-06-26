@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from "react";
-import styles from "../styles/banner.module.scss";
-import clamp from "@/utils/Clamp";
+import React, { useEffect, useRef, useState } from 'react';
+import styles from '../styles/banner.module.scss';
+import clamp from '@/utils/Clamp';
 
 type Props = {
     title: string,
@@ -8,35 +8,35 @@ type Props = {
     scrollableElementRef?: React.RefObject<HTMLDivElement>
 }
 
-const Banner: React.FC<Props> = ({title, src, scrollableElementRef}) => {
+const Banner: React.FC<Props> = ({ title, src, scrollableElementRef }) => {
 
     const bannerRef = useRef<HTMLDivElement>(null);
     const [bannerOffsetBottom, setBannerOffsetBottom] = useState<number>(0);
     const [scrollTop, setScrollTop] = useState<number>(0);
 
     const backgroundImage = {
-        backgroundImage: `linear-gradient(transparent, var(--bg_1_color)), url(${src})`,
+        backgroundImage: `linear-gradient(transparent, var(--bg_1_color)), url(${src})`
     };
 
     useEffect(() => {
         const scrollableElement = scrollableElementRef?.current;
 
         if (scrollableElement) {
-            scrollableElement.addEventListener("scroll", updateScrollTop);
-            window.addEventListener("resize", updateBannerOffset);
+            scrollableElement.addEventListener('scroll', updateScrollTop);
+            window.addEventListener('resize', updateBannerOffset);
             return () => {
-                scrollableElement.removeEventListener("scroll", updateScrollTop);
-                window.removeEventListener("resize", updateBannerOffset);
+                scrollableElement.removeEventListener('scroll', updateScrollTop);
+                window.removeEventListener('resize', updateBannerOffset);
             };
         }
     }, [scrollableElementRef]);
 
-    const updateScrollTop = (event: Event) => {
+    const updateScrollTop = (event: Event): void => {
         const element = event.target as HTMLDivElement;
         setScrollTop(element.scrollTop);
     };
 
-    const updateBannerOffset = () => {
+    const updateBannerOffset = (): void => {
         const bannerElement = bannerRef.current;
         if (bannerElement) {
             const bannerOffsetBottom = bannerElement.offsetTop + bannerElement.offsetHeight;
@@ -52,7 +52,7 @@ const Banner: React.FC<Props> = ({title, src, scrollableElementRef}) => {
     const bannerScale = 1 + scrollTop / 500;
     const bannerOpacity = bannerOffsetBottom ? 1 - (scrollTop / bannerOffsetBottom) : 1;
     const bannerStyle = {
-        transform: "scale(" + clamp(bannerScale, 0, 1.75) + ")",
+        transform: 'scale(' + clamp(bannerScale, 0, 1.75) + ')',
         opacity: clamp(bannerOpacity, 0, 1)
     };
 
@@ -60,7 +60,7 @@ const Banner: React.FC<Props> = ({title, src, scrollableElementRef}) => {
         <>
             <div className={styles.banner} ref={bannerRef}>
                 <h1 style={titleStyle}>{title}</h1>
-                <div className={styles.bannerImage} style={{...backgroundImage, ...bannerStyle}}/>
+                <div className={styles.bannerImage} style={{ ...backgroundImage, ...bannerStyle }}/>
             </div>
         </>
     );

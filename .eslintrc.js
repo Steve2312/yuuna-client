@@ -1,49 +1,62 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "es2021": true,
-        "node": true
+    'env': {
+        'browser': true,
+        'es2021': true,
+        'node': true
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended",
-        "plugin:@typescript-eslint/recommended"
+    'extends': [
+        'eslint:recommended',
+        'plugin:react/recommended',
+        'plugin:@typescript-eslint/recommended'
     ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
+    'parser': '@typescript-eslint/parser',
+    'parserOptions': {
+        'ecmaFeatures': {
+            'jsx': true
         },
-        "ecmaVersion": "latest",
-        "sourceType": "module"
+        'ecmaVersion': 'latest',
+        'sourceType': 'module'
     },
-    "plugins": [
-        "react",
-        "@typescript-eslint"
+    'plugins': [
+        'react',
+        '@typescript-eslint'
     ],
-    "ignorePatterns": [
-        "config/**",
-        "scripts/**",
+    'ignorePatterns': [
+        'config/**',
+        'scripts/**'
     ],
-    "rules": {
-        "indent": [
-            "error",
+    'rules': {
+        'indent': [
+            'error',
             4
         ],
-        "linebreak-style": [
-            "error",
-            "windows"
+        'linebreak-style': 'off',
+        'quotes': [
+            'error',
+            'single'
         ],
-        "quotes": [
-            "error",
-            "double"
+        'semi': [
+            'error',
+            'always'
         ],
-        "semi": [
-            "error",
-            "always"
+        'keyword-spacing': [
+            'error',
+            {
+                'before': true,
+                'after': true
+            }
         ],
-        "react/display-name": "off",
-        "react/prop-types": "off",
-        "@typescript-eslint/no-explicit-any": "off",
+        'space-infix-ops': ['error', { 'int32Hint': true }],
+        'object-curly-spacing': ['error', 'always'],
+        'space-before-blocks': ['error', 'always'],
+        'comma-dangle': ['error', 'never'],
+        'react/display-name': 'off',
+        'react/prop-types': 'off',
+        '@typescript-eslint/explicit-function-return-type': [
+            'error',
+            {
+                'allowExpressions': true
+            }
+        ]
     }
 };

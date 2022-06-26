@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import OutletService from "@/services/OutletService";
+import { useEffect, useState } from 'react';
+import OutletService from '@/services/OutletService';
 
 const useOutletService = () => {
 

@@ -1,32 +1,29 @@
-import thumbnail from "../assets/images/no_thumbnail.jpg";
+import thumbnail from '../assets/images/no_thumbnail.jpg';
 
 class MediaSessionService {
 
     private mediaSession = navigator?.mediaSession || null;
 
-    public display = async (title: string, artist: string, coverPath: string) => {
+    public display = async (title: string, artist: string, coverPath: string): Promise<void> => {
 
         const dataURL = await this.imageToDataURL(coverPath);
 
         if (this.mediaSession) {
-            const metadata = new MediaMetadata({
+            this.mediaSession.metadata = new MediaMetadata({
                 title: title,
                 artist: artist,
                 artwork: [
                     {
                         src: dataURL,
-                        sizes: "512x512",
-                        type: "image/jpeg"
+                        sizes: '512x512',
+                        type: 'image/jpeg'
                     }
                 ]
             });
-            
-            this.mediaSession.metadata = metadata;
         }
-
     };
 
-    public setPlaybackState = (state: "paused" | "playing") => {
+    public setPlaybackState = (state: 'paused' | 'playing'): void => {
         if (this.mediaSession) {
             this.mediaSession.playbackState = state;
         }

@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import PreviewService from "@/services/PreviewService";
+import { useEffect, useState } from 'react';
+import PreviewService from '@/services/PreviewService';
 
 
 const usePreviewService = () => {

@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import PlayerService from "@/services/PlayerService";
+import { useEffect, useState } from 'react';
+import PlayerService from '@/services/PlayerService';
 
 const usePlayerService = () => {
 

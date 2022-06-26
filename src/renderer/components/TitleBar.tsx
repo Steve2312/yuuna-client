@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
-import styles from "@/styles/titlebar.module.scss";
-import clamp from "@/utils/Clamp";
+import React, { useEffect, useState } from 'react';
+import styles from '@/styles/titlebar.module.scss';
+import clamp from '@/utils/Clamp';
 
 type Props = {
     title: string,
@@ -8,13 +8,13 @@ type Props = {
     scrollableElementRef: React.RefObject<HTMLDivElement>
 }
 
-const TitleBar: React.FC<Props> = ({title, src, scrollableElementRef}) => {
+const TitleBar: React.FC<Props> = ({ title, src, scrollableElementRef }) => {
 
     const [scrollTop, setScrollTop] = useState<number>(0);
     const [firstElementOffsetBottom, setFirstElementOffsetBottom] = useState<number>(0);
 
     const headerImage = {
-        backgroundImage: `linear-gradient(var(--banner-overlay), var(--banner-overlay)), url(${src})`,
+        backgroundImage: `linear-gradient(var(--banner-overlay), var(--banner-overlay)), url(${src})`
     };
 
     useEffect(() => {
@@ -22,21 +22,21 @@ const TitleBar: React.FC<Props> = ({title, src, scrollableElementRef}) => {
 
         if (scrollableElement) {
             updateOffsetFirstElement();
-            scrollableElement.addEventListener("scroll", updateScrollTop);
-            window.addEventListener("resize", updateOffsetFirstElement);
+            scrollableElement.addEventListener('scroll', updateScrollTop);
+            window.addEventListener('resize', updateOffsetFirstElement);
             return () => {
-                scrollableElement.removeEventListener("scroll", updateScrollTop);
-                window.removeEventListener("resize", updateOffsetFirstElement);
+                scrollableElement.removeEventListener('scroll', updateScrollTop);
+                window.removeEventListener('resize', updateOffsetFirstElement);
             };
         }
     }, [scrollableElementRef]);
 
-    const updateScrollTop = (event: Event) => {
+    const updateScrollTop = (event: Event): void => {
         const element = event.target as HTMLDivElement;
         setScrollTop(element.scrollTop);
     };
 
-    const updateOffsetFirstElement = () => {
+    const updateOffsetFirstElement = (): void => {
         const firstElement = scrollableElementRef.current?.firstElementChild as HTMLDivElement;
         if (firstElement) {
             const firstElementOffsetBottom = firstElement.offsetTop + firstElement.offsetHeight;
@@ -44,7 +44,7 @@ const TitleBar: React.FC<Props> = ({title, src, scrollableElementRef}) => {
         }
     };
 
-    const backToTop = () => {
+    const backToTop = (): void => {
         const scrollableElement = scrollableElementRef.current;
         if (scrollableElement) scrollableElement.scrollTo({
             top: 0
@@ -60,7 +60,7 @@ const TitleBar: React.FC<Props> = ({title, src, scrollableElementRef}) => {
     const titleBarItemTransformY = scrollTop > firstElementOffsetBottom - 50 ? 0 : 50;
     const titleBarItemStyle = {
         opacity: titleBarItemOpacity,
-        transform: "translateY(" + titleBarItemTransformY + "%)",
+        transform: 'translateY(' + titleBarItemTransformY + '%)'
     };
 
     return (

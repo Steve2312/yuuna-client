@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import DownloadService from "@/services/DownloadService";
+import { useEffect, useState } from 'react';
+import DownloadService from '@/services/DownloadService';
 
 const useDownloadService = () => {
 

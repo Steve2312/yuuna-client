@@ -1,6 +1,6 @@
-import { app, session, BrowserWindow, ipcMain } from "electron";
-import path from "path";
-import dotenv from "dotenv";
+import { app, BrowserWindow, ipcMain } from 'electron';
+import path from 'path';
+import dotenv from 'dotenv';
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -8,40 +8,39 @@ if (!app.requestSingleInstanceLock()) {
 
 let win: BrowserWindow | null = null;
 
-async function createWindow() {
+async function createWindow(): Promise<void> {
     win = new BrowserWindow( {
         width: 1280,
         height: 720,
         minHeight: 600,
         minWidth: 800,
         frame: false,
-        titleBarStyle: process.platform == "darwin" ? "hiddenInset" : "hidden",
-        backgroundColor: "#1e1e1e",
+        titleBarStyle: process.platform == 'darwin' ? 'hiddenInset' : 'hidden',
+        backgroundColor: '#1e1e1e',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
             webSecurity: false
-        },
+        }
     });
 
     if (app.isPackaged) {
-        await win.loadFile(path.join(__dirname, "dist", "../index.html"));
+        await win.loadFile(path.join(__dirname, 'dist', '../index.html'));
     } else {
-        // await session.defaultSession.loadExtension("C:\\Users\\stefl\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.24.7_0")
         dotenv.config();
-        const url = "http://" + process.env.DEV_HOST + ":" + process.env.DEV_PORT;
+        const url = 'http://' + process.env.DEV_HOST + ':' + process.env.DEV_PORT;
         await win.loadURL(url);
     }
 }
 
 app.whenReady().then(createWindow);
 
-app.on("window-all-closed", () => {
+app.on('window-all-closed', () => {
     win = null;
-    if (process.platform !== "darwin") app.quit();
+    if (process.platform !== 'darwin') app.quit();
 });
 
-app.on("second-instance", () => {
+app.on('second-instance', () => {
     if (win) {
         // Focus on the main window if the user tried to open another
         if (win.isMinimized()) win.restore();
@@ -49,21 +48,21 @@ app.on("second-instance", () => {
     }
 });
 
-ipcMain.on("minimize-me", () => {
+ipcMain.on('minimize-me', () => {
     if (win) win.minimize();
 });
 
-ipcMain.on("maximize-me", () => {
+ipcMain.on('maximize-me', () => {
     if (win) {
         if (win.isMaximized()) win.unmaximize();
         else win.maximize();
     }
 });
 
-ipcMain.on("close-me", () => {
+ipcMain.on('close-me', () => {
     app.quit();
 });
 
-ipcMain.on("appData-path", (event) => {
-    event.returnValue = app.getPath("userData");
+ipcMain.on('appData-path', (event) => {
+    event.returnValue = app.getPath('userData');
 });

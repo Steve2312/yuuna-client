@@ -1,21 +1,21 @@
-import React, {useEffect, useRef } from "react";
-import Banner from "@/components/Banner";
-import SearchBanner from "../assets/banners/409667.jpg";
-import SearchMenu from "@/components/SearchMenu";
-import useSearchService from "@/hooks/useSearchService";
-import SearchCard from "@/components/SearchCard";
-import styles from "@/styles/search.module.scss";
-import SearchService from "@/services/SearchService";
-import List from "@/components/List";
-import TitleBar from "@/components/TitleBar";
+import React, { useEffect, useRef } from 'react';
+import Banner from '@/components/Banner';
+import SearchBanner from '../assets/banners/409667.jpg';
+import SearchMenu from '@/components/SearchMenu';
+import useSearchService from '@/hooks/useSearchService';
+import SearchCard from '@/components/SearchCard';
+import styles from '@/styles/search.module.scss';
+import SearchService from '@/services/SearchService';
+import List from '@/components/List';
+import TitleBar from '@/components/TitleBar';
 
-const Search: React.FC = () => {
+const Search: React.FC = (): JSX.Element => {
 
     const listRef = useRef<HTMLDivElement>(null);
     const [search] = useSearchService();
 
     useEffect(() => {
-        SearchService.search("", "ranked");
+        SearchService.search('', 'ranked');
     }, []);
 
     return (
@@ -38,13 +38,13 @@ const Search: React.FC = () => {
                 keyExtractor={data => data.id}
 
                 render={
-                    ({data, index, style}) => {
+                    ({ data, index, style }) => {
                         return (
                             <SearchCard beatmap={data} index={index} style={style}/>
                         );
                     }
                 }
-
+                className={styles.searchList}
                 prerenderCount={7}
                 componentHeight={70}
                 spaceBetween={20}

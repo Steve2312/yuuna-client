@@ -1,10 +1,20 @@
-import Song from "../types/Song";
-import {getCoverPath, getSongPath} from "@/utils/Paths";
-import MediaSessionService from "./MediaSessionService";
-import Observable from "./Observable";
-import PreviewService from "@/services/PreviewService";
+import Song from '../types/Song';
+import { getCoverPath, getSongPath } from '@/utils/Paths';
+import MediaSessionService from './MediaSessionService';
+import Observable from './Observable';
+import PreviewService from '@/services/PreviewService';
 
-class PlayerService extends Observable {
+type StateProps = {
+    audio: HTMLAudioElement,
+    playing: boolean,
+    shuffled: boolean,
+    muted: boolean,
+    playlistName: string,
+    playlist: Song[],
+    current: Song
+}
+
+class PlayerService extends Observable<StateProps> {
 
     private audio: HTMLAudioElement = new Audio();
 
@@ -26,25 +36,25 @@ class PlayerService extends Observable {
         this.audio.volume = this.defaultAudioVolume;
     }
 
-    public play = async () => {
+    public play = async (): Promise<void> => {
         if (this.audio.src) {
             await this.audio.play();
         }
     };
 
-    public pause = async () => {
+    public pause = async (): Promise<void> => {
         if (this.audio.src) {
             await this.audio.pause();
         }
     };
 
-    public playPause = () => {
+    public playPause = (): void => {
         if (this.audio) {
             this.audio.paused ? this.play() : this.pause();
         }
     };
 
-    public seek = (time?: number) => {
+    public seek = (time?: number): number => {
 
         if (time != undefined) {
             this.audio.currentTime = time;
@@ -64,7 +74,7 @@ class PlayerService extends Observable {
         return this.audio.volume;
     };
 
-    public forward = async () => {
+    public forward = async (): Promise<void> => {
         const index = this.getNextIndexOfSongInPlaylist();
         if (index != -1) {
             await this.playAtPosition(index);
@@ -75,7 +85,7 @@ class PlayerService extends Observable {
         }
     };
 
-    public backward = async () => {
+    public backward = async (): Promise<void> => {
         const threshold = 0.5;
         const currentTime = this.audio.currentTime;
 
@@ -91,7 +101,7 @@ class PlayerService extends Observable {
         this.seek(0);
     };
 
-    public mute = () => {
+    public mute = (): void => {
 
         if (this.muted) {
             this.volume(this.volumeBeforeMute);
@@ -105,7 +115,7 @@ class PlayerService extends Observable {
         this.notify(this.getState());
     };
 
-    public playAtPosition = async (index: number) => {
+    public playAtPosition = async (index: number): Promise<void> => {
         const song: Song = this.playlist[index];
         const songPath = getSongPath(song);
         const volume = this.audio.volume;
@@ -135,7 +145,7 @@ class PlayerService extends Observable {
         }
     };
 
-    public playFromPlaylist = async (playlistName: string, playlist: Song[], index: number) => {
+    public playFromPlaylist = async (playlistName: string, playlist: Song[], index: number): Promise<void> => {
         const song: Song = playlist[index];
         const songPath = getSongPath(song);
         const volume = this.audio.volume;
@@ -179,26 +189,26 @@ class PlayerService extends Observable {
         }
     };
 
-    public updateMediaSession = async () => {
+    public updateMediaSession = async (): Promise<void> => {
         const coverPath = getCoverPath(this.current);
         await MediaSessionService.display(this.current.title, this.current.artist, coverPath);
 
         const mediaSession = MediaSessionService.getMediaSession();
 
         if (mediaSession) {
-            mediaSession.setActionHandler("previoustrack", this.backward);
-            mediaSession.setActionHandler("nexttrack", this.forward);
-            mediaSession.setActionHandler("play", this.play);
-            mediaSession.setActionHandler("pause", this.pause);
+            mediaSession.setActionHandler('previoustrack', this.backward);
+            mediaSession.setActionHandler('nexttrack', this.forward);
+            mediaSession.setActionHandler('play', this.play);
+            mediaSession.setActionHandler('pause', this.pause);
         }
     };
 
     // TODO
-    public shuffle = () => {
+    public shuffle = (): void => {
         this.shuffled ? this.sortPlaylist() : this.shufflePlaylist();
     };
 
-    private shufflePlaylist = () => {
+    private shufflePlaylist = (): void => {
         if (this.playlist && this.current) {
             const current = this.current;
             const shuffledPlaylist = this.playlist.filter(song => song != current)
@@ -213,7 +223,7 @@ class PlayerService extends Observable {
         this.notify(this.getState());
     };
 
-    private sortPlaylist = () => {
+    private sortPlaylist = (): void => {
         if (this.playlist) {
             this.playlist = this.playlist.sort((a, b) => a.index - b.index);
         }
@@ -223,11 +233,11 @@ class PlayerService extends Observable {
     };
 
     // Event Handlers
-    private handleOnPlay = async () => {
+    private handleOnPlay = async (): Promise<void> => {
         this.playing = true;
         this.notify(this.getState());
 
-        MediaSessionService.setPlaybackState("playing");
+        MediaSessionService.setPlaybackState('playing');
 
         const preview = PreviewService.getState();
 
@@ -240,13 +250,13 @@ class PlayerService extends Observable {
         }
     };
 
-    private handleOnPause = async () => {
+    private handleOnPause = async (): Promise<void> => {
         this.playing = false;
-        MediaSessionService.setPlaybackState("paused");
+        MediaSessionService.setPlaybackState('paused');
         this.notify(this.getState());
     };
 
-    private handleOnTimeUpdate = async (event: Event) => {
+    private handleOnTimeUpdate = async (event: Event): Promise<void> => {
         const audio = event.target as HTMLAudioElement;
         // Time Left before forwarding!
         const threshold = 0.4;
@@ -303,13 +313,13 @@ class PlayerService extends Observable {
 
             audio.volume = volume;
 
-            audio.addEventListener("canplay", () => {
+            audio.addEventListener('canplay', () => {
                 resolve(audio);
             }, {
                 once: true
             });
 
-            audio.addEventListener("error", (error: ErrorEvent) => {
+            audio.addEventListener('error', (error: ErrorEvent) => {
                 reject(error);
             }, {
                 once: true
@@ -319,7 +329,7 @@ class PlayerService extends Observable {
         });
     };
 
-    public getState = () => {
+    public getState = (): StateProps => {
         return {
             audio: this.audio,
             playing: this.playing,

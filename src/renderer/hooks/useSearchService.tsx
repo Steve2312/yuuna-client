@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import SearchService from "@/services/SearchService";
+import { useEffect, useState } from 'react';
+import SearchService from '@/services/SearchService';
 
 const useSearchService = () => {
 
