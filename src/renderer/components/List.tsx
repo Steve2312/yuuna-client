@@ -89,7 +89,7 @@ const ListElements = React.forwardRef(<T,>(props: ListElementsProps<T>, ref: Rea
 
     const [listElementComponents, setListElementComponents] = useState<(JSX.Element | null)[]>([]);
 
-    const listTotalHeight = props.data.length * (componentHeight + (props.spaceBetween || 0));
+    const listTotalHeight = props.data.length * (componentHeight + (props.spaceBetween || 0)) + (props.spaceBetween || 0);
 
     useEffect(() => {
         const listElement = listRef.current;
