@@ -18,9 +18,10 @@ import {
 } from 'react-icons/fa';
 import formatSeconds from '@/utils/FormatSeconds';
 import { openBeatmapPage } from '@/utils/Pages';
+import useLibraryService from "@/hooks/useLibraryService";
 
 const PlayerBar: React.FC = () => {
-
+    const [library] = useLibraryService();
     const [player] = usePlayerService();
     const [currentTime, setCurrentTime] = useState<number>(0);
     const [drag, setDrag] = useState<boolean>(false);
@@ -40,6 +41,14 @@ const PlayerBar: React.FC = () => {
             player.audio.removeEventListener('timeupdate', handleTimeUpdate);
         };
     }, [player, drag]);
+
+    useEffect(() => {
+        if (!player.current && library.songs.length > 0) {
+            PlayerService.playFromPlaylist('Library', library.songs, 0).then(async () => {
+                await PlayerService.pause();
+            });
+        }
+    }, [library])
 
     const duration = player.audio.duration && !isNaN(player.audio.duration) ? Math.round(player.audio.duration) : 0;
 
