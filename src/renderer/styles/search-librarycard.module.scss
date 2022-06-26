@@ -1,4 +1,4 @@
-.searchCard {
+.searchLibraryCard {
   display: flex;
   align-items: center;
   white-space: nowrap;
@@ -147,11 +147,11 @@
 
 }
 
-.searchCard:hover .albumCover{
+.searchLibraryCard:hover .albumCover{
   box-shadow: 4px 0 7px -3px black, inset 0 0 0 2000px rgba(0, 0, 0, 0.6);
 }
 
-.searchCard:hover .albumCover > svg {
+.searchLibraryCard:hover .albumCover > svg {
   opacity: 1;
 }
 

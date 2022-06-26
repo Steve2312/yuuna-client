@@ -29,7 +29,7 @@ const LibraryCard: React.FC<Props> = React.memo<Props>(({ song, style }) => {
     };
 
     return (
-        <div className={styles.searchCard} style={style}>
+        <div className={styles.searchLibraryCard} style={style}>
             <span className={styles.index}>{song.index + 1}</span>
             <div className={styles.content + (player.current?.id == song.id ? ' ' + styles.playing : '')}>
                 <div className={styles.albumCover} style={getBackgroundImageStyle(coverPath)}>

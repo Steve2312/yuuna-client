@@ -31,7 +31,7 @@ const SearchCard: React.FC<Props> = React.memo(({ beatmap, index, style }) => {
     };
 
     return (
-        <div className={styles.searchCard} style={style}>
+        <div className={styles.searchLibraryCard} style={style}>
             <span className={styles.index}>{index + 1}</span>
             <div className={styles.content + (preview.beatmapSetID == beatmap.id ? ' ' + styles.playing : '')}>
                 <div className={styles.albumCover} style={cover}>
