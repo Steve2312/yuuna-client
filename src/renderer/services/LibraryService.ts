@@ -2,12 +2,9 @@ import Observable from '@/services/Observable';
 import Song from '@/types/Song';
 import * as path from 'path';
 import * as fs from 'fs';
-import { getSongPath, songsPath } from '@/utils/Paths';
 import extract from 'extract-zip';
 import SongMetadata from '@/types/SongMetadata';
 import { uuid } from 'uuidv4';
-import songMetadata from '@/types/SongMetadata';
-import getBackgroundImageStyle from '@/utils/BackgroundImageStyle';
 import axios from 'axios';
 
 export type LibraryServiceStateProps = {
