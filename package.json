@@ -47,7 +47,9 @@
   },
   "dependencies": {
     "axios": "^0.27.0",
+    "extract-zip": "^2.0.1",
     "react-icons": "^4.3.1",
+    "uuidv4": "^6.2.13",
     "webpack-dev-server": "^4.8.1"
   }
 }
