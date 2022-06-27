@@ -6,6 +6,7 @@ import extract from 'extract-zip';
 import SongMetadata from '@/types/SongMetadata';
 import { uuid } from 'uuidv4';
 import axios from 'axios';
+import { songsPath } from '@/utils/Paths';
 
 export type LibraryServiceStateProps = {
     songs: Song[]
