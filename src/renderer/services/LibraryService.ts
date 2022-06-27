@@ -139,8 +139,7 @@ class LibraryService extends Observable<LibraryServiceStateProps> {
             else if (key == 'Creator') songMetadata.creator = value;
             else if (key == 'BeatmapSetID') songMetadata.beatmapset_id = parseInt(value);
             else if (key == '[TimingPoints]') capturingTimingPoints = true;
-
-            if (capturingTimingPoints) {
+            else if (capturingTimingPoints) {
                 if (line != '') {
                     const beatLength = parseFloat(line.split(',')[1]);
                     beatLengths.push(beatLength);
