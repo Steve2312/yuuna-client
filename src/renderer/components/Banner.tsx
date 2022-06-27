@@ -22,6 +22,7 @@ const Banner: React.FC<Props> = ({ title, src, scrollableElementRef }) => {
         const scrollableElement = scrollableElementRef?.current;
 
         if (scrollableElement) {
+            updateBannerOffset();
             scrollableElement.addEventListener('scroll', updateScrollTop);
             window.addEventListener('resize', updateBannerOffset);
             return () => {
@@ -44,7 +45,7 @@ const Banner: React.FC<Props> = ({ title, src, scrollableElementRef }) => {
         }
     };
 
-    const titleOpacity = 1 - scrollTop / 200;
+    const titleOpacity = 1 - scrollTop / bannerOffsetBottom;
     const titleStyle = {
         opacity: clamp(titleOpacity, 0, 1)
     };
