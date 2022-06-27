@@ -45,7 +45,7 @@ const Banner: React.FC<Props> = ({ title, src, scrollableElementRef }) => {
         }
     };
 
-    const titleOpacity = 1 - scrollTop / bannerOffsetBottom;
+    const titleOpacity = (1 - scrollTop / bannerOffsetBottom) | 1;
     const titleStyle = {
         opacity: clamp(titleOpacity, 0, 1)
     };
