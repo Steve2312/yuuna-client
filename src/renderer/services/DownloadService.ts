@@ -4,6 +4,7 @@ import axios from 'axios';
 import * as fs from 'fs';
 import { getTempOutputPath } from '@/utils/Paths';
 import Download from '@/types/Download';
+import LibraryService from "@/services/LibraryService";
 
 export type DownloadServiceStateProps = {
     downloads: Download[]
@@ -41,9 +42,8 @@ class DownloadService extends Observable<DownloadServiceStateProps> {
                         this.onDownloadProgress(download, progress);
                     }
                 }).then(response => {
-                    console.log(outputPath);
                     fs.promises.writeFile(outputPath, Buffer.from(response.data)).then(async () => {
-                        await this.onFinishedDownloading(download);
+                        await this.onFinishedDownloading(download, outputPath);
                     });
                 }).catch(() => this.onDownloadError(download));
             }
@@ -56,10 +56,11 @@ class DownloadService extends Observable<DownloadServiceStateProps> {
         this.notify(this.getState());
     };
 
-    private onFinishedDownloading = async (download: Download): Promise<void> => {
+    private onFinishedDownloading = async (download: Download, path: string): Promise<void> => {
         download.status = 'Importing';
         this.notify(this.getState());
-        // Send path to Library service
+
+        await LibraryService.import(path);
 
         this.downloads.splice(this.downloads.indexOf(download), 1);
         this.notify(this.getState());
