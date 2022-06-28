@@ -151,7 +151,7 @@ class LibraryService extends Observable<LibraryServiceStateProps> {
         songMetadata.id = uuid();
         songMetadata.date_added = Date.now();
         songMetadata.bpm = this.calculateBPM(beatLengths);
-        songMetadata.duration = await this.getAudioDuration(path.join(src, '../', songMetadata.audio));
+        songMetadata.duration = await this.getAudioDuration('file://' + path.join(src, '../', songMetadata.audio));
 
         return songMetadata;
     };
