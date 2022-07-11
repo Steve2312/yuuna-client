@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import extract from 'extract-zip';
 import SongMetadata from '@/types/SongMetadata';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { songsPath } from '@/utils/Paths';
 
