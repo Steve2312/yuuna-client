@@ -5,6 +5,7 @@ import React, {
     useState
 } from 'react';
 import styles from '@/styles/list.module.scss';
+import classNames from '@/utils/ClassNames';
 
 type RenderProps<T> = {
     data: T,
@@ -64,7 +65,10 @@ const List = React.forwardRef(<T,>(props: ListProps<T>, ref: React.ForwardedRef<
     }, [listRef]);
 
     return (
-        <div className={styles.list + (props.className ? ' ' + props.className : '')} ref={listRef}>
+        <div className={classNames({
+            [styles.list]: true,
+            [props.className || '']: props.className != undefined
+        })} ref={listRef}>
             {listHeader}
             <ListElements
                 ref={listRef}

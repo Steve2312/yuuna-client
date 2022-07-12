@@ -9,6 +9,7 @@ import LibraryService from '@/services/LibraryService';
 import usePlayerService from '@/hooks/usePlayerService';
 import formatSeconds from '@/utils/FormatSeconds';
 import { openBeatmapPage, openCreatorPage } from '@/utils/Pages';
+import classNames from '@/utils/ClassNames';
 
 type Props = {
     song: Song,
@@ -31,7 +32,10 @@ const LibraryCard: React.FC<Props> = React.memo<Props>(({ song, style }) => {
     return (
         <div className={styles.searchLibraryCard} style={style}>
             <span className={styles.index}>{song.index + 1}</span>
-            <div className={styles.content + (player.current?.id == song.id ? ' ' + styles.playing : '')}>
+            <div className={classNames({
+                [styles.content]: true,
+                [styles.playing]: player.current?.id == song.id
+            })}>
                 <div className={styles.albumCover} style={getBackgroundImageStyle(coverPath)}>
                     {
                         isPlaying ?
@@ -50,7 +54,10 @@ const LibraryCard: React.FC<Props> = React.memo<Props>(({ song, style }) => {
                         </span>
                         <span className={styles.subject}>
                             CREATOR:{' '}
-                            <span className={styles.value + ' ' + styles.link} onClick={() => openCreatorPage(song.creator)}>
+                            <span className={classNames({
+                                [styles.value]: true,
+                                [styles.link]: true
+                            })} onClick={() => openCreatorPage(song.creator)}>
                                 {song.creator}
                             </span>
                         </span>
@@ -65,7 +72,10 @@ const LibraryCard: React.FC<Props> = React.memo<Props>(({ song, style }) => {
                         </span>
                         <span className={styles.box}>
                             BEATMAP SET ID:{' '}
-                            <span className={styles.value + ' ' + styles.link} onClick={() => openBeatmapPage(song.beatmapset_id)}>
+                            <span className={classNames({
+                                [styles.value]: true,
+                                [styles.link]: true
+                            })} onClick={() => openBeatmapPage(song.beatmapset_id)}>
                                 {song.beatmapset_id}
                             </span>
                         </span>

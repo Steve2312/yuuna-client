@@ -8,6 +8,7 @@ import formatSeconds from '@/utils/FormatSeconds';
 import { openBeatmapPage, openCreatorPage } from '@/utils/Pages';
 import Beatmap from '@/types/Beatmap';
 import DownloadService from '@/services/DownloadService';
+import classNames from '@/utils/ClassNames';
 
 type Props = {
     beatmap: Beatmap,
@@ -33,7 +34,10 @@ const SearchCard: React.FC<Props> = React.memo(({ beatmap, index, style }) => {
     return (
         <div className={styles.searchLibraryCard} style={style}>
             <span className={styles.index}>{index + 1}</span>
-            <div className={styles.content + (preview.beatmapSetID == beatmap.id ? ' ' + styles.playing : '')}>
+            <div className={classNames({
+                [styles.content]: true,
+                [styles.playing]: preview.beatmapSetID == beatmap.id
+            })}>
                 <div className={styles.albumCover} style={cover}>
                     {
                         isPlaying ?
@@ -55,7 +59,10 @@ const SearchCard: React.FC<Props> = React.memo(({ beatmap, index, style }) => {
                         </span>
                         <span className={styles.subject}>
                             CREATOR:{' '}
-                            <span className={styles.value + ' ' + styles.link} onClick={() => openCreatorPage(beatmap.creator)}>
+                            <span className={classNames({
+                                [styles.value]: true,
+                                [styles.link]: true
+                            })} onClick={() => openCreatorPage(beatmap.creator)}>
                                 {beatmap.creator}
                             </span>
                         </span>
@@ -70,7 +77,10 @@ const SearchCard: React.FC<Props> = React.memo(({ beatmap, index, style }) => {
                         </span>
                         <span className={styles.box}>
                             BEATMAP SET ID:{' '}
-                            <span className={styles.value + ' ' + styles.link} onClick={() => openBeatmapPage(beatmap.id)}>
+                            <span className={classNames({
+                                [styles.value]: true,
+                                [styles.link]: true
+                            })} onClick={() => openBeatmapPage(beatmap.id)}>
                                 {beatmap.id}
                             </span>
                         </span>

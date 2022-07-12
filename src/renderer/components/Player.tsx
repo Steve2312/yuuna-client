@@ -20,7 +20,8 @@ import {
 } from 'react-icons/fa';
 import formatSeconds from '@/utils/FormatSeconds';
 import { openBeatmapPage } from '@/utils/Pages';
-import useLibraryService from "@/hooks/useLibraryService";
+import useLibraryService from '@/hooks/useLibraryService';
+import classNames from '@/utils/ClassNames';
 
 const PlayerBar: React.FC = () => {
     const [library] = useLibraryService();
@@ -109,7 +110,10 @@ const PlayerBar: React.FC = () => {
             </div>
             <div className={styles.center}>
                 <div className={styles.controls}>
-                    <span className={styles.option + (player.shuffled ? ' ' + styles.optionActive : '')} onClick={PlayerService.shuffle}><FaRandom /></span>
+                    <span className={classNames({
+                        [styles.option]: true,
+                        [styles.optionActive]: player.shuffled
+                    })} onClick={PlayerService.shuffle}><FaRandom /></span>
                     <span onClick={PlayerService.backward}><FaBackward /></span>
                     <span onClick={PlayerService.playPause}>
                         {

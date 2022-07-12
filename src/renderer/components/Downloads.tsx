@@ -4,6 +4,7 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import List from '@/components/List';
 import useDownloadService from '@/hooks/useDownloadService';
 import DownloadCard from '@/components/DownloadCard';
+import classNames from '@/utils/ClassNames';
 
 const Downloads: React.FC = () => {
     const [download] = useDownloadService();
@@ -16,7 +17,10 @@ const Downloads: React.FC = () => {
     };
 
     return (
-        <div className={styles.downloads + (!visibility ? ' ' + styles.hidden : '')}>
+        <div className={classNames({
+            [styles.downloads]: true,
+            [styles.hidden]: !visibility
+        })}>
             <div className={styles.header}>
                 <span className={styles.icon} onClick={toggle}>
                     {
