@@ -23,6 +23,7 @@ type ListProps<T> = {
     onEndReached?: () => void,
     thresholdEnd?: number,
     className?: string,
+    listElementsClassName?: string,
     spaceBetween?: number,
 }
 
@@ -32,6 +33,7 @@ type ListElementsProps<T> = {
     keyExtractor: (data: T) => string | number,
     data: T[],
     render: React.FC<RenderProps<T>>,
+    className?: string,
     spaceBetween: number,
 }
 
@@ -77,6 +79,7 @@ const List = React.forwardRef(<T,>(props: ListProps<T>, ref: React.ForwardedRef<
                 keyExtractor={props.keyExtractor}
                 data={props.data}
                 render={props.render}
+                className={props.listElementsClassName}
                 spaceBetween={props.spaceBetween || 0}
             />
         </div>
@@ -163,7 +166,10 @@ const ListElements = React.forwardRef(<T,>(props: ListElementsProps<T>, ref: Rea
     };
 
     return (
-        <div className={styles.listElements} ref={listElementsRef} style={{ height: listTotalHeight }}>
+        <div className={classNames({
+            [styles.listElements]: true,
+            [props.className || '']: props.className != undefined
+        })} ref={listElementsRef} style={{ height: listTotalHeight }}>
             {getElementsInWindow()}
         </div>
     );

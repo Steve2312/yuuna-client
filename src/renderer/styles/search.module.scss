@@ -1,3 +1,19 @@
-.searchList {
-  opacity: 1;
+.breathingOpacityAnimation {
+  animation: breathingOpacity;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes breathingOpacity {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }

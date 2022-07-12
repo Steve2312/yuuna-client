@@ -8,6 +8,7 @@ import styles from '@/styles/search.module.scss';
 import SearchService from '@/services/SearchService';
 import List from '@/components/List';
 import TitleBar from '@/components/TitleBar';
+import classNames from '@/utils/ClassNames';
 
 const Search: React.FC = (): JSX.Element => {
 
@@ -45,6 +46,9 @@ const Search: React.FC = (): JSX.Element => {
                     }
                 }
                 className={styles.searchList}
+                listElementsClassName={classNames({
+                    [styles.breathingOpacityAnimation]: search.request.timeout != null
+                })}
                 prerenderCount={7}
                 componentHeight={70}
                 spaceBetween={20}

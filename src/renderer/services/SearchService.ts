@@ -57,7 +57,12 @@ class SearchService extends Observable<SearchServiceStateProps> {
                     this.handleError(error);
                 }
                 );
+
+            this.notify(this.getState());
+
         }, 1000);
+
+        this.notify(this.getState());
     }
 
     public searchNext = (): void => {
@@ -68,6 +73,8 @@ class SearchService extends Observable<SearchServiceStateProps> {
                 }).catch(error => {
                     this.handleError(error);
                 });
+
+            this.notify(this.getState());
         }
     };
 
