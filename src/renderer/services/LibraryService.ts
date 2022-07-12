@@ -30,8 +30,8 @@ class LibraryService extends Observable<LibraryServiceStateProps> {
             await this.importToLibrary(songMetadata, outputPath);
         }
 
-        // Delete temp files
-
+        await this.deleteFile(path);
+        await this.deleteDirectory(outputPath);
         await this.loadLibrary();
     };
 
@@ -157,10 +157,9 @@ class LibraryService extends Observable<LibraryServiceStateProps> {
     };
 
     private calculateBPM = (beatLengths: number[]): number => {
-        beatLengths = beatLengths.filter(beatLength => beatLength > 0);
         const calculations: number[] = [];
 
-        console.log(beatLengths);
+        beatLengths = beatLengths.filter(beatLength => beatLength > 0);
 
         for (const beatLength of beatLengths) {
             const bpm = Math.round(60000 / beatLength * 100) / 100;
@@ -171,7 +170,6 @@ class LibraryService extends Observable<LibraryServiceStateProps> {
     };
 
     private getAudioDuration = (src: string): Promise<number> => {
-        console.log(src);
         return new Promise((resolve, reject) => {
             const audio = document.createElement('audio');
 
@@ -185,6 +183,16 @@ class LibraryService extends Observable<LibraryServiceStateProps> {
                 reject(error);
             };
         });
+    };
+
+    private deleteDirectory = async (path: string): Promise<void> => {
+        return fs.promises.rmdir(path, {
+            recursive: true
+        });
+    };
+
+    private deleteFile = async (path: string): Promise<void> => {
+        return fs.promises.rm(path);
     };
 
     private createDirectory = async (src: string): Promise<void> => {
