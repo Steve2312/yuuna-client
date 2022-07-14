@@ -127,6 +127,7 @@ class SearchService extends Observable<SearchServiceStateProps> {
 
     private handleError = (error: AxiosError): void => {
         this.instance = null;
+        this.timeout = null;
 
         if (!axios.isCancel(error)) {
             this.error = error;

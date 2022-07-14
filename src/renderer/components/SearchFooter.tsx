@@ -9,7 +9,7 @@ const SearchFooter: React.FC = () => {
     const [search] = useSearchService();
 
     const getFooterMessage = (): string => {
-        if (search.request.error?.code === 'ETIMEDOUT') return 'Connect timeout with the server (╥_╥) \n You\'re either offline or the Beatconnect server are unavailable at the moment.';
+        if (search.request.error?.code === 'ERR_NETWORK') return 'Connect timeout with the server (╥_╥) \n You\'re either offline or the Beatconnect server are unavailable at the moment.';
         if (search.request.error?.code === 'EAT_AGAIN') return 'DNS lookup timed out (╥_╥) \n You\'re either offline or the Beatconnect server are unavailable at the moment.';
         if (search.request.error) return 'An error has occurred with code: ' + search.request.error.code + '\n You\'re either offline or the Beatconnect server are unavailable at the moment.';
 
