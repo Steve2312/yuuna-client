@@ -1,0 +1,11 @@
+.searchFooter {
+  display: grid;
+  place-items: center;
+  margin-bottom: 15px;
+
+  p {
+    font-size: 10px;
+    color: var(--subject_color);
+    font-family: NotoBold, serif;
+  }
+}

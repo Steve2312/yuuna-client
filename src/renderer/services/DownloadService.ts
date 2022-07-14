@@ -4,7 +4,7 @@ import axios from 'axios';
 import * as fs from 'fs';
 import { getTempOutputPath } from '@/utils/Paths';
 import Download from '@/types/Download';
-import LibraryService from "@/services/LibraryService";
+import LibraryService from '@/services/LibraryService';
 
 export type DownloadServiceStateProps = {
     downloads: Download[]

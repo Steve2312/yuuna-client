@@ -5,10 +5,12 @@ import SearchMenu from '@/components/SearchMenu';
 import useSearchService from '@/hooks/useSearchService';
 import SearchCard from '@/components/SearchCard';
 import styles from '@/styles/search.module.scss';
+import animations from '@/styles/animations.module.scss';
 import SearchService from '@/services/SearchService';
 import List from '@/components/List';
 import TitleBar from '@/components/TitleBar';
 import classNames from '@/utils/ClassNames';
+import SearchFooter from '@/components/SearchFooter';
 
 const Search: React.FC = (): JSX.Element => {
 
@@ -34,6 +36,13 @@ const Search: React.FC = (): JSX.Element => {
                         );
                     }
                 }
+                footer={
+                    () => {
+                        return (
+                            <SearchFooter />
+                        );
+                    }
+                }
                 data={search.results.beatmaps}
 
                 keyExtractor={data => data.id}
@@ -47,7 +56,7 @@ const Search: React.FC = (): JSX.Element => {
                 }
                 className={styles.searchList}
                 listElementsClassName={classNames({
-                    [styles.breathingOpacityAnimation]: search.request.timeout != null
+                    [animations.breathingOpacity]: search.request.timeout != null
                 })}
                 prerenderCount={7}
                 componentHeight={70}

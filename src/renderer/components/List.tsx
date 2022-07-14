@@ -17,6 +17,7 @@ type ListProps<T> = {
     prerenderCount: number,
     componentHeight: number,
     header?: React.FC,
+    footer?: React.FC,
     keyExtractor: (data: T) => string | number,
     data: T[],
     render: React.FC<RenderProps<T>>,
@@ -43,6 +44,10 @@ const List = React.forwardRef(<T,>(props: ListProps<T>, ref: React.ForwardedRef<
 
     const listHeader = useMemo(() => {
         if (props.header) return <props.header />;
+    }, []);
+
+    const listFooter = useMemo(() => {
+        if (props.footer) return <props.footer />;
     }, []);
 
     const checkEndReached = (event: Event): void => {
@@ -82,6 +87,7 @@ const List = React.forwardRef(<T,>(props: ListProps<T>, ref: React.ForwardedRef<
                 className={props.listElementsClassName}
                 spaceBetween={props.spaceBetween || 0}
             />
+            {listFooter}
         </div>
     );
 });

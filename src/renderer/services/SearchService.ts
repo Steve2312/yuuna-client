@@ -11,7 +11,7 @@ export type SearchServiceStateProps = {
     request: {
         timeout: NodeJS.Timeout | null,
         instance: Promise<AxiosInstance | void> | null,
-        errorStatus: number | null
+        error: AxiosError | null
     },
     results: {
         beatmaps: Beatmap[],
@@ -27,7 +27,7 @@ class SearchService extends Observable<SearchServiceStateProps> {
 
     private timeout: NodeJS.Timeout | null = null;
     private instance: Promise<AxiosInstance | void> | null = null;
-    private errorStatus: number | null = null;
+    private error: AxiosError | null = null;
 
     private beatmaps: Beatmap[] = [];
     private beatmapIds: Set<number> = new Set<number>();
@@ -48,7 +48,7 @@ class SearchService extends Observable<SearchServiceStateProps> {
             this.status = status;
             this.page = 0;
             this.lastPage = false;
-            this.errorStatus = null;
+            this.error = null;
 
             this.instance = Beatconnect.get('/search', this.getRequestConfig())
                 .then(response => {
@@ -129,7 +129,7 @@ class SearchService extends Observable<SearchServiceStateProps> {
         this.instance = null;
 
         if (!axios.isCancel(error)) {
-            this.errorStatus = error.request.status;
+            this.error = error;
             this.notify(this.getState());
         }
     };
@@ -154,7 +154,7 @@ class SearchService extends Observable<SearchServiceStateProps> {
             request: {
                 timeout: this.timeout,
                 instance: this.instance,
-                errorStatus: this.errorStatus
+                error: this.error
             },
             results: {
                 beatmaps: this.beatmaps,
