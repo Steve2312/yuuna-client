@@ -1,22 +1,22 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import styles from '@/styles/player.module.scss'
 import { getCoverPath } from '@/utils/Paths'
-import PlayerService from '../services/PlayerService'
+import PlayerService, { PlaybackMode } from '../services/PlayerService'
 import PreviewService from '../services/PreviewService'
 import usePlayerService from '@/hooks/usePlayerService'
 import getBackgroundImageStyle from '@/utils/BackgroundImageStyle'
 import {
-    FaPollH,
-    FaVolumeDown,
-    FaVolumeUp,
-    FaVolumeMute,
-    FaRandom,
     FaBackward,
+    FaForward,
     FaPause,
     FaPlay,
-    FaForward,
+    FaPollH,
+    FaRandom,
     FaRedoAlt,
-    FaVolumeOff
+    FaVolumeDown,
+    FaVolumeMute,
+    FaVolumeOff,
+    FaVolumeUp
 } from 'react-icons/fa'
 import formatSeconds from '@/utils/FormatSeconds'
 import { openBeatmapPage } from '@/utils/Pages'
@@ -135,7 +135,9 @@ const PlayerBar: React.FC = () => {
                 </div>
             </div>
             <div className={styles.right}>
-                <span>x1.0</span>
+                <span className={classNames({
+                    [styles.active]: player.playbackMode == PlaybackMode.DoubleTime
+                })} onClick={PlayerService.doubleTime}>DT</span>
                 <span className={styles.icon} onClick={PlayerService.mute}>{volumeIcon()}</span>
                 <div className={styles.volume}>
                     <input type="range" min="0" step="0.01" max="0.52" value={PlayerService.volume()} onChange={handleVolume} />

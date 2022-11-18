@@ -172,6 +172,10 @@
     color: var(--accent_color);
   }
 
+  .active {
+    color: var(--accent_color);
+  }
+
   .icon {
     display: grid;
     place-items: center;

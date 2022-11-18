@@ -3,15 +3,22 @@ import { getCoverPath, getSongPath } from '@/utils/Paths'
 import MediaSessionService from './MediaSessionService'
 import Observable from './Observable'
 import PreviewService from '@/services/PreviewService'
+import axios from 'axios'
 
 export type PlayerServiceStateProps = {
     audio: HTMLAudioElement,
     playing: boolean,
     shuffled: boolean,
     muted: boolean,
+    playbackMode: PlaybackMode,
     playlistName: string,
     playlist: Song[],
     current: Song
+}
+
+export enum PlaybackMode {
+    Normal,
+    DoubleTime
 }
 
 class PlayerService extends Observable<PlayerServiceStateProps> {
@@ -21,6 +28,7 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
     private playing = false
     private shuffled = false
     private muted = false
+    private playback = PlaybackMode.Normal
 
     private defaultAudioVolume = 0.24
     private volumeBeforeMute = 0
@@ -115,6 +123,12 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
         this.notify(this.getState())
     }
 
+    public doubleTime = (): void => {
+        this.playback = this.playback == PlaybackMode.Normal ? PlaybackMode.DoubleTime : PlaybackMode.Normal
+        this.handlePlaybackMode()
+        this.notify(this.getState())
+    }
+
     public playAtPosition = async (index: number): Promise<void> => {
         const song: Song = this.playlist[index]
         const songPath = getSongPath(song)
@@ -122,11 +136,6 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
 
         try {
             const audio = await this.getPlayableAudioElement(songPath, volume)
-
-            // Set Handlers
-            audio.onplay = this.handleOnPlay
-            audio.onpause = this.handleOnPause
-            audio.ontimeupdate = this.handleOnTimeUpdate
 
             // Pause old playback
             await this.pause()
@@ -138,7 +147,7 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
             // Update state
             this.current = song
             await this.updateMediaSession()
-
+            this.handlePlaybackMode()
             this.notify(this.getState())
         } catch (err) {
             console.error(err)
@@ -158,11 +167,6 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
         try {
             const audio = await this.getPlayableAudioElement(songPath, volume)
 
-            // Set Handlers
-            audio.onplay = this.handleOnPlay
-            audio.onpause = this.handleOnPause
-            audio.ontimeupdate = this.handleOnTimeUpdate
-
             // Pause old playback
             await this.pause()
 
@@ -176,7 +180,7 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
             this.current = song
 
             await this.updateMediaSession()
-
+            this.handlePlaybackMode()
             // Reshuffle Playlist
             if (this.shuffled) {
                 this.shufflePlaylist()
@@ -203,7 +207,7 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
         }
     }
 
-    // TODO
+    // TODO: Update playlist when new song is imported
     public shuffle = (): void => {
         this.shuffled ? this.sortPlaylist() : this.shufflePlaylist()
     }
@@ -276,6 +280,17 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
         }
     }
 
+    private handlePlaybackMode = (): void => {
+        switch (this.playback) {
+        case PlaybackMode.Normal:
+            this.audio.playbackRate = 1
+            break
+        case PlaybackMode.DoubleTime:
+            this.audio.playbackRate = 1.5
+            break
+        }
+    }
+
     private getNextIndexOfSongInPlaylist = (): number => {
         const index = this.getIndexOfSongInPlaylist()
 
@@ -325,6 +340,10 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
                 once: true
             })
 
+            audio.addEventListener('play', this.handleOnPlay)
+            audio.addEventListener('pause', this.handleOnPause)
+            audio.addEventListener('timeupdate', this.handleOnTimeUpdate)
+
             audio.src = src
         })
     }
@@ -335,6 +354,7 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
             playing: this.playing,
             shuffled: this.shuffled,
             muted: this.muted,
+            playbackMode: this.playback,
             playlistName: this.playlistName,
             playlist: this.playlist,
             current: this.current
