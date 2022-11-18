@@ -3,7 +3,6 @@ import { getCoverPath, getSongPath } from '@/utils/Paths'
 import MediaSessionService from './MediaSessionService'
 import Observable from './Observable'
 import PreviewService from '@/services/PreviewService'
-import axios from 'axios'
 
 export type PlayerServiceStateProps = {
     audio: HTMLAudioElement,
