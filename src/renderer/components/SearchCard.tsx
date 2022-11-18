@@ -12,6 +12,7 @@ import classNames from '@/utils/ClassNames'
 import useLibraryService from '@/hooks/useLibraryService'
 import useDownloadService from '@/hooks/useDownloadService'
 import { DownloadStatus } from '@/types/Download'
+import ContextMenuService from '@/services/ContextMenuService'
 
 type Props = {
     beatmap: Beatmap,
@@ -56,8 +57,39 @@ const SearchCard: React.FC<Props> = React.memo(({ beatmap, index, style }) => {
         }
     }
 
+    const buildContextMenu = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+        const buttons = [
+            {
+                label: isPlaying ? 'Pause' : 'Play',
+                onClick: play
+            },
+            ...(!status ? [{
+                label: 'Download',
+                onClick: () => DownloadService.download(beatmap)
+            }] : []),
+            ...(status == DownloadStatus.Waiting || status == DownloadStatus.Failed ? [{
+                label: 'Remove from download',
+                onClick: () => DownloadService.dequeue(beatmap)
+            }] : []),
+            ...(status == DownloadStatus.Failed ? [{
+                label: 'Retry download',
+                onClick: () => DownloadService.download(beatmap)
+            }] : []),
+            {
+                label: 'Visit ' + beatmap.creator,
+                onClick: () => openCreatorPage(beatmap.creator)
+            },
+            {
+                label: 'Open osu! beatmap page',
+                onClick: () => openBeatmapPage(beatmap.id)
+            }
+        ]
+
+        ContextMenuService.open(event, buttons)
+    }
+
     return (
-        <div className={styles.searchLibraryCard} style={style}>
+        <div className={styles.searchLibraryCard} style={style} onContextMenu={buildContextMenu}>
             <span className={styles.index}>{index + 1}</span>
             <div className={classNames({
                 [styles.content]: true,

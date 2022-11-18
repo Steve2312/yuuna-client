@@ -33,6 +33,7 @@ const DownloadCard: React.FC<Props> = ({ download, style }) => {
             return ''
         }
     }
+
     return (
         <div className={styles.downloadCard} style={style}>
             <div className={styles.cover} style={cover}>

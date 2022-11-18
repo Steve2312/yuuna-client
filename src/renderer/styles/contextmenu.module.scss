@@ -1,0 +1,30 @@
+.contextMenuWrapper {
+  position: absolute;
+  inset: 0;
+  background: var(--backdrop);
+  z-index: 2;
+}
+
+.contextMenu {
+  position: fixed;
+  background: var(--bg_2_color);
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  height: auto;
+  font-size: 13px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 0 var(--bg_1_color);
+  z-index: 100000;
+  user-select: none;
+}
+
+.contextMenuButton {
+  display: block;
+  padding: 10px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--bg_3_color);
+  }
+}

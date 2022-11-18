@@ -10,6 +10,7 @@ import usePlayerService from '@/hooks/usePlayerService'
 import formatSeconds from '@/utils/FormatSeconds'
 import { openBeatmapPage, openCreatorPage } from '@/utils/Pages'
 import classNames from '@/utils/ClassNames'
+import ContextMenuService from '@/services/ContextMenuService'
 
 type Props = {
     song: Song,
@@ -29,8 +30,31 @@ const LibraryCard: React.FC<Props> = React.memo<Props>(({ song, style }) => {
         await PlayerService.playFromPlaylist('', LibraryService.getState().songs, song.index)
     }
 
+    const buildContextMenu = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+        const buttons = [
+            {
+                label: isPlaying ? 'Pause' : 'Play',
+                onClick: play
+            },
+            {
+                label: 'Visit ' + song.creator,
+                onClick: () => openCreatorPage(song.creator)
+            },
+            {
+                label: 'Open osu! beatmap page',
+                onClick: () => openBeatmapPage(song.beatmapset_id)
+            },
+            {
+                label: 'Delete song',
+                onClick: play
+            }
+        ]
+
+        ContextMenuService.open(event, buttons)
+    }
+
     return (
-        <div className={styles.searchLibraryCard} style={style}>
+        <div className={styles.searchLibraryCard} style={style} onContextMenu={buildContextMenu}>
             <span className={styles.index}>{song.index + 1}</span>
             <div className={classNames({
                 [styles.content]: true,
