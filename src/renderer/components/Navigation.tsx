@@ -1,9 +1,9 @@
-import React from 'react';
-import logo from '../assets/images/logo.png';
-import styles from '../styles/navigation.module.scss';
-import OutletService from '@/services/OutletService';
+import React from 'react'
+import logo from '../assets/images/logo.png'
+import styles from '../styles/navigation.module.scss'
+import OutletService from '@/services/OutletService'
 
-import { MdGetApp, MdLibraryMusic } from 'react-icons/md';
+import { MdGetApp, MdLibraryMusic } from 'react-icons/md'
 
 const Navigation: React.FC = () => {
 
@@ -31,7 +31,7 @@ const Navigation: React.FC = () => {
                 </li>
             </ul>
         </div>
-    );
-};
+    )
+}
 
-export default Navigation;
+export default Navigation

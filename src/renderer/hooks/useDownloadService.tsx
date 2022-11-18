@@ -1,20 +1,20 @@
-import { useEffect, useState } from 'react';
-import DownloadService, { DownloadServiceStateProps } from '@/services/DownloadService';
+import { useEffect, useState } from 'react'
+import DownloadService, { DownloadServiceStateProps } from '@/services/DownloadService'
 
 const useDownloadService = (): [DownloadServiceStateProps] => {
 
-    const [download, setDownload] = useState(DownloadService.getState());
+    const [download, setDownload] = useState(DownloadService.getState())
 
     useEffect(() => {
-        DownloadService.attach(setDownload);
+        DownloadService.attach(setDownload)
 
         return () => {
-            DownloadService.detach(setDownload);
-        };
-    }, []);
+            DownloadService.detach(setDownload)
+        }
+    }, [])
 
-    return [download];
+    return [download]
 
-};
+}
 
-export default useDownloadService;
+export default useDownloadService

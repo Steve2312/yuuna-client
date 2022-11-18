@@ -1,21 +1,21 @@
-import React from 'react';
-import { ipcRenderer } from 'electron';
-import { VscChromeMinimize, VscChromeMaximize, VscChromeClose } from 'react-icons/vsc';
-import styles from '../styles/window.module.scss';
+import React from 'react'
+import { ipcRenderer } from 'electron'
+import { VscChromeMinimize, VscChromeMaximize, VscChromeClose } from 'react-icons/vsc'
+import styles from '../styles/window.module.scss'
 
 const Window: React.FC = () => {
 
     const maximize = (): void => {
-        ipcRenderer.send('maximize-me');
-    };
+        ipcRenderer.send('maximize-me')
+    }
 
     const minimize = (): void => {
-        ipcRenderer.send('minimize-me');
-    };
+        ipcRenderer.send('minimize-me')
+    }
 
     const close = (): void => {
-        ipcRenderer.send('close-me');
-    };
+        ipcRenderer.send('close-me')
+    }
     if (process.platform != 'darwin') {
         return (
             <div className={styles.window}>
@@ -26,10 +26,10 @@ const Window: React.FC = () => {
                     <div onClick={close} className={styles.closeButton}><VscChromeClose/></div>
                 </div>
             </div>
-        );
+        )
     }
 
-    return null;
-};
+    return null
+}
 
-export default Window;
+export default Window

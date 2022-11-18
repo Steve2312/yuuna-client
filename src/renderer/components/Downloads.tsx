@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import styles from '@/styles/downloads.module.scss';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import List from '@/components/List';
-import useDownloadService from '@/hooks/useDownloadService';
-import DownloadCard from '@/components/DownloadCard';
-import classNames from '@/utils/ClassNames';
+import React, { useState } from 'react'
+import styles from '@/styles/downloads.module.scss'
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
+import List from '@/components/List'
+import useDownloadService from '@/hooks/useDownloadService'
+import DownloadCard from '@/components/DownloadCard'
+import classNames from '@/utils/ClassNames'
 
 const Downloads: React.FC = () => {
-    const [download] = useDownloadService();
-    const [visibility, setVisibility] = useState<boolean>(true);
+    const [download] = useDownloadService()
+    const [visibility, setVisibility] = useState<boolean>(true)
 
-    const activeDownloads = download.downloads.filter(download => download.status != 'Failed').length;
+    const activeDownloads = download.downloads.filter(download => download.status != 'Failed').length
 
     const toggle = (): void => {
-        setVisibility(visibility => !visibility);
-    };
+        setVisibility(visibility => !visibility)
+    }
 
     return (
         <div className={classNames({
@@ -48,11 +48,11 @@ const Downloads: React.FC = () => {
                     ({ data, style }) => {
                         return (
                             <DownloadCard download={data} style={style}/>
-                        );
+                        )
                     }
                 } />
         </div>
-    );
-};
+    )
+}
 
-export default Downloads;
+export default Downloads

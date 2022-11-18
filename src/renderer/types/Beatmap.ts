@@ -9,4 +9,4 @@ type Beatmap = {
     unique_id: string
 }
 
-export default Beatmap;
+export default Beatmap

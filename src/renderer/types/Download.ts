@@ -1,4 +1,4 @@
-import Beatmap from '@/types/Beatmap';
+import Beatmap from '@/types/Beatmap'
 
 type Download = {
     beatmap: Beatmap,
@@ -6,4 +6,4 @@ type Download = {
     status: 'Waiting' | 'Initializing' | 'Downloading' | 'Importing' | 'Failed'
 }
 
-export default Download;
+export default Download

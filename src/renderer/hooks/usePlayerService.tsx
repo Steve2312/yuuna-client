@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
-import PlayerService, { PlayerServiceStateProps } from '@/services/PlayerService';
+import { useEffect, useState } from 'react'
+import PlayerService, { PlayerServiceStateProps } from '@/services/PlayerService'
 
 const usePlayerService = (): [PlayerServiceStateProps] => {
 
-    const [player, setPlayer] = useState(PlayerService.getState());
+    const [player, setPlayer] = useState(PlayerService.getState())
 
     useEffect(() => {
-        PlayerService.attach(setPlayer);
+        PlayerService.attach(setPlayer)
 
         return () => {
-            PlayerService.detach(setPlayer);
-        };
-    }, []);
+            PlayerService.detach(setPlayer)
+        }
+    }, [])
 
-    return [player];
-};
+    return [player]
+}
 
-export default usePlayerService;
+export default usePlayerService

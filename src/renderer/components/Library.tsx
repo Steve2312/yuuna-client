@@ -1,15 +1,15 @@
-import React, { useRef } from 'react';
-import Banner from '@/components/Banner';
-import LibraryBanner from '../assets/banners/88738718_p0.jpg';
-import useLibraryService from '@/hooks/useLibraryService';
-import List from '@/components/List';
-import TitleBar from '@/components/TitleBar';
-import LibraryCard from '@/components/LibraryCard';
+import React, { useRef } from 'react'
+import Banner from '@/components/Banner'
+import LibraryBanner from '../assets/banners/88738718_p0.jpg'
+import useLibraryService from '@/hooks/useLibraryService'
+import List from '@/components/List'
+import TitleBar from '@/components/TitleBar'
+import LibraryCard from '@/components/LibraryCard'
 
 const Library: React.FC = () => {
 
-    const listRef = useRef<HTMLDivElement>(null);
-    const [library] = useLibraryService();
+    const listRef = useRef<HTMLDivElement>(null)
+    const [library] = useLibraryService()
 
     return (
         <>
@@ -22,7 +22,7 @@ const Library: React.FC = () => {
                             <>
                                 <Banner title="Library" src={LibraryBanner} scrollableElementRef={listRef}/>
                             </>
-                        );
+                        )
                     }
                 }
                 data={library.songs}
@@ -33,7 +33,7 @@ const Library: React.FC = () => {
                     ({ data, style }) => {
                         return (
                             <LibraryCard song={data} style={style} />
-                        );
+                        )
                     }
                 }
 
@@ -42,7 +42,7 @@ const Library: React.FC = () => {
                 spaceBetween={20}
             />
         </>
-    );
-};
+    )
+}
 
-export default Library;
+export default Library

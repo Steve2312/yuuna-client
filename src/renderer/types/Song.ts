@@ -13,4 +13,4 @@ type Song = {
     index: number
 }
 
-export default Song;
+export default Song

@@ -1,15 +1,15 @@
-import React, { CSSProperties } from 'react';
-import styles from '@/styles/search-librarycard.module.scss';
-import { FaPlay, FaPause, FaEllipsisH } from 'react-icons/fa';
-import Song from '@/types/Song';
-import { getCoverPath, getHeaderPath } from '@/utils/Paths';
-import getBackgroundImageStyle from '@/utils/BackgroundImageStyle';
-import PlayerService from '@/services/PlayerService';
-import LibraryService from '@/services/LibraryService';
-import usePlayerService from '@/hooks/usePlayerService';
-import formatSeconds from '@/utils/FormatSeconds';
-import { openBeatmapPage, openCreatorPage } from '@/utils/Pages';
-import classNames from '@/utils/ClassNames';
+import React, { CSSProperties } from 'react'
+import styles from '@/styles/search-librarycard.module.scss'
+import { FaPlay, FaPause, FaEllipsisH } from 'react-icons/fa'
+import Song from '@/types/Song'
+import { getCoverPath, getHeaderPath } from '@/utils/Paths'
+import getBackgroundImageStyle from '@/utils/BackgroundImageStyle'
+import PlayerService from '@/services/PlayerService'
+import LibraryService from '@/services/LibraryService'
+import usePlayerService from '@/hooks/usePlayerService'
+import formatSeconds from '@/utils/FormatSeconds'
+import { openBeatmapPage, openCreatorPage } from '@/utils/Pages'
+import classNames from '@/utils/ClassNames'
 
 type Props = {
     song: Song,
@@ -18,16 +18,16 @@ type Props = {
 
 const LibraryCard: React.FC<Props> = React.memo<Props>(({ song, style }) => {
 
-    const [player] = usePlayerService();
+    const [player] = usePlayerService()
 
-    const coverPath = getCoverPath(song);
-    const headerPath = getHeaderPath(song);
+    const coverPath = getCoverPath(song)
+    const headerPath = getHeaderPath(song)
 
-    const isPlaying = player.current?.id == song.id && player.playing;
+    const isPlaying = player.current?.id == song.id && player.playing
 
     const play = async (): Promise<void> => {
-        await PlayerService.playFromPlaylist('', LibraryService.getState().songs, song.index);
-    };
+        await PlayerService.playFromPlaylist('', LibraryService.getState().songs, song.index)
+    }
 
     return (
         <div className={styles.searchLibraryCard} style={style}>
@@ -87,7 +87,7 @@ const LibraryCard: React.FC<Props> = React.memo<Props>(({ song, style }) => {
                 </div>
             </div>
         </div>
-    );
-}, () => true);
+    )
+}, () => true)
 
-export default LibraryCard;
+export default LibraryCard

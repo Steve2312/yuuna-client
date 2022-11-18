@@ -4,6 +4,11 @@ module.exports = {
         'es2021': true,
         'node': true
     },
+    'settings': {
+        'react': {
+            'version': 'detect'
+        }
+    },
     'extends': [
         'eslint:recommended',
         'plugin:react/recommended',
@@ -37,7 +42,7 @@ module.exports = {
         ],
         'semi': [
             'error',
-            'always'
+            'never'
         ],
         'keyword-spacing': [
             'error',
@@ -59,4 +64,4 @@ module.exports = {
             }
         ]
     }
-};
+}

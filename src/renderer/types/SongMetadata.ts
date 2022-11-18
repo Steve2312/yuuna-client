@@ -12,4 +12,4 @@ type SongMetadata = {
     date_added: number,
 }
 
-export default SongMetadata;
+export default SongMetadata
