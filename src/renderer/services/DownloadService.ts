@@ -3,7 +3,7 @@ import Beatmap from '@/types/Beatmap'
 import axios from 'axios'
 import * as fs from 'fs'
 import { getTempOutputPath } from '@/utils/Paths'
-import Download from '@/types/Download'
+import Download, { DownloadStatus } from '@/types/Download'
 import LibraryService from '@/services/LibraryService'
 
 export type DownloadServiceStateProps = {
@@ -23,13 +23,18 @@ class DownloadService extends Observable<DownloadServiceStateProps> {
         this.downloadHandler()
     }
 
-    public downloadHandler = (): void => {
+    public dequeue = (beatmap: Beatmap): void => {
+        this.removeFromDownload(beatmap)
+        this.downloadHandler()
+    }
+
+    private downloadHandler = (): void => {
 
         if (this.getAllDownloading().length < this.MAX_SIMULTANEOUS_DOWNLOADS) {
             const download = this.getNextWaitingInDownloads()
 
             if (download) {
-                download.status = 'Initializing'
+                download.status = DownloadStatus.Initializing
 
                 const beatmap = download.beatmap
                 const downloadURL = this.getDownloadURL(beatmap)
@@ -51,13 +56,13 @@ class DownloadService extends Observable<DownloadServiceStateProps> {
     }
 
     private onDownloadProgress = (download: Download, progress: {loaded: number, total: number}): void => {
-        download.status = 'Downloading'
+        download.status = DownloadStatus.Downloading
         download.percentage = progress.loaded / progress.total * 100
         this.notify(this.getState())
     }
 
     private onFinishedDownloading = async (download: Download, path: string): Promise<void> => {
-        download.status = 'Importing'
+        download.status = DownloadStatus.Importing
         this.notify(this.getState())
 
         await LibraryService.import(path)
@@ -69,7 +74,7 @@ class DownloadService extends Observable<DownloadServiceStateProps> {
     }
 
     private onDownloadError = (download: Download): void => {
-        download.status = 'Failed'
+        download.status = DownloadStatus.Failed
         this.notify(this.getState())
 
         this.downloadHandler()
@@ -83,26 +88,35 @@ class DownloadService extends Observable<DownloadServiceStateProps> {
             this.downloads.unshift({
                 beatmap: beatmap,
                 percentage: null,
-                status: 'Waiting'
+                status: DownloadStatus.Waiting
             })
-        } else if (duplicateDownload.status == 'Failed') {
+        } else if (duplicateDownload.status == DownloadStatus.Failed) {
             duplicateDownload.percentage = null
-            duplicateDownload.status = 'Waiting'
+            duplicateDownload.status = DownloadStatus.Waiting
         }
 
         this.notify(this.getState())
     }
 
+    private removeFromDownload = (beatmap: Beatmap): void => {
+        const download = this.downloads.find(download => download.beatmap.id == beatmap.id)
+
+        if (download && (download.status == DownloadStatus.Waiting || download.status == DownloadStatus.Failed)) {
+            this.downloads = this.downloads.filter(d => d != download)
+            this.notify(this.getState())
+        }
+    }
+
     private getAllDownloading = (): Download[] => {
         return this.downloads.filter(download => {
-            return download.status == 'Downloading' || download.status == 'Initializing'
+            return download.status == DownloadStatus.Downloading || download.status == DownloadStatus.Initializing
         })
     }
 
     private getNextWaitingInDownloads = (): Download | null => {
         for (let i = 0; i < this.downloads.length; i++) {
             const download = this.downloads[i]
-            if (download.status == 'Waiting') {
+            if (download.status == DownloadStatus.Waiting) {
                 return download
             }
         }

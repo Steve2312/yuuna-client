@@ -12,13 +12,39 @@
 }
 
 .cover {
-  display: block;
+  display: grid;
+  place-items: center;
   height: 45px;
   width: 45px;
   min-width: 45px;
   background-position: center;
   background-size: cover;
   border-radius: 15px;
+  transition: box-shadow linear 0.2s;
+  box-shadow: 4px 0 7px -3px black;
+
+  &:hover svg {
+    opacity: 1;
+  }
+
+  svg {
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all linear 0.2s;
+  }
+
+  svg:hover {
+    color: var(--accent_color)
+  }
+}
+
+.downloadCard:hover .cover{
+  box-shadow: 4px 0 7px -3px black, inset 0 0 0 2000px rgba(0, 0, 0, 0.6);
+
+  svg {
+    opacity: 1;
+  }
 }
 
 .content {

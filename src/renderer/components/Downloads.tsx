@@ -5,12 +5,13 @@ import List from '@/components/List'
 import useDownloadService from '@/hooks/useDownloadService'
 import DownloadCard from '@/components/DownloadCard'
 import classNames from '@/utils/ClassNames'
+import { DownloadStatus } from '@/types/Download'
 
 const Downloads: React.FC = () => {
     const [download] = useDownloadService()
     const [visibility, setVisibility] = useState<boolean>(true)
 
-    const activeDownloads = download.downloads.filter(download => download.status != 'Failed').length
+    const activeDownloads = download.downloads.filter(download => download.status != DownloadStatus.Failed).length
 
     const toggle = (): void => {
         setVisibility(visibility => !visibility)

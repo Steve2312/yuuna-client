@@ -129,13 +129,15 @@
   }
 
   .options {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     place-items: center;
 
     svg {
+      height: calc(50% - 1rem);
       font-size: 15px;
-      padding: 6.5px;
+      padding: 0.5rem;
       cursor: pointer;
     }
 

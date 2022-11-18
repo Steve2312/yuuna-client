@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react'
 import styles from '@/styles/search-librarycard.module.scss'
-import { FaPlay, FaPause, FaEllipsisH, FaDownload, FaCircleNotch } from 'react-icons/fa'
+import { FaCircleNotch, FaDownload, FaEllipsisH, FaPause, FaPlay, FaRedoAlt, FaTimes } from 'react-icons/fa'
 import usePreviewService from '@/hooks/usePreviewService'
 import PreviewService from '@/services/PreviewService'
 import getBackgroundImageStyle from '@/utils/BackgroundImageStyle'
@@ -9,6 +9,9 @@ import { openBeatmapPage, openCreatorPage } from '@/utils/Pages'
 import Beatmap from '@/types/Beatmap'
 import DownloadService from '@/services/DownloadService'
 import classNames from '@/utils/ClassNames'
+import useLibraryService from '@/hooks/useLibraryService'
+import useDownloadService from '@/hooks/useDownloadService'
+import { DownloadStatus } from '@/types/Download'
 
 type Props = {
     beatmap: Beatmap,
@@ -19,9 +22,14 @@ type Props = {
 const SearchCard: React.FC<Props> = React.memo(({ beatmap, index, style }) => {
 
     const [preview] = usePreviewService()
+    const [library] = useLibraryService()
+    const [download] = useDownloadService()
 
     const isPlaying = preview.beatmapSetID == beatmap.id && preview.playing
     const isLoading = preview.loading
+    const isDownloaded = !!library.songs.find(song => song.beatmapset_id == beatmap.id)
+
+    const status = download.downloads.find(download => download.beatmap.id == beatmap.id)?.status
 
     const cover = getBackgroundImageStyle(`https://assets.ppy.sh/beatmaps/${beatmap.id}/covers/list@2x.jpg`)
     const header = getBackgroundImageStyle(`https://assets.ppy.sh/beatmaps/${beatmap.id}/covers/card@2x.jpg`)
@@ -29,6 +37,23 @@ const SearchCard: React.FC<Props> = React.memo(({ beatmap, index, style }) => {
     const play = async (): Promise<void> => {
         if (preview.beatmapSetID === beatmap.id) PreviewService.playPause()
         else await PreviewService.playPreview(beatmap.id)
+    }
+
+    const statusIcon = (): JSX.Element => {
+        switch (status) {
+        case DownloadStatus.Waiting:
+            return <FaTimes onClick={() => DownloadService.dequeue(beatmap)} />
+        case DownloadStatus.Initializing:
+            return <FaCircleNotch className={styles.loading} />
+        case DownloadStatus.Downloading:
+            return <FaCircleNotch className={styles.loading} />
+        case DownloadStatus.Importing:
+            return <FaCircleNotch className={styles.loading} />
+        case DownloadStatus.Failed:
+            return <FaRedoAlt onClick={() => DownloadService.download(beatmap)}/>
+        default:
+            return <FaDownload onClick={() => DownloadService.download(beatmap)}/>
+        }
     }
 
     return (
@@ -87,7 +112,7 @@ const SearchCard: React.FC<Props> = React.memo(({ beatmap, index, style }) => {
                     </div>
                 </div>
                 <div className={styles.options}>
-                    <FaDownload onClick={() => DownloadService.download(beatmap)}/>
+                    { !isDownloaded && statusIcon() }
                     <FaEllipsisH />
                 </div>
             </div>
