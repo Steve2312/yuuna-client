@@ -3,6 +3,7 @@ import { getCoverPath, getSongPath } from '@/utils/Paths'
 import MediaSessionService from './MediaSessionService'
 import Observable from './Observable'
 import PreviewService from '@/services/PreviewService'
+import DiscordRichPresence from '@/utils/DiscordRichPresence'
 
 export type PlayerServiceStateProps = {
     audio: HTMLAudioElement,
@@ -16,8 +17,8 @@ export type PlayerServiceStateProps = {
 }
 
 export enum PlaybackMode {
-    Normal,
-    DoubleTime
+    Normal = 'NM',
+    DoubleTime = 'DT'
 }
 
 class PlayerService extends Observable<PlayerServiceStateProps> {
@@ -38,8 +39,11 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
 
     private current: Song
 
+    private discordRpc: DiscordRichPresence
+
     constructor() {
         super()
+        this.discordRpc = new DiscordRichPresence()
         this.audio.volume = this.defaultAudioVolume
     }
 
@@ -66,6 +70,8 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
         if (time != undefined) {
             this.audio.currentTime = time
         }
+
+        this.updateDiscordRichPresence()
 
         return this.audio.currentTime
     }
@@ -125,6 +131,7 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
     public doubleTime = (): void => {
         this.playback = this.playback == PlaybackMode.Normal ? PlaybackMode.DoubleTime : PlaybackMode.Normal
         this.handlePlaybackMode()
+        this.updateDiscordRichPresence()
         this.notify(this.getState())
     }
 
@@ -206,6 +213,21 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
         }
     }
 
+    public updateDiscordRichPresence = async (): Promise<void> => {
+        if (!this.playing) {
+            return await this.discordRpc.clearActivity()
+        }
+
+        await this.discordRpc.setActivity({
+            largeImageKey: 'icon',
+            smallImageKey: 'playing',
+            details: 'Title: ' + this.current.title + ' (' + this.playback + ')',
+            state: 'Artist: ' + this.current.artist,
+            startTimestamp: Date.now(),
+            endTimestamp: Date.now() + ((this.current.duration - this.audio.currentTime) / this.audio.playbackRate) * 1000
+        })
+    }
+
     // TODO: Update playlist when new song is imported
     public shuffle = (): void => {
         this.shuffled ? this.sortPlaylist() : this.shufflePlaylist()
@@ -240,6 +262,7 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
         this.playing = true
         this.notify(this.getState())
 
+        this.updateDiscordRichPresence()
         MediaSessionService.setPlaybackState('playing')
 
         const preview = PreviewService.getState()
@@ -255,6 +278,7 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
 
     private handleOnPause = async (): Promise<void> => {
         this.playing = false
+        this.updateDiscordRichPresence()
         MediaSessionService.setPlaybackState('paused')
         this.notify(this.getState())
     }
