@@ -69,9 +69,8 @@ class PlayerService extends Observable<PlayerServiceStateProps> {
 
         if (time != undefined) {
             this.audio.currentTime = time
+            this.updateDiscordRichPresence()
         }
-
-        this.updateDiscordRichPresence()
 
         return this.audio.currentTime
     }
