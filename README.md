@@ -4,6 +4,9 @@
 
 A music player that extracts songs from osu! beatmaps and presents them in a user-friendly way. With the help of the Beatconnect API, Yuuna is able to provide search and download of osu! beatmaps within the app.
 
+![image](https://user-images.githubusercontent.com/34347838/214974142-0f101ad0-98e5-4bbc-94b4-409925762755.png)
+
+
 ## Technology
 - React (Typescript)
 - SASS (SCSS)
