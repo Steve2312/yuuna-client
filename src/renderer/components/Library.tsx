@@ -14,7 +14,7 @@ const Library: React.FC = () => {
     const [library] = useLibraryService()
 
     const songs = library.songs.filter(song => {
-        const keywords = [song.title, song.artist, song.source, song.creator, song.version].join(' ').toUpperCase()
+        const keywords = Object.values(song).join(' ').toUpperCase()
         return keywords.includes(input.toUpperCase())
     })
 
